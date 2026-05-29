@@ -155,7 +155,7 @@
 
   /* ── HERO ── */
   .hero {
-    min-height: 100vh;
+    min-height: 80vh;
     display: flex;
     align-items: center;
     position: relative;
@@ -190,7 +190,7 @@
     width: 100%;
     max-width: 1160px;
     margin: 0 auto;
-    padding: 120px 24px 120px;
+    padding: 80px 24px 72px;
     position: relative;
     z-index: 1;
   }
@@ -305,7 +305,8 @@
     background: var(--navy-mid);
     border-top: 1px solid var(--navy-border);
     border-bottom: 1px solid var(--navy-border);
-    padding: 28px 0;
+    padding: 0;
+    overflow: hidden;
   }
 
   .stats-grid {
@@ -318,34 +319,64 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     text-align: center;
-    padding: 12px 16px;
+    padding: 32px 16px 28px;
     position: relative;
+    transition: background 0.25s;
   }
+
+  .stat-item:hover { background: rgba(223,12,120,0.05); }
 
   .stat-item + .stat-item::before {
     content: '';
     position: absolute;
-    left: 0; top: 20%; bottom: 20%;
+    left: 0; top: 15%; bottom: 15%;
     width: 1px;
     background: var(--navy-border);
   }
 
+  /* ícone acima do número */
+  .stat-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--pink-muted);
+    border: 1px solid rgba(223,12,120,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .stat-icon svg {
+    width: 18px; height: 18px;
+    stroke: var(--pink);
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
   .stat-number {
     font-family: var(--font-display);
-    font-size: 40px;
     font-weight: 600;
     color: var(--pink);
     line-height: 1;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: -0.04em;
   }
 
+  /* tamanhos escalonados — cada stat tem peso visual diferente */
+  .stat-item:nth-child(1) .stat-number { font-size: 48px; }
+  .stat-item:nth-child(2) .stat-number { font-size: 40px; }
+  .stat-item:nth-child(3) .stat-number { font-size: 44px; }
+  .stat-item:nth-child(4) .stat-number { font-size: 36px; }
+
   .stat-label {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
-    color: var(--white-70);
-    letter-spacing: 0.02em;
+    color: var(--white-40);
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
@@ -575,15 +606,40 @@
   }
   /* ── QUOTE DESTAQUE ── */
   .quote-section {
-    padding: 80px 0;
-    background: var(--navy-mid);
-    border-top: 1px solid var(--navy-border);
-    border-bottom: 1px solid var(--navy-border);
+    position: relative;
+    padding: 100px 0;
+    overflow: hidden;
+  }
+
+  .quote-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .quote-bg img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    display: block;
+    filter: brightness(0.3) saturate(0.7);
+  }
+
+  .quote-bg-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(35,23,49,0.6) 0%,
+      rgba(35,23,49,0.2) 50%,
+      rgba(35,23,49,0.6) 100%
+    );
   }
 
   .quote-block {
     position: relative;
-    max-width: 800px;
+    z-index: 1;
+    max-width: 860px;
     margin: 0 auto;
     text-align: center;
     padding: 0 24px;
@@ -595,18 +651,19 @@
     font-size: 64px;
     line-height: 0.7;
     color: var(--pink);
-    margin-bottom: 16px;
+    margin-bottom: 20px;
     font-weight: 600;
-    opacity: 0.4;
+    opacity: 0.6;
   }
 
   .quote-text {
     font-family: var(--font-display);
-    font-size: clamp(22px, 3vw, 36px);
+    font-size: clamp(24px, 3.5vw, 42px);
     font-weight: 600;
     color: var(--white);
-    line-height: 1.3;
-    letter-spacing: -0.02em;
+    line-height: 1.25;
+    letter-spacing: -0.025em;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.4);
   }
 
   .quote-text em {
@@ -1515,7 +1572,7 @@
 <nav>
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="Product Camp — página inicial">
-      <img src="logo_escuro.svg" alt="productcamp" height="32" style="height:32px; width:auto; display:block;">
+      <img src="logo_escuro.png" alt="productcamp" height="32" style="height:32px; width:auto; display:block;">
     </a>
 
     <ul class="nav-links" id="navLinks">
@@ -1569,22 +1626,39 @@
 <div class="stats-bar" id="statsBar">
   <div class="container">
     <div class="stats-grid">
+
       <div class="stat-item">
-        <div class="stat-number" data-target="60" data-prefix="+" data-suffix="">+60</div>
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div class="stat-number" data-target="60" data-prefix="+">+60</div>
         <div class="stat-label">Palestras</div>
       </div>
+
       <div class="stat-item">
-        <div class="stat-number" data-target="6" data-prefix="" data-suffix="">6</div>
-        <div class="stat-label">Palcos</div>
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <div class="stat-number" data-target="6" data-prefix="">6</div>
+        <div class="stat-label">Palcos simultâneos</div>
       </div>
+
       <div class="stat-item">
-        <div class="stat-number" data-target="2" data-prefix="" data-suffix="">2</div>
-        <div class="stat-label">Dias de networking</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-number" data-target="3000" data-prefix="+" data-suffix="">+3000</div>
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="stat-number" data-target="3000" data-prefix="+">+3000</div>
         <div class="stat-label">Participantes</div>
       </div>
+
+      <div class="stat-item">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        </div>
+        <div class="stat-number" data-target="2" data-prefix="">2</div>
+        <div class="stat-label">Dias de networking</div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1620,6 +1694,20 @@
 
     </div>
 
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <div class="quote-bg">
+    <img src="quote-bg.webp" alt="">
+    <div class="quote-bg-overlay"></div>
+  </div>
+  <div class="container">
+    <blockquote class="quote-block">
+      <span class="quote-mark">&ldquo;</span>
+      <p class="quote-text">Serão dois dias para exercitar tudo isso, junto com <em>mais de 3 mil pessoas</em> que pensam como você.</p>
+    </blockquote>
   </div>
 </section>
 
@@ -1686,15 +1774,6 @@
 </section>
 
 
-<section class="quote-section">
-  <div class="container">
-    <blockquote class="quote-block">
-      <span class="quote-mark">&ldquo;</span>
-      <p class="quote-text">Serão dois dias para exercitar tudo isso, junto com <em>mais de 3 mil pessoas</em> que pensam como você.</p>
-    </blockquote>
-  </div>
-</section>
-
 <!-- TRILHAS -->
 <section class="tracks-section">
   <div class="container">
@@ -1710,14 +1789,7 @@
 
       <!-- Trilha 1 — foto placeholder (KV a definir) -->
       <div class="track-card">
-        <div class="track-photo-placeholder">
-          <svg class="track-placeholder-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="6" width="36" height="36" rx="4" stroke="white" stroke-width="2"/>
-            <circle cx="24" cy="20" r="6" stroke="white" stroke-width="2"/>
-            <path d="M10 42c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span class="track-placeholder-label">imagem em breve</span>
-        </div>
+        <img class="track-photo" src="trilha-pm.webp" alt="Product Management" loading="lazy" style="object-position:center top;">
         <div class="track-bottom">
           <div class="track-name">Product Management</div>
         </div>
@@ -1725,14 +1797,7 @@
 
       <!-- Trilha 2 — foto placeholder -->
       <div class="track-card">
-        <div class="track-photo-placeholder">
-          <svg class="track-placeholder-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="6" width="36" height="36" rx="4" stroke="white" stroke-width="2"/>
-            <circle cx="24" cy="20" r="6" stroke="white" stroke-width="2"/>
-            <path d="M10 42c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span class="track-placeholder-label">imagem em breve</span>
-        </div>
+        <img class="track-photo" src="trilha-ai.webp" alt="Artificial Intelligence" loading="lazy" style="object-position:center top;">
         <div class="track-bottom">
           <div class="track-name">Artificial Intelligence</div>
         </div>
@@ -1740,14 +1805,7 @@
 
       <!-- Trilha 3 — foto placeholder -->
       <div class="track-card">
-        <div class="track-photo-placeholder">
-          <svg class="track-placeholder-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="6" width="36" height="36" rx="4" stroke="white" stroke-width="2"/>
-            <circle cx="24" cy="20" r="6" stroke="white" stroke-width="2"/>
-            <path d="M10 42c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span class="track-placeholder-label">imagem em breve</span>
-        </div>
+        <img class="track-photo" src="trilha-lideranca.webp" alt="Liderança e Negócios" loading="lazy" style="object-position:center top;">
         <div class="track-bottom">
           <div class="track-name">Liderança &amp; Negócios</div>
         </div>
@@ -1755,14 +1813,7 @@
 
       <!-- Trilha 4 — foto placeholder -->
       <div class="track-card">
-        <div class="track-photo-placeholder">
-          <svg class="track-placeholder-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="6" y="6" width="36" height="36" rx="4" stroke="white" stroke-width="2"/>
-            <circle cx="24" cy="20" r="6" stroke="white" stroke-width="2"/>
-            <path d="M10 42c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <span class="track-placeholder-label">imagem em breve</span>
-        </div>
+        <img class="track-photo" src="trilha-marketing.webp" alt="Marketing e Design" loading="lazy" style="object-position:center top;">
         <div class="track-bottom">
           <div class="track-name">Marketing &amp; Design</div>
         </div>
@@ -1803,7 +1854,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">svpg</span>
-          <img src="speaker-marty.png" alt="Marty Cagan" loading="lazy">
+          <img src="sp-marty.webp" alt="Marty Cagan" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -1815,7 +1866,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">iFood</span>
-          <img src="speaker-diego.png" alt="Diego Barreto" loading="lazy">
+          <img src="sp-diego.webp" alt="Diego Barreto" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -1827,7 +1878,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Melissa Perri</span>
-          <img src="speaker-melissa.png" alt="Melissa Perri" loading="lazy">
+          <img src="sp-melissa.webp" alt="Melissa Perri" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -1839,7 +1890,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Wellhub</span>
-          <img src="speaker-eduardo.png" alt="Eduardo Thuler" loading="lazy">
+          <img src="sp-eduardo.webp" alt="Eduardo Thuler" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -1851,7 +1902,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Mixpanel</span>
-          <img src="speaker-neha.png" alt="Neha Nathan" loading="lazy">
+          <img src="sp-neha.webp" alt="Neha Nathan" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -1863,7 +1914,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Pendo</span>
-          <img src="speaker-trisha.png" alt="Trisha Price" loading="lazy">
+          <img src="sp-trisha.webp" alt="Trisha Price" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -1875,7 +1926,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Google</span>
-          <img src="speaker-nathalia.png" alt="Nathalia Andrijic" loading="lazy">
+          <img src="sp-nathalia.webp" alt="Nathalia Andrijic" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -1887,7 +1938,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Costanoa</span>
-          <img src="speaker-martina.png" alt="Martina Lauchengco" loading="lazy">
+          <img src="sp-martina.webp" alt="Martina Lauchengco" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -1899,7 +1950,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Leah Tharin</span>
-          <img src="speaker-leah.png" alt="Leah Tharin" loading="lazy">
+          <img src="sp-leah.webp" alt="Leah Tharin" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -1910,13 +1961,13 @@
 
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
-          <span class="speaker-company">Paola Mello</span>
-          <img src="speaker-paola.png" alt="Paola Mello" loading="lazy">
+          <span class="speaker-company">DL</span>
+          <img src="sp-david.webp" alt="David Pereira" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
-          <div class="speaker-name">Paola Mello</div>
-          <div class="speaker-role">Produto</div>
+          <div class="speaker-name">David Pereira</div>
+          <div class="speaker-role">Product Leadership</div>
         </div>
       </div>
 
@@ -2261,7 +2312,7 @@
     <div class="footer-inner">
       <div>
         <a href="/" aria-label="Product Camp — página inicial" style="display:inline-block; margin-bottom:12px;">
-          <img src="logo_escuro.svg" alt="productcamp" height="28" style="height:28px; width:auto; display:block;">
+          <img src="logo_escuro.png" alt="productcamp" height="28" style="height:28px; width:auto; display:block;">
         </a>
         <p class="footer-brand-text">O maior evento de produto da América Latina. Dois dias de conhecimento, networking e conexões que impulsionam carreiras.</p>
         <div class="footer-social">
