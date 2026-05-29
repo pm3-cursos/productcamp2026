@@ -1,0 +1,2406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Product Camp Brasil — o maior evento de produto da América Latina. 08 e 09 de dezembro de 2026, São Paulo, SP.">
+<meta property="og:title" content="Product Camp | O maior evento de produto da América Latina">
+<meta property="og:description" content="Product Camp Brasil, o maior evento de produto da América Latina!">
+<meta property="og:image" content="https://framerusercontent.com/images/8laEr3TUpfE4OHPhBHCtwTpSg.png">
+<meta property="og:url" content="https://www.productcamp.com.br/">
+<meta name="twitter:card" content="summary_large_image">
+<title>Product Camp | O maior evento de produto da América Latina</title>
+<style>
+  @font-face {
+    font-family: 'InterTight';
+    src: url('fonts/INTERTIGHT-LIGHT.TTF') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'InterTight';
+    src: url('fonts/INTERTIGHT-REGULAR.TTF') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'InterTight';
+    src: url('fonts/INTERTIGHT-MEDIUM.TTF') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: 'InterTight';
+    src: url('fonts/INTERTIGHT-SEMIBOLD.TTF') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+</style>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:        #2B1E39;
+    --navy-mid:    #231731;
+    --navy-card:   #321f47;
+    --navy-border: rgba(255,255,255,0.09);
+    --pink:        #DF0C78;
+    --pink-light:  #f02d8e;
+    --pink-muted:  rgba(223,12,120,0.14);
+    --cyan:        #18CEF4;
+    --cyan-muted:  rgba(24,206,244,0.12);
+    --white:       #ffffff;
+    --white-70:    rgba(255,255,255,0.68);
+    --white-40:    rgba(255,255,255,0.38);
+    --white-10:    rgba(255,255,255,0.06);
+    --section-pad: 88px;
+    --font-display: 'InterTight', sans-serif;
+    --font-body:    'InterTight', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--navy);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+
+  img { max-width: 100%; display: block; }
+
+  .container {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(43,30,57,0.0);
+    backdrop-filter: blur(0px);
+    border-bottom: 1px solid transparent;
+    transition: background 0.35s, backdrop-filter 0.35s, border-color 0.35s;
+  }
+
+  nav.scrolled {
+    background: rgba(43,30,57,0.96);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--navy-border);
+  }
+
+  .nav-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .nav-logo { display: flex; align-items: center; }
+
+  .nav-logo-text { display: none; }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--white-70);
+    padding: 6px 14px;
+    border-radius: 6px;
+    transition: color 0.2s, background 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); background: var(--white-10); }
+
+  .nav-cta {
+    background: var(--pink) !important;
+    color: white !important;
+    border-radius: 8px !important;
+    padding: 8px 18px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: background 0.2s, transform 0.15s !important;
+  }
+
+  .nav-cta:hover { background: var(--pink-light) !important; transform: translateY(-1px); }
+
+  .nav-mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    color: var(--white);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 64px;
+    background-image: url('hero-bg.webp');
+    background-size: cover;
+    background-position: center right;
+    background-repeat: no-repeat;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      rgba(43,30,57,0.97) 0%,
+      rgba(43,30,57,0.90) 38%,
+      rgba(43,30,57,0.50) 62%,
+      rgba(43,30,57,0.08) 100%
+    );
+    pointer-events: none;
+  }
+
+  .hero-grid-overlay { display: none; }
+
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 120px 24px 120px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pink-muted);
+    border: 1px solid rgba(223,12,120,0.3);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--pink-light);
+    margin-bottom: 24px;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--pink);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+
+  .hero-title .accent { color: var(--pink); }
+
+  .hero-subtitle {
+    font-size: 17px;
+    color: var(--white-70);
+    line-height: 1.65;
+    margin-bottom: 36px;
+    max-width: 560px;
+  }
+
+  .hero-subtitle strong { color: var(--white); font-weight: 600; }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .hero-rule {
+    width: 48px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--pink), var(--cyan));
+    border-radius: 2px;
+    margin-bottom: 28px;
+    display: block;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pink);
+    color: white;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 28px;
+    border-radius: 10px;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-primary:hover {
+    background: var(--pink-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(223,12,120,0.35);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--white-70);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 24px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.18);
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+
+  .btn-secondary:hover {
+    color: var(--white);
+    border-color: rgba(255,255,255,0.2);
+    background: var(--white-10);
+  }
+
+  .hero-visual { display: none; }
+  .hero-image-wrap { display: none; }
+  .hero-image-glow { display: none; }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    background: var(--navy-mid);
+    border-top: 1px solid var(--navy-border);
+    border-bottom: 1px solid var(--navy-border);
+    padding: 28px 0;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 12px 16px;
+    position: relative;
+  }
+
+  .stat-item + .stat-item::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 1px;
+    background: var(--navy-border);
+  }
+
+  .stat-number {
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--pink);
+    line-height: 1;
+    margin-bottom: 8px;
+    letter-spacing: -0.04em;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white-70);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  /* ── SECTION GENERIC ── */
+  section { padding: var(--section-pad) 0; }
+
+  .section-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 16px;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 20px; height: 2px;
+    background: var(--pink);
+    display: inline-block;
+  }
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  .section-subtitle {
+    font-size: 17px;
+    color: var(--white-70);
+    line-height: 1.65;
+    max-width: 560px;
+  }
+
+  /* ── ABOUT ── */
+  .about { background: var(--navy); }
+
+  .about-header {
+    max-width: 720px;
+    margin-bottom: 56px;
+  }
+
+  .about-title {
+    font-size: clamp(32px, 4.5vw, 52px) !important;
+    margin-bottom: 20px !important;
+  }
+
+  .about-intro {
+    font-size: 17px;
+    color: var(--white-70);
+    line-height: 1.65;
+  }
+
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    margin-bottom: 48px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--navy-border);
+  }
+
+  .pillar-card {
+    background: var(--navy-card);
+    border: none;
+    padding: 40px 36px;
+    transition: background 0.25s;
+  }
+
+
+
+  .pillar-card:hover {
+    background: rgba(50,31,71,0.95);
+    border-color: rgba(224,15,121,0.25);
+  }
+
+  .pillar-label {
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 600;
+    color: var(--pink);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 16px;
+  }
+
+  .pillar-text {
+    font-size: 15px;
+    color: var(--white-70);
+    line-height: 1.7;
+  }
+
+  .about-closing {
+    display: none;
+  }
+
+  /* ── PÚBLICO ── */
+  .audience-section {
+    padding: var(--section-pad) 0;
+    background: var(--navy);
+    overflow: hidden;
+  }
+
+  .audience-title {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.5vw, 44px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-align: center;
+    margin-bottom: 16px;
+    max-width: 780px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .audience-title strong { font-weight: 600; }
+
+  .audience-sub {
+    font-size: 16px;
+    color: var(--white-70);
+    text-align: center;
+    margin-bottom: 52px;
+    line-height: 1.6;
+  }
+
+  .audience-marquee-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 40px;
+  }
+
+  .audience-marquee-row {
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .audience-marquee {
+    display: flex;
+    gap: 12px;
+    width: max-content;
+    animation: marquee-left 28s linear infinite;
+  }
+
+  .audience-marquee.reverse {
+    animation: marquee-right 28s linear infinite;
+  }
+
+  .audience-marquee:hover,
+  .audience-marquee.reverse:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes marquee-left {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes marquee-right {
+    0%   { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+  }
+
+  .atag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 15px;
+    font-weight: 600;
+    white-space: nowrap;
+    cursor: default;
+  }
+
+  .atag.cyan {
+    background: var(--cyan-muted);
+    color: var(--cyan);
+    border: 1px solid rgba(24,206,244,0.2);
+  }
+
+  .atag.pink {
+    background: var(--pink-muted);
+    color: #e00f79;
+    border: 1px solid rgba(224,15,121,0.25);
+  }
+
+  .atag-star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .atag.cyan .atag-star {
+    background: rgba(24,206,244,0.12);
+    color: var(--cyan);
+    border: 1px solid rgba(61,232,232,0.3);
+  }
+
+  .atag.pink .atag-star {
+    background: rgba(224,15,121,0.15);
+    color: #e00f79;
+    border: 1px solid rgba(224,15,121,0.3);
+  }
+
+  .audience-more {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--white);
+    margin-top: 8px;
+    letter-spacing: -0.01em;
+  }
+  /* ── QUOTE DESTAQUE ── */
+  .quote-section {
+    padding: 80px 0;
+    background: var(--navy-mid);
+    border-top: 1px solid var(--navy-border);
+    border-bottom: 1px solid var(--navy-border);
+  }
+
+  .quote-block {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 24px;
+  }
+
+  .quote-mark {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 64px;
+    line-height: 0.7;
+    color: var(--pink);
+    margin-bottom: 16px;
+    font-weight: 600;
+    opacity: 0.4;
+  }
+
+  .quote-text {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 3vw, 36px);
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+  }
+
+  .quote-text em {
+    color: var(--pink);
+    font-style: normal;
+  }
+
+  .about-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 28px;
+  }
+
+  .tag {
+    background: var(--white-10);
+    border: 1px solid var(--navy-border);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--white-70);
+    transition: border-color 0.2s, color 0.2s;
+  }
+
+  .tag:hover { border-color: var(--pink); color: var(--pink); }
+
+  /* ── TRILHAS ── */
+  .tracks-section { background: var(--navy-mid); }
+
+  .tracks-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 48px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .tracks-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .track-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    cursor: default;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+
+  .track-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(223,12,120,0.35);
+  }
+
+  .track-photo {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+    filter: brightness(0.82) saturate(1.1);
+    transition: filter 0.3s;
+  }
+
+  .track-card:hover .track-photo { filter: brightness(0.92) saturate(1.2); }
+
+  .track-photo-placeholder {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: linear-gradient(160deg, var(--navy-card) 0%, rgba(223,12,120,0.06) 60%, rgba(24,206,244,0.04) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .track-photo-placeholder::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 24px,
+      rgba(255,255,255,0.02) 24px,
+      rgba(255,255,255,0.02) 25px
+    );
+  }
+
+  .track-placeholder-icon {
+    width: 48px;
+    height: 48px;
+    opacity: 0.25;
+  }
+
+  .track-placeholder-label {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11px;
+    color: var(--white-40);
+    white-space: nowrap;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .track-bottom {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--navy-card);
+    border-top: 1px solid var(--navy-border);
+  }
+
+  .track-icon-wrap {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+  }
+
+  .track-icon-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .track-name {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.25;
+  }
+
+  /* ── SPEAKERS ── */
+  .speakers { background: var(--navy); }
+
+  .speakers-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 48px;
+  }
+
+  /* ─ card ─ */
+  .speaker-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s;
+    position: relative;
+  }
+
+  .speaker-card:hover {
+    border-color: rgba(223,12,120,0.4);
+    transform: translateY(-4px);
+  }
+
+  /* foto */
+  .speaker-photo-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: var(--navy-card);
+  }
+
+  .speaker-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .speaker-card:hover .speaker-photo-wrap img { transform: scale(1.04); }
+
+  /* empresa badge (topo) */
+  .speaker-company {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 100px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #111;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    z-index: 2;
+  }
+
+  /* linha tracejada separadora */
+  .speaker-divider {
+    height: 1px;
+    border: none;
+    border-top: 2px dashed var(--navy-border);
+    margin: 0;
+  }
+
+  /* rodapé info */
+  .speaker-info {
+    padding: 14px 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .speaker-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.25;
+  }
+
+  .speaker-role {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--pink);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    line-height: 1.3;
+    text-align: right;
+    flex-shrink: 0;
+    max-width: 80px;
+  }
+
+  /* card "em breve" */
+  .speaker-card.soon .speaker-photo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .speaker-soon-icon {
+    opacity: 0.15;
+  }
+
+  .speaker-soon-label {
+    position: absolute;
+    bottom: 16px;
+    width: 100%;
+    text-align: center;
+    font-size: 11px;
+    color: var(--white-40);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .speakers-cta {
+    text-align: center;
+    margin-top: 40px;
+    color: var(--white-40);
+    font-size: 14px;
+  }
+
+  .speakers-cta strong { color: var(--white-70); font-weight: 500; }
+
+  /* ── VENUE ── */
+  .venue-section { background: var(--navy-mid); }
+
+  .venue-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: start;
+    margin-top: 56px;
+  }
+
+  /* coluna esquerda — âncora de texto */
+  .venue-text { }
+
+  .venue-address {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--pink-muted);
+    border: 1px solid rgba(223,12,120,0.2);
+    border-radius: 100px;
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--pink);
+    margin-bottom: 28px;
+  }
+
+  .venue-address svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+  .venue-headline {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 3vw, 38px);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  .venue-desc {
+    font-size: 16px;
+    color: var(--white-70);
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .venue-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .venue-feature {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--white-70);
+  }
+
+  .venue-feature-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--pink);
+    flex-shrink: 0;
+  }
+
+  /* coluna direita — mosaico de fotos */
+  .venue-photos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 8px;
+  }
+
+  .venue-photo {
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+  }
+
+  .venue-photo:first-child {
+    grid-column: span 2;
+    aspect-ratio: 16/8;
+  }
+
+  .venue-photo:not(:first-child) {
+    aspect-ratio: 4/3;
+  }
+
+  .venue-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .venue-photo:hover img { transform: scale(1.04); }
+
+  /* ── TICKETS ── */
+  .tickets { background: var(--navy-mid); padding: 0 !important; }
+
+  .tickets-hero {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    overflow: hidden;
+  }
+
+  .tickets-hero img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 55%;
+    display: block;
+  }
+
+  .tickets-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(43,30,57,0.15) 0%,
+      rgba(43,30,57,0.55) 60%,
+      rgba(35,23,49,1) 100%
+    );
+  }
+
+  .tickets-hero-text {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100%;
+    padding: 0 24px;
+  }
+
+  .tickets-hero-text .section-label {
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  .tickets-hero-text h2 {
+    font-family: var(--font-display);
+    font-size: clamp(26px, 3.5vw, 42px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--white);
+  }
+
+  .tickets-body {
+    padding: 64px 0 var(--section-pad);
+  }
+
+  .tickets-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 52px;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .tickets-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    max-width: 840px;
+    margin: 0 auto;
+  }
+
+  .ticket-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    position: relative;
+    transition: border-color 0.25s, transform 0.25s;
+    overflow: hidden;
+  }
+
+  .ticket-card.featured {
+    border-color: var(--pink);
+    background: linear-gradient(160deg, rgba(223,12,120,0.12) 0%, rgba(223,12,120,0.04) 40%, var(--navy-card) 70%);
+  }
+
+  .ticket-badge {
+    display: inline-block;
+    background: var(--pink);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .ticket-name {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+
+  .ticket-price {
+    font-size: 13px;
+    color: var(--white-40);
+    margin-bottom: 24px;
+  }
+
+  .ticket-price strong {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--pink-light);
+    display: block;
+    margin-top: 4px;
+  }
+
+  .ticket-features {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .ticket-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--white-70);
+    line-height: 1.4;
+  }
+
+  .ticket-features li::before {
+    content: '✓';
+    color: var(--pink);
+    font-weight: 600;
+    font-size: 13px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── GROUPS ── */
+  .groups-banner {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 52px;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+  }
+
+  .groups-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .groups-bg img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    filter: brightness(0.35) saturate(0.8);
+  }
+
+  .groups-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      100deg,
+      rgba(43,30,57,0.92) 0%,
+      rgba(43,30,57,0.70) 50%,
+      rgba(43,30,57,0.30) 100%
+    );
+    border: 1px solid rgba(223,12,120,0.22);
+    border-radius: 20px;
+  }
+
+  .groups-content {
+    position: relative;
+    z-index: 1;
+    padding: 44px 52px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .groups-text .groups-title {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .groups-text p {
+    color: var(--white-70);
+    font-size: 16px;
+    max-width: 500px;
+    line-height: 1.6;
+  }
+
+  /* ── SPONSORS ── */
+  .sponsors-section { padding: var(--section-pad) 0; background: var(--navy); }
+
+  .sponsors-intro {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  /* tier label em ciano como no original */
+  .sponsors-tier { margin-bottom: 48px; }
+
+  .sponsors-tier-label {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .sponsors-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  /* logo como card com imagem */
+  .sponsor-logo {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 10px;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    min-width: 120px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .sponsor-logo:hover {
+    border-color: rgba(24,206,244,0.3);
+    background: rgba(24,206,244,0.04);
+  }
+
+  .sponsor-logo img {
+    height: 28px;
+    width: auto;
+    max-width: 140px;
+    object-fit: contain;
+    filter: brightness(0) invert(1);
+    opacity: 0.75;
+    transition: opacity 0.2s;
+  }
+
+  .sponsor-logo:hover img { opacity: 1; }
+
+  /* realização — logo PM3 maior */
+  .sponsors-realizacao .sponsor-logo { height: 72px; padding: 16px 32px; }
+  .sponsors-realizacao .sponsor-logo img { height: 36px; }
+
+  .sponsors-divider {
+    width: 1px;
+    height: 32px;
+    background: var(--navy-border);
+    display: none;
+  }
+
+  .sponsors-cta {
+    text-align: center;
+    margin-top: 52px;
+    padding-top: 40px;
+    border-top: 1px solid var(--navy-border);
+  }
+
+  /* ── FAQ ── */
+  .faq { background: var(--navy-mid); }
+
+  .faq-list {
+    max-width: 740px;
+    margin: 52px auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .faq-item {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .faq-question {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    transition: color 0.2s;
+    user-select: none;
+    list-style: none;
+  }
+
+  .faq-question::-webkit-details-marker { display: none; }
+
+  details[open] .faq-question { color: var(--pink-light); }
+
+  .faq-chevron {
+    width: 18px; height: 18px;
+    flex-shrink: 0;
+    color: var(--white-40);
+    transition: transform 0.25s, color 0.25s;
+  }
+
+  details[open] .faq-chevron { transform: rotate(180deg); color: var(--pink); }
+
+  .faq-answer {
+    padding: 0 24px 20px;
+    font-size: 14px;
+    color: var(--white-70);
+    line-height: 1.7;
+    border-top: 1px solid var(--navy-border);
+    padding-top: 16px;
+  }
+
+  .faq-more {
+    text-align: center;
+    margin-top: 28px;
+  }
+
+  .faq-more a {
+    font-size: 14px;
+    color: var(--pink-light);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s;
+  }
+
+  .faq-more a:hover { gap: 10px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #1a1025;
+    border-top: 1px solid var(--navy-border);
+    padding: 52px 0 32px;
+  }
+
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 52px;
+    margin-bottom: 48px;
+  }
+
+  .footer-brand-text {
+    font-size: 14px;
+    color: var(--white-40);
+    line-height: 1.7;
+    margin-top: 12px;
+    max-width: 280px;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .social-link {
+    width: 40px; height: 40px;
+    background: var(--white-10);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .social-link:hover { background: var(--pink-muted); border-color: rgba(223,12,120,0.25); }
+
+  .social-link svg { width: 16px; height: 16px; fill: var(--white-70); }
+
+  .footer-col-title {
+    font-family: var(--font-display);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    margin-bottom: 16px;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer-links a {
+    font-size: 14px;
+    color: var(--white-40);
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--white); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--navy-border);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-bottom p {
+    font-size: 13px;
+    color: var(--white-40);
+  }
+
+  .footer-bottom a { color: var(--white-70); transition: color 0.2s; }
+  .footer-bottom a:hover { color: var(--white); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 900px) {
+    .nav-links { display: none; }
+    .nav-mobile-toggle { display: flex; }
+
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 64px; left: 0; right: 0;
+      background: var(--navy-card);
+      border-bottom: 1px solid var(--navy-border);
+      padding: 16px;
+      gap: 4px;
+      z-index: 99;
+    }
+
+    .hero {
+      background-position: 70% center;
+    }
+
+    .hero-inner {
+      padding: 80px 24px 80px;
+    }
+
+    .hero-title { max-width: 100%; }
+
+
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stat-item:nth-child(3)::before { display: none; }
+
+    .about-inner { grid-template-columns: 1fr; }
+    .speakers-grid { grid-template-columns: repeat(3, 1fr); }
+    .pillars-grid { grid-template-columns: 1fr; }
+    .pillar-card:nth-child(1) { border-radius: 14px 14px 0 0; }
+    .pillar-card:nth-child(2) { border-radius: 0; }
+    .pillar-card:nth-child(3) { border-radius: 0; }
+    .pillar-card:nth-child(4) { border-radius: 0 0 14px 14px; }
+    .tracks-grid { grid-template-columns: 1fr 1fr; }
+    .tracks-header { flex-direction: column; align-items: flex-start; }
+    .tracks-header p { text-align: left !important; }
+    .speakers-grid { grid-template-columns: repeat(2, 1fr); }
+    .venue-layout { grid-template-columns: 1fr; }
+    .venue-photos { grid-template-columns: 1fr 1fr; }
+    .venue-photo:first-child { grid-column: span 2; aspect-ratio: 16/7; }
+    .tickets-grid { grid-template-columns: 1fr; }
+    .tickets-hero { height: 260px; }
+    .groups-content { padding: 32px 28px; }
+    .groups-banner { padding: 32px 28px; }
+    .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+    .footer-bottom { flex-direction: column; text-align: center; }
+  }
+
+
+  /* ── FADE IN AO SCROLL ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.65s ease, transform 0.65s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── SCROLLBAR CUSTOMIZADA ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--navy); }
+  ::-webkit-scrollbar-thumb { background: rgba(223,12,120,0.4); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--pink); }
+
+  /* ── SELEÇÃO DE TEXTO ── */
+  ::selection { background: var(--pink); color: white; }
+  @media (max-width: 560px) {
+    .tracks-grid { grid-template-columns: 1fr 1fr; }
+    section { padding: 64px 0; }
+    .hero-title { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Product Camp — página inicial">
+      <img src="logo_escuro.svg" alt="productcamp" height="32" style="height:32px; width:auto; display:block;">
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+      <li><a href="https://go.pm3.com.br/faq_pcamp_26" target="_blank">FAQ</a></li>
+      <li><a href="#speakers">Speakers</a></li>
+      <li><a href="https://share.hsforms.com/2LipTQvz1Ryy8_JWxtYAgTgcy53x" target="_blank">Patrocine</a></li>
+      <li><a href="/pocket">Pocket</a></li>
+      <li><a href="#ingressos26" class="nav-cta">Garantir ingresso</a></li>
+    </ul>
+
+    <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Menu">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect y="4" width="22" height="2" rx="1" fill="white"/>
+        <rect y="10" width="22" height="2" rx="1" fill="white"/>
+        <rect y="16" width="22" height="2" rx="1" fill="white"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-overlay"></div>
+  <div class="hero-inner container">
+    <div class="hero-content">
+      <div class="hero-eyebrow">11ª edição &bull; 08 e 09 de dezembro de 2026 &bull; São Paulo, SP</div>
+      <h1 class="hero-title">
+        User. Builder.<br>
+        Thinker. <span class="accent">Leader.</span>
+      </h1>
+      <p class="hero-subtitle">
+        <strong>Product Camp 2026:</strong> ainda mais estratégia, trocas de conhecimento, conexões valiosas e oportunidades para a sua carreira.
+      </p>
+      <span class="hero-rule"></span>
+      <div class="hero-actions">
+        <a href="#ingressos26" class="btn-primary">
+          Garantir ingresso
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="#ingressos26" class="btn-secondary">Compra em grupo</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar" id="statsBar">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number" data-target="60" data-prefix="+" data-suffix="">+60</div>
+        <div class="stat-label">Palestras</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-target="6" data-prefix="" data-suffix="">6</div>
+        <div class="stat-label">Palcos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-target="2" data-prefix="" data-suffix="">2</div>
+        <div class="stat-label">Dias de networking</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" data-target="3000" data-prefix="+" data-suffix="">+3000</div>
+        <div class="stat-label">Participantes</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about">
+  <div class="container">
+
+    <div class="about-header">
+      <div class="section-label">O maior da América Latina</div>
+      <h2 class="section-title about-title">Você é usuário, construtor, pensador e líder.</h2>
+      <p class="about-intro">No PCamp, vamos partir de uma premissa simples: nós, profissionais de produto somos, ao mesmo tempo:</p>
+    </div>
+
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-label">User.</div>
+        <p class="pillar-text">Somos usuários. É usando muita tecnologia que desenvolvemos repertório, bom gosto e senso crítico. Com IA, ampliamos nossa capacidade de experimentar, aprender, comparar, criar e entender o que realmente melhora nosso trabalho.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-label">Builder.</div>
+        <p class="pillar-text">Somos construtores. A IA nos deu autonomia para sair da ideia e chegar mais rápido à solução. Conseguimos prototipar, automatizar, testar e colocar valor em produção com muito menos distância entre intenção e execução.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-label">Thinker.</div>
+        <p class="pillar-text">Somos pensadores. Quando construir fica mais fácil, decidir bem fica mais importante. É do nosso product sense, business sense e taste que saem as escolhas certas: o que fazer, o que cortar, o que melhorar e onde colocar energia para gerar impacto real.</p>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-label">Leader.</div>
+        <p class="pillar-text">Somos líderes. Pensamos além da próxima entrega. Conectamos tecnologia, pessoas e direção. Mobilizamos times, áreas, empresas e comunidades para construir um futuro mais inteligente, mais produtivo e mais humano.</p>
+      </div>
+    </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- PÚBLICO -->
+<section class="audience-section">
+  <div class="container">
+    <h2 class="audience-title">Aqui, você se encontra com <strong>profissionais em diferentes estágios da carreira</strong></h2>
+    <p class="audience-sub">Todos com um objetivo em comum: crescer e gerar impacto real em seus produtos e negócios.</p>
+  </div>
+
+  <div class="audience-marquee-wrap">
+
+    <div class="audience-marquee-row">
+      <div class="audience-marquee cyan" id="row1">
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Product Managers</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Product Designers</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Growth</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Marketing</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Dados</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Executivos de Tech</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Product Managers</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Product Designers</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Growth</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Marketing</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Dados</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Executivos de Tech</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Product Managers</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Product Designers</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Growth</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Marketing</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Dados</span>
+        <span class="atag cyan"><span class="atag-star">&#9733;</span> Executivos de Tech</span>
+      </div>
+    </div>
+
+    <div class="audience-marquee-row">
+      <div class="audience-marquee pink reverse" id="row2">
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Product Managers</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Product Designers</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Growth</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Marketing</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Dados</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Executivos de Tech</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Product Managers</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Product Designers</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Growth</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Marketing</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Dados</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Executivos de Tech</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Product Managers</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Product Designers</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Growth</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Marketing</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Dados</span>
+        <span class="atag pink"><span class="atag-star">&#9733;</span> Executivos de Tech</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="container">
+    <p class="audience-more">E muito mais...</p>
+  </div>
+</section>
+
+
+<section class="quote-section">
+  <div class="container">
+    <blockquote class="quote-block">
+      <span class="quote-mark">&ldquo;</span>
+      <p class="quote-text">Serão dois dias para exercitar tudo isso, junto com <em>mais de 3 mil pessoas</em> que pensam como você.</p>
+    </blockquote>
+  </div>
+</section>
+
+<!-- TRILHAS -->
+<section class="tracks-section">
+  <div class="container">
+    <div class="tracks-header">
+      <div>
+        <div class="section-label">Trilhas de conteúdo</div>
+        <h2 class="section-title">+60 palestras em<br>4 trilhas de conhecimento</h2>
+      </div>
+      <p class="section-subtitle" style="max-width:340px; text-align:right;">Aprendizado na prática com os maiores nomes do mercado em um só lugar.</p>
+    </div>
+
+    <div class="tracks-grid">
+
+      <!-- Trilha 1 — foto placeholder (KV a definir) -->
+      <div class="track-card">
+        <div class="track-photo-placeholder">
+          <svg class="track-placeholder-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="6" width="36" height="36" rx="4" stroke="white" stroke-width="2"/>
+            <circle cx="24" cy="20" r="6" stroke="white" stroke-width="2"/>
+            <path d="M10 42c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="track-placeholder-label">imagem em breve</span>
+        </div>
+        <div class="track-bottom">
+          <div class="track-name">Product Management</div>
+        </div>
+      </div>
+
+      <!-- Trilha 2 — foto placeholder -->
+      <div class="track-card">
+        <div class="track-photo-placeholder">
+          <svg class="track-placeholder-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="6" width="36" height="36" rx="4" stroke="white" stroke-width="2"/>
+            <circle cx="24" cy="20" r="6" stroke="white" stroke-width="2"/>
+            <path d="M10 42c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="track-placeholder-label">imagem em breve</span>
+        </div>
+        <div class="track-bottom">
+          <div class="track-name">Artificial Intelligence</div>
+        </div>
+      </div>
+
+      <!-- Trilha 3 — foto placeholder -->
+      <div class="track-card">
+        <div class="track-photo-placeholder">
+          <svg class="track-placeholder-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="6" width="36" height="36" rx="4" stroke="white" stroke-width="2"/>
+            <circle cx="24" cy="20" r="6" stroke="white" stroke-width="2"/>
+            <path d="M10 42c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="track-placeholder-label">imagem em breve</span>
+        </div>
+        <div class="track-bottom">
+          <div class="track-name">Liderança &amp; Negócios</div>
+        </div>
+      </div>
+
+      <!-- Trilha 4 — foto placeholder -->
+      <div class="track-card">
+        <div class="track-photo-placeholder">
+          <svg class="track-placeholder-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="6" y="6" width="36" height="36" rx="4" stroke="white" stroke-width="2"/>
+            <circle cx="24" cy="20" r="6" stroke="white" stroke-width="2"/>
+            <path d="M10 42c0-7.732 6.268-14 14-14s14 6.268 14 14" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="track-placeholder-label">imagem em breve</span>
+        </div>
+        <div class="track-bottom">
+          <div class="track-name">Marketing &amp; Design</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SPEAKERS -->
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  COMO ADICIONAR UM NOVO PALESTRANTE                              ║
+  ║  Copie o bloco abaixo e cole antes do fechamento </div>          ║
+  ║  da .speakers-grid. Troque: foto, empresa, nome e cargo.         ║
+  ║                                                                  ║
+  ║  <div class="speaker-card">                                      ║
+  ║    <div class="speaker-photo-wrap">                              ║
+  ║      <span class="speaker-company">EMPRESA</span>                ║
+  ║      <img src="speaker-nome.png" alt="Nome">                     ║
+  ║    </div>                                                        ║
+  ║    <hr class="speaker-divider">                                  ║
+  ║    <div class="speaker-info">                                    ║
+  ║      <div class="speaker-name">Nome Completo</div>               ║
+  ║      <div class="speaker-role">CARGO</div>                       ║
+  ║    </div>                                                        ║
+  ║  </div>                                                          ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<section class="speakers" id="speakers">
+  <div class="container">
+    <div class="section-label">Palestrantes</div>
+    <h2 class="section-title">Quem já esteve nos<br>palcos do PCamp</h2>
+    <p class="section-subtitle">Referências globais e nacionais que ajudaram a elevar a barra do mercado de produtos digitais.</p>
+
+    <div class="speakers-grid">
+
+      <div class="speaker-card">
+        <div class="speaker-photo-wrap">
+          <span class="speaker-company">svpg</span>
+          <img src="speaker-marty.png" alt="Marty Cagan" loading="lazy">
+        </div>
+        <hr class="speaker-divider">
+        <div class="speaker-info">
+          <div class="speaker-name">Marty Cagan</div>
+          <div class="speaker-role">Partner</div>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <div class="speaker-photo-wrap">
+          <span class="speaker-company">iFood</span>
+          <img src="speaker-diego.png" alt="Diego Barreto" loading="lazy">
+        </div>
+        <hr class="speaker-divider">
+        <div class="speaker-info">
+          <div class="speaker-name">Diego Barreto</div>
+          <div class="speaker-role">CEO</div>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <div class="speaker-photo-wrap">
+          <span class="speaker-company">Melissa Perri</span>
+          <img src="speaker-melissa.png" alt="Melissa Perri" loading="lazy">
+        </div>
+        <hr class="speaker-divider">
+        <div class="speaker-info">
+          <div class="speaker-name">Melissa Perri</div>
+          <div class="speaker-role">CEO</div>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <div class="speaker-photo-wrap">
+          <span class="speaker-company">Wellhub</span>
+          <img src="speaker-eduardo.png" alt="Eduardo Thuler" loading="lazy">
+        </div>
+        <hr class="speaker-divider">
+        <div class="speaker-info">
+          <div class="speaker-name">Eduardo Thuler</div>
+          <div class="speaker-role">VP de AI</div>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <div class="speaker-photo-wrap">
+          <span class="speaker-company">Mixpanel</span>
+          <img src="speaker-neha.png" alt="Neha Nathan" loading="lazy">
+        </div>
+        <hr class="speaker-divider">
+        <div class="speaker-info">
+          <div class="speaker-name">Neha Nathan</div>
+          <div class="speaker-role">Head of Core Product</div>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <div class="speaker-photo-wrap">
+          <span class="speaker-company">Pendo</span>
+          <img src="speaker-trisha.png" alt="Trisha Price" loading="lazy">
+        </div>
+        <hr class="speaker-divider">
+        <div class="speaker-info">
+          <div class="speaker-name">Trisha Price</div>
+          <div class="speaker-role">CPO</div>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <div class="speaker-photo-wrap">
+          <span class="speaker-company">Google</span>
+          <img src="speaker-nathalia.png" alt="Nathalia Andrijic" loading="lazy">
+        </div>
+        <hr class="speaker-divider">
+        <div class="speaker-info">
+          <div class="speaker-name">Nathalia Andrijic</div>
+          <div class="speaker-role">UX Strategy &amp; Research</div>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <div class="speaker-photo-wrap">
+          <span class="speaker-company">Costanoa</span>
+          <img src="speaker-martina.png" alt="Martina Lauchengco" loading="lazy">
+        </div>
+        <hr class="speaker-divider">
+        <div class="speaker-info">
+          <div class="speaker-name">Martina Lauchengco</div>
+          <div class="speaker-role">Partner</div>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <div class="speaker-photo-wrap">
+          <span class="speaker-company">Leah Tharin</span>
+          <img src="speaker-leah.png" alt="Leah Tharin" loading="lazy">
+        </div>
+        <hr class="speaker-divider">
+        <div class="speaker-info">
+          <div class="speaker-name">Leah Tharin</div>
+          <div class="speaker-role">CPGO</div>
+        </div>
+      </div>
+
+      <div class="speaker-card">
+        <div class="speaker-photo-wrap">
+          <span class="speaker-company">Paola Mello</span>
+          <img src="speaker-paola.png" alt="Paola Mello" loading="lazy">
+        </div>
+        <hr class="speaker-divider">
+        <div class="speaker-info">
+          <div class="speaker-name">Paola Mello</div>
+          <div class="speaker-role">Produto</div>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="speakers-cta">Os palestrantes do PCamp 2026 serão anunciados em breve. <strong>Fique de olho!</strong></p>
+
+  </div>
+</section>
+
+<!-- VENUE -->
+<section class="venue-section">
+  <div class="container">
+    <div class="section-label">Local do evento</div>
+
+    <div class="venue-layout">
+
+      <!-- Esquerda: texto -->
+      <div class="venue-text">
+        <div class="venue-address">
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 1.5C5.51 1.5 3.5 3.51 3.5 6c0 3.5 4.5 8.5 4.5 8.5s4.5-5 4.5-8.5c0-2.49-2.01-4.5-4.5-4.5zm0 6.13A1.63 1.63 0 1 1 8 4.37a1.63 1.63 0 0 1 0 3.26z" fill="currentColor"/>
+          </svg>
+          Centro de Convenções Frei Caneca · São Paulo, SP
+        </div>
+
+        <h2 class="venue-headline">Um espaço feito para quem leva produto a sério</h2>
+
+        <p class="venue-desc">
+          Mais do que auditórios e palcos — o PCamp oferece áreas de networking projetadas para conexões reais, experiências imersivas e dois dias de oportunidades que não cabem em nenhuma tela.
+        </p>
+
+        <div class="venue-features">
+          <div class="venue-feature">
+            <span class="venue-feature-dot"></span>
+            6 palcos simultâneos de conteúdo
+          </div>
+          <div class="venue-feature">
+            <span class="venue-feature-dot"></span>
+            Áreas de networking entre sessões
+          </div>
+          <div class="venue-feature">
+            <span class="venue-feature-dot"></span>
+            Happy Hour ao fim do 1º dia
+          </div>
+          <div class="venue-feature">
+            <span class="venue-feature-dot"></span>
+            Espaço VIP com acesso a palestrantes
+          </div>
+          <div class="venue-feature">
+            <span class="venue-feature-dot"></span>
+            08 e 09 de dezembro de 2026
+          </div>
+        </div>
+      </div>
+
+      <!-- Direita: mosaico de fotos -->
+      <div class="venue-photos">
+        <div class="venue-photo">
+          <img src="venue-networking.webp"
+               alt="Espaço de networking do Product Camp 2025" loading="lazy"
+               style="object-position: center center;">
+        </div>
+        <div class="venue-photo">
+          <img src="venue-selfie.webp"
+               alt="Participantes tirando selfie no PCamp 2025" loading="lazy"
+               style="object-position: center top;">
+        </div>
+        <div class="venue-photo">
+          <img src="venue-cagan.webp"
+               alt="Marty Cagan cumprimentando participante VIP no PCamp 2025" loading="lazy"
+               style="object-position: center 20%;">
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- INGRESSOS -->
+<section class="tickets" id="ingressos26">
+
+  <!-- Foto do palco como hero da seção -->
+  <div class="tickets-hero">
+    <img src="tickets-stage.webp" alt="Palco principal do Product Camp 2025" loading="lazy">
+    <div class="tickets-hero-overlay"></div>
+    <div class="tickets-hero-text">
+      <div class="section-label" style="justify-content:center;">Ingressos</div>
+      <h2>Garanta seu lugar no PCamp 2026</h2>
+    </div>
+  </div>
+
+  <div class="tickets-body">
+    <div class="container">
+
+      <div class="tickets-grid">
+        <div class="ticket-card">
+          <div class="ticket-badge">Passaporte</div>
+          <div class="ticket-name">Passaporte</div>
+          <div class="ticket-price">
+            Em breve
+            <strong>—</strong>
+          </div>
+          <ul class="ticket-features">
+            <li>Acesso aos 2 dias de evento</li>
+            <li>6 palcos de conteúdo</li>
+            <li>Áreas de Networking</li>
+            <li>Happy Hour no 1º dia</li>
+            <li>Certificado de participação</li>
+            <li>Gravações das palestras</li>
+          </ul>
+          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-secondary" style="width:100%; justify-content:center;">
+            Garantir ingresso
+          </a>
+        </div>
+
+        <div class="ticket-card featured">
+          <div class="ticket-badge" style="background: linear-gradient(90deg, var(--pink), #f55fa0);">VIP</div>
+          <div class="ticket-name">VIP</div>
+          <div class="ticket-price">
+            Em breve
+            <strong>—</strong>
+          </div>
+          <ul class="ticket-features">
+            <li>Todos os benefícios do Passaporte</li>
+            <li>KIT exclusivo de participante</li>
+            <li>Credenciamento prioritário</li>
+            <li>Entrada prioritária nas salas</li>
+            <li>Acesso ao espaço VIP exclusivo</li>
+            <li>Contato direto com palestrantes</li>
+            <li>Espaço de coworking</li>
+            <li>Welcome coffee, snacks e bebidas*</li>
+          </ul>
+          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-primary" style="width:100%; justify-content:center;">
+            Garantir VIP
+          </a>
+          <p style="font-size: 12px; color: var(--white-40); margin-top: 10px; text-align:center;">*Sujeito a lotação</p>
+        </div>
+      </div>
+
+      <!-- Banner de grupos com foto de fundo -->
+      <div class="groups-banner">
+        <div class="groups-bg">
+          <img src="tickets-crowd.webp" alt="">
+        </div>
+        <div class="groups-content">
+          <div class="groups-text">
+            <div class="groups-title">Quer levar seu time para o Product Camp?</div>
+            <p>Garanta <strong>descontos de 5% a 20%</strong> e mantenha sua equipe por dentro do que há de mais atual em produtos digitais no Brasil e no mundo.</p>
+          </div>
+          <a href="https://cy53x.share.hsforms.com/2jii_hUIjQCefE1jjEZH_1A" target="_blank" class="btn-primary" style="flex-shrink:0; white-space:nowrap;">
+            Levar meu time
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PATROCINADORES -->
+<!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  COMO ADICIONAR UM NOVO PATROCINADOR                         ║
+  ║  Copie o bloco abaixo e cole dentro da .sponsors-logos       ║
+  ║  do tier correto (Patrocinadores, Apoio ou Realização).      ║
+  ║                                                              ║
+  ║  <a href="URL" target="_blank" class="sponsor-logo">         ║
+  ║    <img src="logo-empresa.svg" alt="Empresa">                ║
+  ║  </a>                                                        ║
+  ╚══════════════════════════════════════════════════════════════╝
+-->
+<section class="sponsors-section">
+  <div class="container">
+    <div class="sponsors-intro">
+      <div class="section-label" style="justify-content:center;">Parceiros</div>
+      <h2 class="section-title">Empresas que acreditam<br>no poder da comunidade</h2>
+      <p class="section-subtitle" style="margin: 0 auto;">Patrocinadores e apoiadores que fazem parte do PCamp 2026.</p>
+    </div>
+
+    <!-- PATROCINADORES -->
+    <div class="sponsors-tier">
+      <div class="sponsors-tier-label">Patrocinadores</div>
+      <div class="sponsors-logos">
+        <a href="https://minders.io/pt-br/" target="_blank" class="sponsor-logo">
+          <img src="minders.svg" alt="Minders">
+        </a>
+        <a href="https://clevertap.com/pt/" target="_blank" class="sponsor-logo">
+          <img src="clevertap.avif" alt="CleverTap">
+        </a>
+        <a href="https://mixpanel.com/home/" target="_blank" class="sponsor-logo">
+          <img src="mixpanel_.svg" alt="Mixpanel">
+        </a>
+        <a href="https://www.pendo.io/" target="_blank" class="sponsor-logo">
+          <img src="pendo_.avif" alt="Pendo">
+        </a>
+        <a href="https://replit.com/" target="_blank" class="sponsor-logo">
+          <img src="replit_.avif" alt="Replit">
+        </a>
+      </div>
+    </div>
+
+    <!-- APOIO -->
+    <div class="sponsors-tier">
+      <div class="sponsors-tier-label">Apoio</div>
+      <div class="sponsors-logos">
+        <a href="https://alun.com.br/" target="_blank" class="sponsor-logo">
+          <img src="Alun_.avif" alt="Alun">
+        </a>
+        <a href="https://www.casadocodigo.com.br/" target="_blank" class="sponsor-logo">
+          <img src="casa_do_codigo.avif" alt="Casa do Código">
+        </a>
+        <a href="https://www.hipsters.tech/" target="_blank" class="sponsor-logo">
+          <img src="hipsters.avif" alt="Hipsters.tech">
+        </a>
+        <a href="https://www.alura.com.br/" target="_blank" class="sponsor-logo">
+          <img src="alura_.avif" alt="Alura">
+        </a>
+        <a href="https://www.fiap.com.br/" target="_blank" class="sponsor-logo">
+          <img src="fiap_.svg" alt="FIAP">
+        </a>
+      </div>
+    </div>
+
+    <!-- REALIZAÇÃO -->
+    <div class="sponsors-tier sponsors-realizacao">
+      <div class="sponsors-tier-label">Realização</div>
+      <div class="sponsors-logos">
+        <a href="https://www.cursospm3.com.br/" target="_blank" class="sponsor-logo">
+          <img src="logo-pm3.svg" alt="PM3">
+        </a>
+      </div>
+    </div>
+
+    <div class="sponsors-cta">
+      <a href="https://cy53x.share.hsforms.com/2LipTQvz1Ryy8_JWxtYAgTg" target="_blank" class="btn-secondary">
+        Seja uma empresa parceira do PCamp 2026
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <div class="container">
+    <div style="text-align:center;">
+      <div class="section-label" style="justify-content:center;">Dúvidas</div>
+      <h2 class="section-title">Principais dúvidas</h2>
+    </div>
+
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary class="faq-question">
+          Vocês emitem Nota Fiscal para a compra dos ingressos?
+          <svg class="faq-chevron" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          Sim! A emissão de nota fiscal é feita pela Sympla, plataforma onde os ingressos são vendidos. Você pode solicitar a NF diretamente no site da Sympla após a compra.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-question">
+          Ainda estou em dúvida em qual ingresso escolher, me ajuda?
+          <svg class="faq-chevron" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          O Passaporte dá acesso completo aos dois dias de evento com todos os palcos e conteúdos. O VIP inclui todos esses benefícios mais um kit exclusivo, credenciamento prioritário, entrada preferencial nas salas e acesso a um espaço reservado com contato direto com palestrantes, coworking, massagem, welcome coffee, snacks e bebidas.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-question">
+          Ainda não sei quem vai usar o ingresso. Posso trocar o titular depois?
+          <svg class="faq-chevron" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          Sim! A troca de titular pode ser feita pela plataforma Sympla até uma data próxima ao evento. Mais informações estão disponíveis na nossa FAQ completa.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-question">
+          Quais as formas de pagamento? Tem juros?
+          <svg class="faq-chevron" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          Os ingressos podem ser pagos via cartão de crédito (parcelado sem juros em até 12x), boleto bancário e Pix. Pagamentos por boleto e Pix têm processamento em até 3 dias úteis.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-question">
+          Existe algum desconto especial para compras em grupo?
+          <svg class="faq-chevron" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          Sim! Para grupos a partir de 5 participantes, oferecemos descontos progressivos de 5% a 20%. Preencha o formulário de interesse em grupo para receber uma proposta personalizada.
+        </div>
+      </details>
+
+      <details class="faq-item">
+        <summary class="faq-question">
+          Existe algum desconto exclusivo para hospedagem?
+          <svg class="faq-chevron" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.5 6.75L9 11.25L13.5 6.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </summary>
+        <div class="faq-answer">
+          Sim! Temos parceria com hotéis próximos ao Frei Caneca com condições especiais para participantes do PCamp 2026. Mais detalhes serão divulgados em breve.
+        </div>
+      </details>
+    </div>
+
+    <div class="faq-more">
+      <a href="https://go.pm3.com.br/faq_pcamp_26" target="_blank">
+        Ver FAQ completa
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <a href="/" aria-label="Product Camp — página inicial" style="display:inline-block; margin-bottom:12px;">
+          <img src="logo_escuro.svg" alt="productcamp" height="28" style="height:28px; width:auto; display:block;">
+        </a>
+        <p class="footer-brand-text">O maior evento de produto da América Latina. Dois dias de conhecimento, networking e conexões que impulsionam carreiras.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/productcampbr" target="_blank" class="social-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/company/productcampbr/" target="_blank" class="social-link" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          </a>
+          <a href="https://www.youtube.com/channel/UCW5gUZ7lKGrAbLOkHv2xfbw" target="_blank" class="social-link" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/productcampbr/?locale=pt_BR" target="_blank" class="social-link" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Evento</div>
+        <ul class="footer-links">
+          <li><a href="#speakers">Palestrantes</a></li>
+          <li><a href="#ingressos26">Ingressos</a></li>
+          <li><a href="https://go.pm3.com.br/faq_pcamp_26" target="_blank">FAQ</a></li>
+          <li><a href="https://share.hsforms.com/2LipTQvz1Ryy8_JWxtYAgTgcy53x" target="_blank">Patrocine</a></li>
+          <li><a href="/pocket">Pocket</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <ul class="footer-links">
+          <li><a href="https://go.pm3.com.br/regulamento_pcamp_26" target="_blank">Regulamento</a></li>
+          <li><a href="https://go.pm3.com.br/privacidade_pcamp_26" target="_blank">Política de Privacidade</a></li>
+          <li><a href="https://go.pm3.com.br/conduta_pcamp_26" target="_blank">Código de Conduta</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© Todos os direitos reservados pela <a href="https://www.cursospm3.com.br/" target="_blank">PM3</a></p>
+      <p>Product Camp 2026 — 08 e 09 de dezembro, São Paulo</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const toggle = document.getElementById('mobileToggle');
+  const links = document.getElementById('navLinks');
+  const nav = document.querySelector('nav');
+
+  // Nav transparente no topo, sólido ao scrollar
+  function updateNav() {
+    if (window.scrollY > 40) {
+      nav.classList.add('scrolled');
+    } else {
+      nav.classList.remove('scrolled');
+    }
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+  updateNav();
+
+  if (toggle && links) {
+    toggle.addEventListener('click', () => {
+      links.classList.toggle('open');
+    });
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        links.classList.remove('open');
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
+
+  // Fade-in suave nas seções ao entrar na viewport
+  const fadeEls = document.querySelectorAll('section, .stats-bar');
+  const fadeObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        fadeObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  fadeEls.forEach(el => {
+    el.classList.add('fade-in');
+    fadeObserver.observe(el);
+  });
+
+  const marquee = document.getElementById('marquee1');
+  if (marquee) {
+    const items = marquee.innerHTML;
+    marquee.innerHTML = items + items;
+  }
+
+  // Contador animado nos stats
+  function animateCounter(el) {
+    const target = parseInt(el.dataset.target);
+    const prefix = el.dataset.prefix || '';
+    const duration = 1800;
+    const steps = 60;
+    const increment = target / steps;
+    let current = 0;
+    let step = 0;
+
+    // easing: começa rápido, desacelera no final
+    function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+    const timer = setInterval(() => {
+      step++;
+      const progress = easeOut(step / steps);
+      current = Math.round(progress * target);
+      el.textContent = prefix + current.toLocaleString('pt-BR');
+      if (step >= steps) {
+        el.textContent = prefix + target.toLocaleString('pt-BR');
+        clearInterval(timer);
+      }
+    }, duration / steps);
+  }
+
+  const statsBar = document.getElementById('statsBar');
+  if (statsBar) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          document.querySelectorAll('.stat-number[data-target]').forEach(el => {
+            animateCounter(el);
+          });
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.4 });
+    observer.observe(statsBar);
+  }
+</script>
+</body>
+</html>
