@@ -1059,19 +1059,23 @@
   .venue-photo:hover img { transform: scale(1.04); }
 
   /* ── TICKETS ── */
-  .tickets { background: var(--navy-mid); padding: 0 !important; }
-
-  .tickets-hero {
+  .tickets {
     position: relative;
-    width: 100%;
-    height: 340px;
+    padding: 0 !important;
     overflow: hidden;
+  }
+
+  /* imagem cobre a seção inteira como fundo */
+  .tickets-hero {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
   }
 
   .tickets-hero img {
     width: 100%; height: 100%;
     object-fit: cover;
-    object-position: center 55%;
+    object-position: center top;
     display: block;
   }
 
@@ -1080,20 +1084,19 @@
     inset: 0;
     background: linear-gradient(
       180deg,
-      rgba(43,30,57,0.15) 0%,
-      rgba(43,30,57,0.55) 60%,
-      rgba(35,23,49,1) 100%
+      rgba(43,30,57,0.45) 0%,
+      rgba(43,30,57,0.75) 30%,
+      rgba(35,23,49,0.92) 65%,
+      rgba(35,23,49,0.98) 100%
     );
   }
 
+  /* texto do título flutua no topo da seção */
   .tickets-hero-text {
-    position: absolute;
-    bottom: 36px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    z-index: 1;
     text-align: center;
-    width: 100%;
-    padding: 0 24px;
+    padding: 80px 24px 0;
   }
 
   .tickets-hero-text .section-label {
@@ -1110,8 +1113,11 @@
     color: var(--white);
   }
 
+  /* body dos cards agora z-index acima da imagem */
   .tickets-body {
-    padding: 64px 0 var(--section-pad);
+    position: relative;
+    z-index: 1;
+    padding: 48px 0 var(--section-pad);
   }
 
   .tickets-header {
@@ -1556,7 +1562,6 @@
     .venue-photos { grid-template-columns: 1fr 1fr; }
     .venue-photo:first-child { grid-column: span 2; aspect-ratio: 16/7; }
     .tickets-grid { grid-template-columns: 1fr; }
-    .tickets-hero { height: 260px; }
     .groups-content { padding: 32px 28px; }
     .groups-banner { padding: 32px 28px; }
     .footer-inner { grid-template-columns: 1fr; gap: 32px; }
