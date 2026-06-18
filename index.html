@@ -1065,18 +1065,21 @@
   .tickets {
     position: relative;
     padding: 0 !important;
-    overflow: hidden;
+    background: var(--navy-mid);
   }
 
-  /* imagem cobre a seção inteira como fundo */
+  /* imagem ocupa só o topo — faixa visual */
   .tickets-hero {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    width: 100%;
+    height: 420px;
+    overflow: hidden;
     z-index: 0;
   }
 
   .tickets-hero img {
-    width: 100%; height: 100%;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
     object-position: center top;
     display: block;
@@ -1087,24 +1090,25 @@
     inset: 0;
     background: linear-gradient(
       180deg,
-      rgba(43,30,57,0.45) 0%,
-      rgba(43,30,57,0.75) 30%,
-      rgba(35,23,49,0.92) 65%,
-      rgba(35,23,49,0.98) 100%
+      rgba(43,30,57,0.20) 0%,
+      rgba(43,30,57,0.55) 55%,
+      rgba(35,23,49,1) 100%
     );
   }
 
-  /* texto do título flutua no topo da seção */
+  /* título posicionado na base da faixa de imagem */
   .tickets-hero-text {
-    position: relative;
-    z-index: 1;
+    position: absolute;
+    bottom: 32px;
+    left: 0; right: 0;
     text-align: center;
-    padding: 80px 24px 0;
+    padding: 0 24px;
+    z-index: 2;
   }
 
   .tickets-hero-text .section-label {
     justify-content: center;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
   }
 
   .tickets-hero-text h2 {
@@ -1116,11 +1120,12 @@
     color: var(--white);
   }
 
-  /* body dos cards agora z-index acima da imagem */
+  /* cards sobem sobre a imagem com margem negativa */
   .tickets-body {
     position: relative;
-    z-index: 1;
-    padding: 48px 0 var(--section-pad);
+    z-index: 2;
+    margin-top: -80px;
+    padding: 0 0 var(--section-pad);
   }
 
   .tickets-header {
