@@ -1095,10 +1095,14 @@
     );
   }
 
-  /* título sobre a imagem no topo */
-  .tickets-hero-text {
+  /* título e cards sobre a imagem */
+  .tickets-body {
     position: relative;
     z-index: 2;
+    padding: 0 0 var(--section-pad);
+  }
+
+  .tickets-hero-text {
     text-align: center;
     padding: 72px 24px 40px;
   }
@@ -1115,13 +1119,6 @@
     letter-spacing: -0.02em;
     line-height: 1.1;
     color: var(--white);
-  }
-
-  /* cards sobre o fundo */
-  .tickets-body {
-    position: relative;
-    z-index: 2;
-    padding: 0 0 var(--section-pad);
   }
 
   /* cards menores para caber bem no layout */
@@ -2103,17 +2100,18 @@
 <!-- INGRESSOS -->
 <section class="tickets" id="ingressos26">
 
-  <!-- Foto do palco como hero da seção -->
+  <!-- Imagem de fundo de toda a seção -->
   <div class="tickets-hero">
     <img src="tickets-stage.webp" alt="Palco principal do Product Camp 2025" loading="lazy">
     <div class="tickets-hero-overlay"></div>
+  </div>
+
+  <!-- Título e cards sobre a imagem -->
+  <div class="tickets-body">
     <div class="tickets-hero-text">
       <div class="section-label" style="justify-content:center;">Ingressos</div>
       <h2>Garanta seu lugar no PCamp 2026</h2>
     </div>
-  </div>
-
-  <div class="tickets-body">
     <div class="container">
 
       <div class="tickets-grid">
