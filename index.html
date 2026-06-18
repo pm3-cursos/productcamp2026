@@ -419,7 +419,31 @@
   }
 
   /* ── ABOUT ── */
-  .about { background: var(--navy); }
+  /* ── ABOUT ── */
+  .about {
+    position: relative;
+    background: var(--navy);
+    overflow: hidden;
+  }
+
+  .about-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .about-bg img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: right top;
+    display: block;
+    opacity: 0.6;
+  }
+
+  .about > .container {
+    position: relative;
+    z-index: 1;
+  }
 
   .about-header {
     max-width: 720px;
@@ -437,33 +461,33 @@
     line-height: 1.65;
   }
 
+  /* 4 colunas lado a lado */
   .pillars-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
     margin-bottom: 48px;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid var(--navy-border);
   }
 
   .pillar-card {
-    background: var(--navy-card);
-    border: none;
-    padding: 40px 36px;
-    transition: background 0.25s;
+    background: rgba(50,31,71,0.55);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(223,12,120,0.2);
+    border-radius: 14px;
+    padding: 32px 28px;
+    transition: transform 0.3s ease, border-color 0.3s, background 0.3s;
+    cursor: default;
   }
 
-
-
   .pillar-card:hover {
-    background: rgba(50,31,71,0.95);
-    border-color: rgba(224,15,121,0.25);
+    transform: scale(1.04);
+    border-color: rgba(223,12,120,0.55);
+    background: rgba(60,35,85,0.75);
   }
 
   .pillar-label {
     font-family: var(--font-display);
-    font-size: 40px;
+    font-size: 36px;
     font-weight: 600;
     color: var(--pink);
     letter-spacing: -0.03em;
@@ -472,14 +496,12 @@
   }
 
   .pillar-text {
-    font-size: 15px;
+    font-size: 14px;
     color: var(--white-70);
     line-height: 1.7;
   }
 
-  .about-closing {
-    display: none;
-  }
+  .about-closing { display: none; }
 
   /* ── PÚBLICO ── */
   .audience-section {
@@ -1283,36 +1305,43 @@
   .sponsor-logo {
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
-    border-radius: 10px;
-    padding: 14px 24px;
+    border-radius: 12px;
+    padding: 20px 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 60px;
-    min-width: 120px;
-    transition: border-color 0.2s, background 0.2s;
+    height: 80px;
+    min-width: 140px;
+    transition: border-color 0.25s, background 0.25s, transform 0.25s;
   }
 
   .sponsor-logo:hover {
-    border-color: rgba(24,206,244,0.3);
-    background: rgba(24,206,244,0.04);
+    border-color: rgba(24,206,244,0.35);
+    background: rgba(24,206,244,0.05);
+    transform: translateY(-2px);
   }
 
   .sponsor-logo img {
-    height: 28px;
+    height: 36px;
     width: auto;
-    max-width: 140px;
+    max-width: 160px;
     object-fit: contain;
     filter: brightness(0) invert(1);
-    opacity: 0.75;
+    opacity: 0.85;
     transition: opacity 0.2s;
   }
 
   .sponsor-logo:hover img { opacity: 1; }
 
+  /* hipsters — ícone quadrado, limita largura */
+  .sponsor-logo.logo-square img {
+    height: 44px;
+    width: 44px;
+  }
+
   /* realização — logo PM3 maior */
-  .sponsors-realizacao .sponsor-logo { height: 72px; padding: 16px 32px; }
-  .sponsors-realizacao .sponsor-logo img { height: 36px; }
+  .sponsors-realizacao .sponsor-logo { height: 88px; padding: 20px 40px; }
+  .sponsors-realizacao .sponsor-logo img { height: 44px; max-width: 180px; }
 
   .sponsors-divider {
     width: 1px;
@@ -1518,11 +1547,7 @@
 
     .about-inner { grid-template-columns: 1fr; }
     .speakers-grid { grid-template-columns: repeat(3, 1fr); }
-    .pillars-grid { grid-template-columns: 1fr; }
-    .pillar-card:nth-child(1) { border-radius: 14px 14px 0 0; }
-    .pillar-card:nth-child(2) { border-radius: 0; }
-    .pillar-card:nth-child(3) { border-radius: 0; }
-    .pillar-card:nth-child(4) { border-radius: 0 0 14px 14px; }
+    .pillars-grid { grid-template-columns: 1fr 1fr; }
     .tracks-grid { grid-template-columns: 1fr 1fr; }
     .tracks-header { flex-direction: column; align-items: flex-start; }
     .tracks-header p { text-align: left !important; }
@@ -1563,6 +1588,7 @@
     .tracks-grid { grid-template-columns: 1fr 1fr; }
     section { padding: 64px 0; }
     .hero-title { font-size: 32px; }
+    .pillars-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
@@ -1572,7 +1598,7 @@
 <nav>
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="Product Camp — página inicial">
-      <img src="logo_escuro.png" alt="productcamp" height="32" style="height:32px; width:auto; display:block;">
+      <img src="logo_escuro.svg" alt="productcamp" height="32" style="height:32px; width:auto; display:block;">
     </a>
 
     <ul class="nav-links" id="navLinks">
@@ -1631,8 +1657,8 @@
         <div class="stat-icon">
           <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </div>
-        <div class="stat-number" data-target="60" data-prefix="+">+60</div>
-        <div class="stat-label">Palestras</div>
+        <div class="stat-number" data-target="80" data-prefix="+">+80</div>
+        <div class="stat-label">Palestrantes</div>
       </div>
 
       <div class="stat-item">
@@ -1665,6 +1691,7 @@
 
 <!-- ABOUT -->
 <section class="about">
+  <div class="about-bg"><img src="about-bg.webp" alt=""></div>
   <div class="container">
 
     <div class="about-header">
@@ -1675,19 +1702,19 @@
 
     <div class="pillars-grid">
       <div class="pillar-card">
-        <div class="pillar-label">User.</div>
+        <div class="pillar-label">User</div>
         <p class="pillar-text">Somos usuários. É usando muita tecnologia que desenvolvemos repertório, bom gosto e senso crítico. Com IA, ampliamos nossa capacidade de experimentar, aprender, comparar, criar e entender o que realmente melhora nosso trabalho.</p>
       </div>
       <div class="pillar-card">
-        <div class="pillar-label">Builder.</div>
+        <div class="pillar-label">Builder</div>
         <p class="pillar-text">Somos construtores. A IA nos deu autonomia para sair da ideia e chegar mais rápido à solução. Conseguimos prototipar, automatizar, testar e colocar valor em produção com muito menos distância entre intenção e execução.</p>
       </div>
       <div class="pillar-card">
-        <div class="pillar-label">Thinker.</div>
+        <div class="pillar-label">Thinker</div>
         <p class="pillar-text">Somos pensadores. Quando construir fica mais fácil, decidir bem fica mais importante. É do nosso product sense, business sense e taste que saem as escolhas certas: o que fazer, o que cortar, o que melhorar e onde colocar energia para gerar impacto real.</p>
       </div>
       <div class="pillar-card">
-        <div class="pillar-label">Leader.</div>
+        <div class="pillar-label">Leader</div>
         <p class="pillar-text">Somos líderes. Pensamos além da próxima entrega. Conectamos tecnologia, pessoas e direção. Mobilizamos times, áreas, empresas e comunidades para construir um futuro mais inteligente, mais produtivo e mais humano.</p>
       </div>
     </div>
@@ -2180,11 +2207,11 @@
         <a href="https://www.casadocodigo.com.br/" target="_blank" class="sponsor-logo">
           <img src="casa_do_codigo.avif" alt="Casa do Código">
         </a>
-        <a href="https://www.hipsters.tech/" target="_blank" class="sponsor-logo">
-          <img src="hipsters.avif" alt="Hipsters.tech">
+        <a href="https://www.hipsters.tech/" target="_blank" class="sponsor-logo logo-square">
+          <img src="hipsters.svg" alt="Hipsters.tech">
         </a>
-        <a href="https://www.alura.com.br/" target="_blank" class="sponsor-logo">
-          <img src="alura_.avif" alt="Alura">
+        <a href="https://www.alura.com.br/" target="_blank" class="sponsor-logo logo-alura">
+          <img src="alura_.png" alt="Alura">
         </a>
         <a href="https://www.fiap.com.br/" target="_blank" class="sponsor-logo">
           <img src="fiap_.svg" alt="FIAP">
@@ -2312,7 +2339,7 @@
     <div class="footer-inner">
       <div>
         <a href="/" aria-label="Product Camp — página inicial" style="display:inline-block; margin-bottom:12px;">
-          <img src="logo_escuro.png" alt="productcamp" height="28" style="height:28px; width:auto; display:block;">
+          <img src="logo_escuro.svg" alt="productcamp" height="28" style="height:28px; width:auto; display:block;">
         </a>
         <p class="footer-brand-text">O maior evento de produto da América Latina. Dois dias de conhecimento, networking e conexões que impulsionam carreiras.</p>
         <div class="footer-social">
