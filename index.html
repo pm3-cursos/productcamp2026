@@ -1587,6 +1587,183 @@
   }
 
 
+
+  /* ── HOTÉIS ── */
+  .hotels-section { background: var(--navy); }
+
+  .hotels-address {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--white-70);
+    margin-top: 20px;
+    padding: 10px 16px;
+    background: var(--white-10);
+    border: 1px solid var(--navy-border);
+    border-radius: 8px;
+  }
+
+  .hotels-address svg {
+    width: 14px; height: 14px;
+    flex-shrink: 0;
+    color: var(--pink);
+  }
+
+  .hotels-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 48px;
+  }
+
+  .hotel-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .hotel-card:hover {
+    border-color: rgba(223,12,120,0.35);
+    transform: translateY(-3px);
+  }
+
+  .hotel-card-top {
+    background: linear-gradient(135deg, rgba(223,12,120,0.12) 0%, transparent 70%);
+    border-bottom: 1px solid var(--navy-border);
+    padding: 20px 22px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .hotel-name {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+  }
+
+  .hotel-discount {
+    background: var(--pink);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.02em;
+  }
+
+  .hotel-card-body {
+    padding: 18px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    flex: 1;
+  }
+
+  .hotel-code-wrap {
+    background: rgba(24,206,244,0.07);
+    border: 1px solid rgba(24,206,244,0.2);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+
+  .hotel-code-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--white-40);
+    margin-bottom: 4px;
+  }
+
+  .hotel-code {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 0.04em;
+    font-family: var(--font-display);
+  }
+
+  .hotel-period {
+    font-size: 13px;
+    color: var(--white-70);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .hotel-period svg {
+    width: 13px; height: 13px;
+    flex-shrink: 0;
+    opacity: 0.5;
+  }
+
+  .hotel-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .hotel-contact {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--white-70);
+    transition: color 0.2s;
+    text-decoration: none;
+  }
+
+  .hotel-contact:hover { color: var(--white); }
+
+  .hotel-contact svg {
+    width: 13px; height: 13px;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .hotel-links {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .hotel-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--pink-light);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .hotel-link:hover { color: var(--white); }
+
+  .hotel-tip {
+    font-size: 12px;
+    color: var(--white-40);
+    line-height: 1.5;
+    font-style: italic;
+    border-top: 1px solid var(--navy-border);
+    padding-top: 12px;
+    margin-top: 4px;
+  }
+
+  @media (max-width: 900px) {
+    .hotels-grid { grid-template-columns: 1fr; }
+  }
+
   /* ── FADE IN AO SCROLL ── */
   .fade-in {
     opacity: 0;
@@ -1847,9 +2024,9 @@
 
       <!-- Trilha 2 — foto placeholder -->
       <div class="track-card">
-        <img class="track-photo" src="trilha-ai.webp" alt="Artificial Intelligence" loading="lazy" style="object-position:center top;">
+        <img class="track-photo" src="trilha-ai.webp" alt="Building &amp; Automation" loading="lazy" style="object-position:center top;">
         <div class="track-bottom">
-          <div class="track-name">Artificial Intelligence</div>
+          <div class="track-name">Building &amp; Automation</div>
         </div>
       </div>
 
@@ -2179,7 +2356,7 @@
             <div class="groups-title">Quer levar seu time para o Product Camp?</div>
             <p>Garanta <strong>descontos de 5% a 20%</strong> e mantenha sua equipe por dentro do que há de mais atual em produtos digitais no Brasil e no mundo.</p>
           </div>
-          <a href="https://cy53x.share.hsforms.com/2jii_hUIjQCefE1jjEZH_1A" target="_blank" class="btn-primary" style="flex-shrink:0; white-space:nowrap;">
+          <a href="https://materias.pm3.com.br/product-camp-para-empresas?utm_medium=pm3&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2b_e_b2c&utm_term=site&utm_content=leve-seu-time" target="_blank" class="btn-primary" style="flex-shrink:0; white-space:nowrap;">
             Levar meu time
           </a>
         </div>
@@ -2270,6 +2447,123 @@
           <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
+    </div>
+  </div>
+</section>
+
+
+<!-- HOTÉIS PARCEIROS -->
+<section class="hotels-section">
+  <div class="container">
+
+    <div class="section-label">Hospedagem</div>
+    <h2 class="section-title">Hotéis parceiros</h2>
+    <p class="section-subtitle">
+      Quem participa do PCamp tem acesso a muito mais do que conteúdo e networking. Conte com condições especiais de hospedagem, com até 20% de desconto em hotéis parceiros.
+    </p>
+
+    <div class="hotels-address">
+      <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 1.5C5.51 1.5 3.5 3.51 3.5 6c0 3.5 4.5 8.5 4.5 8.5S12.5 9.5 12.5 6c0-2.49-2.01-4.5-4.5-4.5zm0 6.13A1.63 1.63 0 1 1 8 4.37a1.63 1.63 0 0 1 0 3.26z" fill="currentColor"/>
+      </svg>
+      O evento acontecerá no Centro de Convenções Frei Caneca — Rua Frei Caneca, 569, 4 e 5º andar, Bela Vista — São Paulo, SP
+    </div>
+
+    <div class="hotels-grid">
+
+      <!-- H3 HOTEL PAULISTA -->
+      <div class="hotel-card">
+        <div class="hotel-card-top">
+          <div class="hotel-name">H3 Hotel Paulista</div>
+          <div class="hotel-discount">20% desc.</div>
+        </div>
+        <div class="hotel-card-body">
+          <div>
+            <div style="font-size:12px; color:var(--white-40); margin-bottom:4px;">📍 Rua Rocha, 217 — Bela Vista, São Paulo</div>
+          </div>
+          <div class="hotel-code-wrap">
+            <div class="hotel-code-label">Código de desconto</div>
+            <div class="hotel-code">PCAMPHX20OFF</div>
+          </div>
+          <div class="hotel-period">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="3" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M5 1.5v2M11 1.5v2M2 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            Válido de 07/12 a 12/12/2026
+          </div>
+          <div class="hotel-contacts">
+            <a href="mailto:reservas@hxhotels.com.br" class="hotel-contact">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="1.5" y="3.5" width="13" height="9" rx="1" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 5l6.5 4.5L14.5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+              reservas@hxhotels.com.br
+            </a>
+            <a href="https://wa.me/5511972463570" target="_blank" class="hotel-contact">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 1.5A6.5 6.5 0 0 0 2.1 10.7L1.5 14.5l3.9-.6A6.5 6.5 0 1 0 8 1.5z" stroke="currentColor" stroke-width="1.4"/></svg>
+              (11) 97246-3570
+            </a>
+            <a href="tel:1133731818" class="hotel-contact">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 2.5h3l1.5 3.5-2 1a7 7 0 0 0 3.5 3.5l1-2 3.5 1.5v3C13 13.3 7 14 3 2.5z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              (11) 3373-1818
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ROYAL COLLECTION PAULISTA -->
+      <div class="hotel-card">
+        <div class="hotel-card-top">
+          <div class="hotel-name">Royal Collection Paulista</div>
+          <div class="hotel-discount">15% desc.</div>
+        </div>
+        <div class="hotel-card-body">
+          <div class="hotel-code-wrap">
+            <div class="hotel-code-label">Código de desconto</div>
+            <div class="hotel-code">PCAMPROYAL</div>
+          </div>
+          <div class="hotel-period">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="3" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M5 1.5v2M11 1.5v2M2 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            Válido de 07/12 a 10/12/2026
+          </div>
+          <div class="hotel-links">
+            <a href="https://royalhoteis.com.br/royal-collection-paulista/" target="_blank" class="hotel-link">
+              Fazer reserva →
+            </a>
+          </div>
+          <div class="hotel-tip">Ao clicar no link, basta inserir o código no campo "código promocional" para garantir o desconto.</div>
+        </div>
+      </div>
+
+      <!-- REDE PAN DE HOTÉIS -->
+      <div class="hotel-card">
+        <div class="hotel-card-top">
+          <div class="hotel-name">Rede Pan de Hotéis</div>
+          <div class="hotel-discount">15% desc.</div>
+        </div>
+        <div class="hotel-card-body">
+          <div class="hotel-code-wrap">
+            <div class="hotel-code-label">Código de desconto</div>
+            <div class="hotel-code">PCAMPPAN15OFF</div>
+          </div>
+          <div class="hotel-period">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="3" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M5 1.5v2M11 1.5v2M2 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            Válido de 04/12 a 13/12/2026
+          </div>
+          <div style="font-size:12px; color:var(--white-40); margin-bottom:4px;">Reservas exclusivamente nos sites dos hotéis:</div>
+          <div class="hotel-links">
+            <a href="https://www.hotelpanamericano.com.br" target="_blank" class="hotel-link">Hotel Pan Americano →</a>
+            <a href="https://www.hotelaugustaboulevard.com.br" target="_blank" class="hotel-link">Hotel Augusta Boulevard →</a>
+            <a href="https://www.hotelcarillon.com.br" target="_blank" class="hotel-link">Hotel Carillon Plaza →</a>
+          </div>
+          <div class="hotel-tip">Ao clicar no link, basta inserir o código no campo "código promocional" para garantir o desconto.</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
