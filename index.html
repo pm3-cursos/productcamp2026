@@ -3,16 +3,77 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preload" as="image" href="hero-bg.webp" fetchpriority="high">
+<link rel="preload" as="font" type="font/ttf" href="fonts/INTERTIGHT-SEMIBOLD.TTF" crossorigin>
+<link rel="preconnect" href="https://www.sympla.com.br">
 <meta name="description" content="Product Camp Brasil — o maior evento de produto da América Latina. 08 e 09 de dezembro de 2026, São Paulo, SP.">
+<link rel="canonical" href="https://www.productcamp.com.br/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Product Camp">
+<meta property="og:locale" content="pt_BR">
 <meta property="og:title" content="Product Camp | O maior evento de produto da América Latina">
-<meta property="og:description" content="Product Camp Brasil, o maior evento de produto da América Latina!">
-<meta property="og:image" content="https://framerusercontent.com/images/8laEr3TUpfE4OHPhBHCtwTpSg.png">
+<meta property="og:description" content="Product Camp Brasil, o maior evento de produto da América Latina! 08 e 09 de dezembro de 2026, São Paulo.">
+<meta property="og:image" content="https://www.productcamp.com.br/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Product Camp 2026 — o maior evento de produto da América Latina, 08 e 09 de dezembro, São Paulo.">
 <meta property="og:url" content="https://www.productcamp.com.br/">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Product Camp | O maior evento de produto da América Latina">
+<meta name="twitter:description" content="O maior evento de produto da América Latina. 08 e 09 de dezembro de 2026, São Paulo.">
+<meta name="twitter:image" content="https://www.productcamp.com.br/og-image.png">
 <title>Product Camp | O maior evento de produto da América Latina</title>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "Product Camp 2026",
+  "description": "O maior evento de produto da América Latina. Conferência para profissionais de Produto, IA, liderança, marketing e tecnologia.",
+  "startDate": "2026-12-08T09:00:00-03:00",
+  "endDate": "2026-12-09T18:00:00-03:00",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "image": "https://www.productcamp.com.br/og-image.png",
+  "url": "https://www.productcamp.com.br/",
+  "location": {
+    "@type": "Place",
+    "name": "São Paulo, SP",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Rua Rocha, 217 — Bela Vista",
+      "addressLocality": "São Paulo",
+      "addressRegion": "SP",
+      "addressCountry": "BR"
+    }
+  },
+  "organizer": {
+    "@type": "Organization",
+    "name": "PM3",
+    "url": "https://www.cursospm3.com.br"
+  },
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Ingresso Lote 1",
+      "price": "1649",
+      "priceCurrency": "BRL",
+      "availability": "https://schema.org/InStock",
+      "url": "https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593"
+    },
+    {
+      "@type": "Offer",
+      "name": "Ingresso VIP Lote 1",
+      "price": "2149",
+      "priceCurrency": "BRL",
+      "availability": "https://schema.org/InStock",
+      "url": "https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593"
+    }
+  ]
+}
+</script>
 <style>
   @font-face {
     font-family: 'InterTight';
@@ -1784,6 +1845,38 @@
 
   /* ── SELEÇÃO DE TEXTO ── */
   ::selection { background: var(--pink); color: white; }
+
+  /* ── CLASSES MIGRADAS DE ESTILOS INLINE ── */
+  /* Neutraliza o hint de altura dos atributos width/height (anti-CLS) sem
+     forçar px fixo; regras de autor com height explícito continuam vencendo. */
+  img { height: auto; }
+  .logo-img { width: auto; display: block; }
+  .logo-img--header { height: 32px; }
+  .logo-img--footer { height: 28px; }
+  .footer-logo-link { display: inline-block; margin-bottom: 12px; }
+  .is-centered { justify-content: center; }
+  .text-center { text-align: center; }
+  .section-subtitle--right { max-width: 340px; text-align: right; }
+  .section-subtitle--center { margin: 0 auto; }
+  .track-photo--top { object-position: center top; }
+  .venue-img--center { object-position: center center; }
+  .venue-img--top { object-position: center top; }
+  .venue-img--low { object-position: center 20%; }
+  .lote-badge {
+    display: inline-block; background: var(--cyan); color: #111;
+    font-size: 11px; font-weight: 700; padding: 3px 10px;
+    border-radius: 100px; letter-spacing: 0.06em; margin-bottom: 8px;
+  }
+  .price-old { color: var(--white-40); font-weight: 400; }
+  .ticket-badge--vip { background: linear-gradient(90deg, var(--pink), #f55fa0); }
+  .btn-block { width: 100%; justify-content: center; }
+  .btn-nowrap { flex-shrink: 0; white-space: nowrap; }
+  .vip-intro {
+    font-size: 13px; font-weight: 600; color: var(--white-70);
+    margin: 4px 0 8px; padding-left: 2px;
+  }
+  .ticket-note { font-size: 12px; color: var(--white-40); margin-top: 10px; text-align: center; }
+  .muted-line { font-size: 12px; color: var(--white-40); margin-bottom: 4px; }
   @media (max-width: 560px) {
     .tracks-grid { grid-template-columns: 1fr 1fr; }
     section { padding: 64px 0; }
@@ -1798,7 +1891,7 @@
 <nav>
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="Product Camp — página inicial">
-      <img src="logo_escuro.svg" alt="productcamp" height="32" style="height:32px; width:auto; display:block;">
+      <img src="logo_escuro.svg" alt="productcamp" height="32" class="logo-img logo-img--header">
     </a>
 
     <ul class="nav-links" id="navLinks">
@@ -1891,7 +1984,7 @@
 
 <!-- ABOUT -->
 <section class="about">
-  <div class="about-bg"><img src="about-bg.webp" alt=""></div>
+  <div class="about-bg"><img src="about-bg.webp" width="1498" height="1080" alt=""></div>
   <div class="container">
 
     <div class="about-header">
@@ -1927,7 +2020,7 @@
 <!-- QUOTE -->
 <section class="quote-section">
   <div class="quote-bg">
-    <img src="quote-bg.webp" alt="">
+    <img src="quote-bg.webp" width="1498" height="1000" alt="">
     <div class="quote-bg-overlay"></div>
   </div>
   <div class="container">
@@ -2009,14 +2102,14 @@
         <div class="section-label">Trilhas de conteúdo</div>
         <h2 class="section-title">+60 palestras em<br>4 trilhas de conhecimento</h2>
       </div>
-      <p class="section-subtitle" style="max-width:340px; text-align:right;">Aprendizado na prática com os maiores nomes do mercado em um só lugar.</p>
+      <p class="section-subtitle section-subtitle--right">Aprendizado na prática com os maiores nomes do mercado em um só lugar.</p>
     </div>
 
     <div class="tracks-grid">
 
       <!-- Trilha 1 — foto placeholder (KV a definir) -->
       <div class="track-card">
-        <img class="track-photo" src="trilha-pm.webp" alt="Product Management" loading="lazy" style="object-position:center top;">
+        <img class="track-photo track-photo--top" src="trilha-pm.webp" width="900" height="601" alt="Product Management" loading="lazy">
         <div class="track-bottom">
           <div class="track-name">Product Management</div>
         </div>
@@ -2024,7 +2117,7 @@
 
       <!-- Trilha 2 — foto placeholder -->
       <div class="track-card">
-        <img class="track-photo" src="trilha-ai.webp" alt="Building &amp; Automation" loading="lazy" style="object-position:center top;">
+        <img class="track-photo track-photo--top" src="trilha-ai.webp" width="900" height="600" alt="Building &amp; Automation" loading="lazy">
         <div class="track-bottom">
           <div class="track-name">Building &amp; Automation</div>
         </div>
@@ -2032,7 +2125,7 @@
 
       <!-- Trilha 3 — foto placeholder -->
       <div class="track-card">
-        <img class="track-photo" src="trilha-lideranca.webp" alt="Liderança e Negócios" loading="lazy" style="object-position:center top;">
+        <img class="track-photo track-photo--top" src="trilha-lideranca.webp" width="800" height="1200" alt="Liderança e Negócios" loading="lazy">
         <div class="track-bottom">
           <div class="track-name">Liderança &amp; Negócios</div>
         </div>
@@ -2040,7 +2133,7 @@
 
       <!-- Trilha 4 — foto placeholder -->
       <div class="track-card">
-        <img class="track-photo" src="trilha-marketing.webp" alt="Marketing e Design" loading="lazy" style="object-position:center top;">
+        <img class="track-photo track-photo--top" src="trilha-marketing.webp" width="900" height="600" alt="Marketing e Design" loading="lazy">
         <div class="track-bottom">
           <div class="track-name">Marketing &amp; Design</div>
         </div>
@@ -2081,7 +2174,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">svpg</span>
-          <img src="sp-marty.webp" alt="Marty Cagan" loading="lazy">
+          <img src="sp-marty.webp" width="400" height="400" alt="Marty Cagan" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -2093,7 +2186,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">iFood</span>
-          <img src="sp-diego.webp" alt="Diego Barreto" loading="lazy">
+          <img src="sp-diego.webp" width="400" height="400" alt="Diego Barreto" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -2105,7 +2198,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Melissa Perri</span>
-          <img src="sp-melissa.webp" alt="Melissa Perri" loading="lazy">
+          <img src="sp-melissa.webp" width="400" height="400" alt="Melissa Perri" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -2117,7 +2210,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Wellhub</span>
-          <img src="sp-eduardo.webp" alt="Eduardo Thuler" loading="lazy">
+          <img src="sp-eduardo.webp" width="400" height="400" alt="Eduardo Thuler" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -2129,7 +2222,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Mixpanel</span>
-          <img src="sp-neha.webp" alt="Neha Nathan" loading="lazy">
+          <img src="sp-neha.webp" width="400" height="400" alt="Neha Nathan" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -2141,7 +2234,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Pendo</span>
-          <img src="sp-trisha.webp" alt="Trisha Price" loading="lazy">
+          <img src="sp-trisha.webp" width="400" height="400" alt="Trisha Price" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -2153,7 +2246,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Google</span>
-          <img src="sp-nathalia.webp" alt="Nathalia Andrijic" loading="lazy">
+          <img src="sp-nathalia.webp" width="400" height="400" alt="Nathalia Andrijic" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -2165,7 +2258,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Costanoa</span>
-          <img src="sp-martina.webp" alt="Martina Lauchengco" loading="lazy">
+          <img src="sp-martina.webp" width="400" height="400" alt="Martina Lauchengco" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -2177,7 +2270,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">Leah Tharin</span>
-          <img src="sp-leah.webp" alt="Leah Tharin" loading="lazy">
+          <img src="sp-leah.webp" width="400" height="400" alt="Leah Tharin" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -2189,7 +2282,7 @@
       <div class="speaker-card">
         <div class="speaker-photo-wrap">
           <span class="speaker-company">DL</span>
-          <img src="sp-david.webp" alt="David Pereira" loading="lazy">
+          <img src="sp-david.webp" width="400" height="400" alt="David Pereira" loading="lazy">
         </div>
         <hr class="speaker-divider">
         <div class="speaker-info">
@@ -2254,19 +2347,16 @@
       <!-- Direita: mosaico de fotos -->
       <div class="venue-photos">
         <div class="venue-photo">
-          <img src="venue-networking.webp"
-               alt="Espaço de networking do Product Camp 2025" loading="lazy"
-               style="object-position: center center;">
+          <img src="venue-networking.webp" width="1400" height="933" class="venue-img--center"
+               alt="Espaço de networking do Product Camp 2025" loading="lazy">
         </div>
         <div class="venue-photo">
-          <img src="venue-selfie.webp"
-               alt="Participantes tirando selfie no PCamp 2025" loading="lazy"
-               style="object-position: center top;">
+          <img src="venue-selfie.webp" width="1400" height="933" class="venue-img--top"
+               alt="Participantes tirando selfie no PCamp 2025" loading="lazy">
         </div>
         <div class="venue-photo">
-          <img src="venue-cagan.webp"
-               alt="Marty Cagan cumprimentando participante VIP no PCamp 2025" loading="lazy"
-               style="object-position: center 20%;">
+          <img src="venue-cagan.webp" width="1031" height="1400" class="venue-img--low"
+               alt="Marty Cagan cumprimentando participante VIP no PCamp 2025" loading="lazy">
         </div>
       </div>
 
@@ -2279,14 +2369,14 @@
 
   <!-- Imagem de fundo de toda a seção -->
   <div class="tickets-hero">
-    <img src="tickets-stage.webp" alt="Palco principal do Product Camp 2025" loading="lazy">
+    <img src="tickets-stage.webp" width="1920" height="1861" alt="Palco principal do Product Camp 2025" loading="lazy">
     <div class="tickets-hero-overlay"></div>
   </div>
 
   <!-- Título e cards sobre a imagem -->
   <div class="tickets-body">
     <div class="tickets-hero-text">
-      <div class="section-label" style="justify-content:center;">Ingressos</div>
+      <div class="section-label is-centered">Ingressos</div>
       <h2>Garanta seu lugar no PCamp 2026</h2>
     </div>
     <div class="container">
@@ -2296,10 +2386,10 @@
         <!-- PASSAPORTE -->
         <div class="ticket-card">
           <div class="ticket-badge">Passaporte</div>
-          <span style="display:inline-block; background:var(--cyan); color:#111; font-size:11px; font-weight:700; padding:3px 10px; border-radius:100px; letter-spacing:0.06em; margin-bottom:8px;">LOTE 1</span>
+          <span class="lote-badge">LOTE 1</span>
           <div class="ticket-name">Passaporte</div>
           <div class="ticket-price">
-            De <s style="color:var(--white-40); font-weight:400;">R$ 1.649</s> por
+            De <s class="price-old">R$ 1.649</s> por
             <strong>R$ 1.099</strong>
           </div>
           <ul class="ticket-features">
@@ -2310,18 +2400,18 @@
             <li>Certificado de participação</li>
             <li>Gravações das palestras</li>
           </ul>
-          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-secondary" style="width:100%; justify-content:center;">
+          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-secondary btn-block">
             Garantir ingresso
           </a>
         </div>
 
         <!-- VIP -->
         <div class="ticket-card featured">
-          <div class="ticket-badge" style="background: linear-gradient(90deg, var(--pink), #f55fa0);">VIP</div>
-          <span style="display:inline-block; background:var(--cyan); color:#111; font-size:11px; font-weight:700; padding:3px 10px; border-radius:100px; letter-spacing:0.06em; margin-bottom:8px;">LOTE 1</span>
+          <div class="ticket-badge ticket-badge--vip">VIP</div>
+          <span class="lote-badge">LOTE 1</span>
           <div class="ticket-name">VIP</div>
           <div class="ticket-price">
-            De <s style="color:var(--white-40); font-weight:400;">R$ 2.149</s> por
+            De <s class="price-old">R$ 2.149</s> por
             <strong>R$ 1.599</strong>
           </div>
           <ul class="ticket-features">
@@ -2330,7 +2420,7 @@
             <li>Credenciamento exclusivo</li>
             <li>Entrada prioritária nas salas</li>
           </ul>
-          <p style="font-size: 13px; font-weight: 600; color: var(--white-70); margin: 4px 0 8px; padding-left: 2px;">Acesso ao espaço VIP com:</p>
+          <p class="vip-intro">Acesso ao espaço VIP com:</p>
           <ul class="ticket-features">
             <li>Contato direto com palestrantes e parceiros</li>
             <li>Espaço de Coworking</li>
@@ -2338,10 +2428,10 @@
             <li>Welcome coffee</li>
             <li>Snacks e bebidas</li>
           </ul>
-          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-primary" style="width:100%; justify-content:center;">
+          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-primary btn-block">
             Garantir VIP
           </a>
-          <p style="font-size: 12px; color: var(--white-40); margin-top: 10px; text-align:center;">*Sujeito a lotação</p>
+          <p class="ticket-note">*Sujeito a lotação</p>
         </div>
 
       </div>
@@ -2349,14 +2439,14 @@
       <!-- Banner de grupos com foto de fundo -->
       <div class="groups-banner">
         <div class="groups-bg">
-          <img src="tickets-crowd.webp" alt="">
+          <img src="tickets-crowd.webp" width="1600" height="1067" alt="">
         </div>
         <div class="groups-content">
           <div class="groups-text">
             <div class="groups-title">Quer levar seu time para o Product Camp?</div>
             <p>Garanta <strong>descontos de 5% a 20%</strong> e mantenha sua equipe por dentro do que há de mais atual em produtos digitais no Brasil e no mundo.</p>
           </div>
-          <a href="https://materias.pm3.com.br/product-camp-para-empresas?utm_medium=pm3&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2b_e_b2c&utm_term=site&utm_content=leve-seu-time" target="_blank" class="btn-primary" style="flex-shrink:0; white-space:nowrap;">
+          <a href="https://materias.pm3.com.br/product-camp-para-empresas?utm_medium=pm3&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2b_e_b2c&utm_term=site&utm_content=leve-seu-time" target="_blank" class="btn-primary btn-nowrap">
             Levar meu time
           </a>
         </div>
@@ -2381,9 +2471,9 @@
 <section class="sponsors-section">
   <div class="container">
     <div class="sponsors-intro">
-      <div class="section-label" style="justify-content:center;">Parceiros</div>
+      <div class="section-label is-centered">Parceiros</div>
       <h2 class="section-title">Empresas que acreditam<br>no poder da comunidade</h2>
-      <p class="section-subtitle" style="margin: 0 auto;">Patrocinadores e apoiadores que fazem parte do PCamp 2026.</p>
+      <p class="section-subtitle section-subtitle--center">Patrocinadores e apoiadores que fazem parte do PCamp 2026.</p>
     </div>
 
     <!-- PATROCINADORES -->
@@ -2394,16 +2484,16 @@
           <img src="minders.svg" alt="Minders">
         </a>
         <a href="https://clevertap.com/pt/" target="_blank" class="sponsor-logo">
-          <img src="clevertap.avif" alt="CleverTap">
+          <img src="clevertap.avif" width="468" height="172" alt="CleverTap">
         </a>
         <a href="https://mixpanel.com/home/" target="_blank" class="sponsor-logo">
           <img src="mixpanel_.svg" alt="Mixpanel">
         </a>
         <a href="https://www.pendo.io/" target="_blank" class="sponsor-logo">
-          <img src="pendo_.avif" alt="Pendo">
+          <img src="pendo_.avif" width="250" height="50" alt="Pendo">
         </a>
         <a href="https://replit.com/" target="_blank" class="sponsor-logo">
-          <img src="replit_.avif" alt="Replit">
+          <img src="replit_.avif" width="512" height="185" alt="Replit">
         </a>
       </div>
     </div>
@@ -2413,16 +2503,16 @@
       <div class="sponsors-tier-label">Apoio</div>
       <div class="sponsors-logos">
         <a href="https://alun.com.br/" target="_blank" class="sponsor-logo">
-          <img src="Alun_.avif" alt="Alun">
+          <img src="Alun_.avif" width="512" height="124" alt="Alun">
         </a>
         <a href="https://www.casadocodigo.com.br/" target="_blank" class="sponsor-logo">
-          <img src="casa_do_codigo.avif" alt="Casa do Código">
+          <img src="casa_do_codigo.avif" width="512" height="237" alt="Casa do Código">
         </a>
         <a href="https://www.hipsters.tech/" target="_blank" class="sponsor-logo logo-square">
           <img src="hipsters.svg" alt="Hipsters.tech">
         </a>
         <a href="https://www.alura.com.br/" target="_blank" class="sponsor-logo logo-alura">
-          <img src="alura_.png" alt="Alura">
+          <img src="alura_.png" width="400" height="121" alt="Alura">
         </a>
         <a href="https://www.fiap.com.br/" target="_blank" class="sponsor-logo">
           <img src="fiap_.svg" alt="FIAP">
@@ -2479,7 +2569,7 @@
         </div>
         <div class="hotel-card-body">
           <div>
-            <div style="font-size:12px; color:var(--white-40); margin-bottom:4px;">📍 Rua Rocha, 217 — Bela Vista, São Paulo</div>
+            <div class="muted-line">📍 Rua Rocha, 217 — Bela Vista, São Paulo</div>
           </div>
           <div class="hotel-code-wrap">
             <div class="hotel-code-label">Código de desconto</div>
@@ -2554,7 +2644,7 @@
             </svg>
             Válido de 04/12 a 13/12/2026
           </div>
-          <div style="font-size:12px; color:var(--white-40); margin-bottom:4px;">Reservas exclusivamente nos sites dos hotéis:</div>
+          <div class="muted-line">Reservas exclusivamente nos sites dos hotéis:</div>
           <div class="hotel-links">
             <a href="https://www.hotelpanamericano.com.br" target="_blank" class="hotel-link">Hotel Pan Americano →</a>
             <a href="https://www.hotelaugustaboulevard.com.br" target="_blank" class="hotel-link">Hotel Augusta Boulevard →</a>
@@ -2571,8 +2661,8 @@
 <!-- FAQ -->
 <section class="faq">
   <div class="container">
-    <div style="text-align:center;">
-      <div class="section-label" style="justify-content:center;">Dúvidas</div>
+    <div class="text-center">
+      <div class="section-label is-centered">Dúvidas</div>
       <h2 class="section-title">Principais dúvidas</h2>
     </div>
 
@@ -2666,8 +2756,8 @@
   <div class="container">
     <div class="footer-inner">
       <div>
-        <a href="/" aria-label="Product Camp — página inicial" style="display:inline-block; margin-bottom:12px;">
-          <img src="logo_escuro.svg" alt="productcamp" height="28" style="height:28px; width:auto; display:block;">
+        <a href="/" aria-label="Product Camp — página inicial" class="footer-logo-link">
+          <img src="logo_escuro.svg" alt="productcamp" height="28" class="logo-img logo-img--footer">
         </a>
         <p class="footer-brand-text">O maior evento de produto da América Latina. Dois dias de conhecimento, networking e conexões que impulsionam carreiras.</p>
         <div class="footer-social">
