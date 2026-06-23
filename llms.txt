@@ -1,0 +1,22 @@
+# Product Camp 2026
+
+> O maior evento de produto da América Latina, organizado pela PM3. Acontece em 08 e 09 de dezembro de 2026, em São Paulo (SP), na Rua Rocha, 217 — Bela Vista. Conferência presencial para profissionais de Produto, IA, liderança, marketing e tecnologia.
+
+O Product Camp reúne os maiores nomes do mercado em quatro trilhas de conteúdo: Product Management, Building & Automation (IA), Liderança & Negócios e Marketing & Design. O site é uma landing page única (single-page) com seções de palestrantes, programação, local, ingressos e dúvidas frequentes.
+
+## Informações do evento
+
+- [Site oficial](https://www.productcamp.com.br/): página principal do evento com toda a programação, palestrantes e local
+- [Ingressos (Sympla)](https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593): compra de ingressos — Lote 1 (R$ 1.649) e VIP (R$ 2.149)
+- [Product Camp para empresas](https://materias.pm3.com.br/product-camp-para-empresas): condições para levar times/empresas (B2B)
+
+## Sobre o organizador
+
+- [PM3](https://www.cursospm3.com.br): escola de Produto e Tecnologia responsável pela organização do evento
+
+## Detalhes
+
+- Datas: 08 e 09 de dezembro de 2026
+- Local: Rua Rocha, 217 — Bela Vista, São Paulo (SP), Brasil
+- Formato: presencial
+- Trilhas: Product Management, Building & Automation, Liderança & Negócios, Marketing & Design
