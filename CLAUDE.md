@@ -9,7 +9,7 @@ Landing page do **Product Camp Brasil 2026** — o maior evento de produto da Am
 - **Site estático**, sem build, sem framework, sem backend.
 - Todo o conteúdo vive em **`index.html`** (página única). CSS em blocos `<style>` internos.
 - **Estrutura de arquivos:**
-  - `assets/fonts/` — fontes Inter Tight (WOFF2)
+  - `assets/fonts/` — fontes Inter Tight (WOFF2, subset Latin ~1025 glifos para performance). Backup das fontes completas em `assets/fonts/_full/` — restaurar de lá se precisar de algum glifo fora do Latin. Ao adicionar conteúdo com caracteres especiais incomuns, verifique se o subset os cobre.
   - `assets/img/` — imagens, organizadas em subpastas: `bg/`, `speakers/`, `coordinators/`, `venue/`, `sponsors/`, `brand/`. `og-image.png` fica em `assets/img/`. `assets/img/legacy/` guarda imagens órfãs (não referenciadas) arquivadas.
   - **Raiz:** `index.html`, favicons (`favicon.png`, `favicon-16.png`, `apple-touch-icon.png` — ficam na raiz por convenção), `robots.txt`, `sitemap.xml`, `llms.txt`, `CLAUDE.md`, `README.md`.
   - Ao adicionar uma imagem nova, coloque-a na subpasta correta de `assets/img/` (nunca na raiz) e referencie com o caminho relativo completo.
