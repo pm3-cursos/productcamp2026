@@ -7,7 +7,12 @@ Guia para qualquer assistente de IA que trabalhe neste repositório. Leia antes 
 Landing page do **Product Camp Brasil 2026** — o maior evento de produto da América Latina (08 e 09 de dezembro de 2026, São Paulo, SP).
 
 - **Site estático**, sem build, sem framework, sem backend.
-- Todo o conteúdo vive em **`index.html`** (página única). CSS atualmente em blocos `<style>` internos; imagens e fontes na raiz.
+- Todo o conteúdo vive em **`index.html`** (página única). CSS em blocos `<style>` internos.
+- **Estrutura de arquivos:**
+  - `assets/fonts/` — fontes Inter Tight (WOFF2)
+  - `assets/img/` — imagens, organizadas em subpastas: `bg/`, `speakers/`, `coordinators/`, `venue/`, `sponsors/`, `brand/`. `og-image.png` fica em `assets/img/`. `assets/img/legacy/` guarda imagens órfãs (não referenciadas) arquivadas.
+  - **Raiz:** `index.html`, favicons (`favicon.png`, `favicon-16.png`, `apple-touch-icon.png` — ficam na raiz por convenção), `robots.txt`, `sitemap.xml`, `llms.txt`, `CLAUDE.md`, `README.md`.
+  - Ao adicionar uma imagem nova, coloque-a na subpasta correta de `assets/img/` (nunca na raiz) e referencie com o caminho relativo completo.
 - **Hospedagem:** Cloudflare Pages, conectado ao Git. **Todo push na `main` republica o site automaticamente.**
 - **Domínio:** `https://www.productcamp.com.br` (apex `productcamp.com.br` redireciona 301 → www).
 - **Repositório:** `pm3-cursos/productcamp2026` (fork). `upstream` = `jaquelinesantospm3/productcamp2026`.
