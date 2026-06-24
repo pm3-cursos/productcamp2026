@@ -1,117 +1,145 @@
 # Product Camp 2026 — Site Oficial
 
-Site oficial do **Product Camp Brasil 2026**, o maior evento de produtos digitais da América Latina.
-Desenvolvido inteiramente em HTML, CSS e JavaScript puros — sem frameworks, sem dependências externas pagas.
+Site oficial do Product Camp Brasil 2026, o maior evento de produtos digitais da América Latina. Desenvolvido inteiramente em HTML, CSS e JavaScript puros — sem frameworks, sem dependências externas.
 
-**URL:** [jaquelinesantospm3.github.io/productcamp2026](https://jaquelinesantospm3.github.io/productcamp2026)
+**URL:** jaquelinesantospm3.github.io/productcamp2026  
 **Evento:** 08 e 09 de dezembro de 2026 — Centro de Convenções Frei Caneca, São Paulo, SP
 
 ---
 
-## Estrutura de arquivos
+## 📁 Estrutura de arquivos
 
 ```
 productcamp2026/
 │
 ├── index.html                  # Site completo (HTML + CSS + JS em um único arquivo)
 │
-├── logo_escuro.svg             # Logo PCamp — versão fundo escuro (nav e footer)
+├── logo_escuro.svg             # Logo PCamp — versão fundo escuro
 ├── logo_claro.svg              # Logo PCamp — versão fundo claro
-├── logo_branco.png             # Logo PCamp — versão branca
+├── favicon.png                 # Favicon 32x32
 │
-├── favicon.png                 # Favicon 32x32 (aba do browser)
-├── favicon-16.png              # Favicon 16x16
-├── apple-touch-icon.png        # Ícone iOS 180x180 (salvar na tela inicial)
+├── hero-bg.webp                # Imagem hero
+├── about-bg.webp               # Imagem seção About
+├── tickets-stage.webp          # Imagem ingressos
+├── venue-networking.webp       # Foto local
+├── venue-selfie.webp           # Foto local
 │
-├── hero-bg.webp                # Imagem de fundo do hero (palco com plateia)
-├── about-bg.webp               # Imagem de fundo seção User/Builder/Thinker/Leader
-├── quote-bg.webp               # Imagem de fundo da frase destaque
-├── tickets-stage.webp          # Imagem de fundo da seção de ingressos
-├── tickets-crowd.webp          # Imagem de fundo do banner de grupos
+├── trilha-pm.webp              # Trilha Product Management
+├── trilha-ai.webp              # Trilha Building & Automation
+├── trilha-lideranca.webp       # Trilha Liderança & Negócios
+├── trilha-marketing.webp       # Trilha Marketing & Design
 │
-├── venue-networking.webp       # Foto espaço de networking (seção local)
-├── venue-selfie.webp           # Foto participantes no PCamp (seção local)
-├── venue-cagan.webp            # Foto Marty Cagan com participante VIP (seção local)
+├── sp-marty.webp               # Palestrante Marty Cagan
+├── sp-diego.webp               # Palestrante Diego Barreto
+├── ... (outros palestrantes)
 │
-├── trilha-pm.webp              # Foto trilha Product Management
-├── trilha-ai.webp              # Foto trilha Building & Automation
-├── trilha-lideranca.webp       # Foto trilha Liderança & Negócios
-├── trilha-marketing.webp       # Foto trilha Marketing & Design
-├── trilhas-icons.png           # Ícones visuais das trilhas
+├── priscila_lugao.jpg          # 👤 Coordenadora Geral
+├── eduardo_borges.jpg          # 👤 Coordenador Trilha PM
+├── ingrid_coutinho.jpg         # 👤 Coordenadora Trilha PM
+├── gabriel_werlich.jpg         # 👤 Coordenador Trilha Building
+├── talita_paoletti.jpg         # 👤 Coordenadora Trilha Building
+├── mariana_tosi.jpg            # 👤 Coordenadora Trilha Marketing
+├── alex_soares.jpg             # 👤 Coordenador Trilha Marketing
+├── rafael_justino.jpg          # 👤 Coordenador Trilha Liderança
+├── fernanda_faria.jpg          # 👤 Coordenadora Trilha Liderança
 │
-├── sp-marty.webp               # Foto Marty Cagan
-├── sp-diego.webp               # Foto Diego Barreto
-├── sp-melissa.webp             # Foto Melissa Perri
-├── sp-eduardo.webp             # Foto Eduardo Thuler
-├── sp-neha.webp                # Foto Neha Nathan
-├── sp-trisha.webp              # Foto Trisha Price
-├── sp-nathalia.webp            # Foto Nathalia Andrijic
-├── sp-martina.webp             # Foto Martina Lauchengco
-├── sp-leah.webp                # Foto Leah Tharin
-├── sp-david.webp               # Foto David Pereira
-│
-├── minders.svg                 # Logo patrocinador Minders
-├── mixpanel_.svg               # Logo patrocinador Mixpanel
-├── fiap_.svg                   # Logo apoio FIAP
-├── logo-pm3.svg                # Logo realização PM3
-├── hipsters.svg                # Logo apoio Hipsters Network
-├── clevertap.avif              # Logo patrocinador CleverTap
-├── pendo_.avif                 # Logo patrocinador Pendo
-├── replit_.avif                # Logo patrocinador Replit
-├── Alun_.avif                  # Logo apoio Alun
-├── alura_.png                  # Logo apoio Alura
-├── casa_do_codigo.avif         # Logo apoio Casa do Código
+├── minders.svg                 # Logo patrocinador
+├── mixpanel_.svg               # Logo patrocinador
+├── clevertap.avif              # Logo patrocinador
 │
 └── fonts/
+    ├── INTERTIGHT-LIGHT.TTF
     ├── INTERTIGHT-REGULAR.TTF
     ├── INTERTIGHT-MEDIUM.TTF
-    ├── INTERTIGHT-SEMIBOLD.TTF
-    └── INTERTIGHT-LIGHT.TTF
+    └── INTERTIGHT-SEMIBOLD.TTF
 ```
 
 ---
 
-## Seções do site
+## 📄 Seções do site
 
 | Seção | Descrição |
-|---|---|
-| **Nav** | Fixo, transparente no topo e sólido ao scroll. Links: FAQ, Speakers, Patrocine, Pocket + CTA "Garantir ingresso" |
-| **Hero** | Mote da edição: *User. Builder. Thinker. Leader.* com imagem de fundo do evento |
-| **Stats** | +80 palestrantes, 6 palcos, +3.000 participantes, 2 dias — com contador animado ao scroll |
-| **About** | Seção "Você é usuário, construtor, pensador e líder" com 4 pilares em grid 2×2, imagem de fundo com elementos gráficos do branding |
-| **Quote** | Frase destaque com foto de fundo: *"Serão dois dias para exercitar tudo isso..."* |
-| **Público** | Marquee duplo animado (ciano + rosa) com os perfis de participantes |
-| **Trilhas** | 4 cards com fotos reais: Product Management, Building & Automation, Liderança & Negócios, Marketing & Design |
-| **Speakers** | Grid 5 colunas com cards verticais — foto, empresa, nome e cargo. 10 palestrantes da edição 2025 |
-| **Local** | Layout 2 colunas: texto âncora à esquerda + mosaico de 3 fotos à direita |
-| **Ingressos** | Imagem de fundo do palco, 2 cards (Passaporte e VIP) com preços Lote 1 + banner de grupos |
-| **Patrocinadores** | 3 tiers: Patrocinadores, Apoio e Realização — logos reais em branco |
-| **Hotéis parceiros** | 3 cards com informações completas de hospedagem parceira com desconto |
-| **FAQ** | Acordeão com 6 perguntas frequentes + link para FAQ completa |
-| **Footer** | Logo, redes sociais, links úteis, legal e copyright PM3 |
+|-------|-----------|
+| **Nav** | Fixo, transparente no topo. Links: FAQ, Speakers, Patrocine + CTA "Garantir ingresso" |
+| **Hero** | Mote: User. Builder. Thinker. Leader. com imagem de fundo |
+| **Stats** | +80 palestrantes, 6 palcos, +3.000 participantes, 2 dias — contador animado |
+| **About** | 4 pilares (User/Builder/Thinker/Leader) em grid responsivo |
+| **Trilhas** | 🆕 **Novo layout:** Coluna fixa (coordenadora geral) + abas interativas (4 trilhas com 2 coordenadores cada) |
+| **Speakers** | Grid 5 colunas — foto, empresa, nome e cargo |
+| **Local** | 2 colunas: texto + mosaico de fotos |
+| **Ingressos** | 2 cards (Passaporte e VIP) com preços |
+| **Hotéis** | 3 cards com descontos especiais |
+| **FAQ** | Acordeão com perguntas frequentes |
+| **Footer** | Logo, redes, links legais |
 
 ---
 
-## Tecnologia
+## 🆕 Seção de Trilhas (Redesign 2026)
+
+### Estrutura
+- **Coluna fixa (esquerda):** Coordenadora Geral (Priscila Lugão) — sempre visível
+- **Coluna direita:** 4 abas para navegar entre trilhas
+- **Cada aba:** 2 coordenadores (lado a lado) + descrição da trilha
+
+### Coordenadores
+
+| Trilha | Coordenador 1 | Coordenador 2 |
+|--------|---------------|---------------|
+| **Geral** | Priscila Lugão — Product Coordinator · Med Review | — |
+| **Product Management** | Eduardo Borges — Sherwin-Williams | Ingrid Coutinho — Itaú |
+| **Building & Automation** | Gabriel Werlich — Conta Mais | Talita Paoletti — Grupo Boticário |
+| **Marketing & Design** | Mariana Tosi — Insider One | Alex Soares — Totvs |
+| **Liderança & Negócios** | Rafael Justino — Serrabits | Fernanda Faria — Nubank |
+
+### Recursos técnicos
+- Layout bifurcado responsivo (desktop 2 colunas, tablet/mobile stacked)
+- Abas interativas com navegação suave (fade-in 0.3s)
+- Coordenadora geral sticky (segue ao scroll)
+- Sem dependências externas
+
+---
+
+## 💻 Tecnologia
 
 - **HTML/CSS/JS puros** — zero dependências, zero frameworks
-- **Fonte:** Inter Tight (carregada localmente via `@font-face`)
-- **Imagens:** todas convertidas para `.webp` (redução média de 85-99% de peso)
+- **Fonte:** Inter Tight (carregada localmente via @font-face)
+- **Imagens:** convertidas para .webp (redução 85-99% de peso)
 - **Hospedagem:** GitHub Pages (gratuito)
-- **Domínio:** configurável via DNS no painel do registrador
+- **Domínio:** configurável via DNS
 
 ---
 
-## Como atualizar o site
+## 📝 Como atualizar o site
 
 ### Atualizar um texto
-1. Abra `index.html` no VS Code (ou Bloco de Notas)
-2. Use `Ctrl+F` para encontrar o trecho
+1. Abra `index.html` no VS Code
+2. Use Ctrl+F para encontrar o trecho
 3. Edite e salve
-4. Faça upload no GitHub → o site atualiza em ~1 minuto
+4. Faça upload no GitHub → site atualiza em ~1 minuto
+
+### Adicionar/Atualizar coordenador de trilha
+1. Copie a foto em `.jpg` para a raiz do repositório
+2. Abra `index.html` e localize a seção `.tracks-section`
+3. Encontre a trilha desejada (`id="tab-pm"`, `id="tab-building"`, etc.)
+4. Atualize o bloco do coordenador:
+
+```html
+<div class="coordinator-card">
+  <div class="coordinator-photo-wrap">
+    <span class="coordinator-badge">Coordenador/a</span>
+    <img src="nome_coordenador.jpg" width="400" height="500" alt="Nome Completo" loading="lazy">
+  </div>
+  <hr class="coordinator-divider">
+  <div class="coordinator-info">
+    <span class="coordinator-role">Coordenador/a da Trilha</span>
+    <div class="coordinator-name">Nome Completo</div>
+    <div class="coordinator-title">Cargo · Empresa</div>
+  </div>
+</div>
+```
 
 ### Adicionar um palestrante
-Copie o bloco abaixo e cole dentro de `.speakers-grid` no `index.html`:
+1. Copie o bloco abaixo e cole dentro de `.speakers-grid`:
 
 ```html
 <div class="speaker-card">
@@ -127,37 +155,23 @@ Copie o bloco abaixo e cole dentro de `.speakers-grid` no `index.html`:
 </div>
 ```
 
-Suba também a foto em `.webp` na raiz do repositório.
-
-### Adicionar um patrocinador
-Copie o bloco abaixo e cole dentro da `.sponsors-logos` do tier correto:
-
-```html
-<a href="https://site-da-empresa.com" target="_blank" class="sponsor-logo">
-  <img src="logo-empresa.svg" alt="Nome da Empresa">
-</a>
-```
+2. Suba a foto em `.webp` na raiz do repositório
 
 ### Atualizar preço / lote de ingresso
-Procure no `index.html` por `R$ 1.099` (Passaporte) ou `R$ 1.599` (VIP) e substitua pelo novo valor.
-Para trocar o lote, procure por `LOTE 1` e atualize.
-
-### Atualizar imagem de qualquer seção
-Substitua o arquivo na raiz do repositório pelo novo, **mantendo exatamente o mesmo nome de arquivo**.
-O site passa a usar a nova imagem automaticamente.
+Procure no `index.html` por `R$ 1.649` (Passaporte) ou `R$ 2.149` (VIP) e substitua pelo novo valor.
 
 ---
 
-## Publicação no GitHub Pages
+## 🌐 Publicação no GitHub Pages
 
 ### Primeira publicação
 1. Crie repositório público no GitHub
 2. Faça upload de todos os arquivos (raiz + pasta `fonts/`)
-3. Vá em **Settings → Pages → Branch: main → Save**
+3. Vá em Settings → Pages → Branch: main → Save
 4. Site fica disponível em `seuusuario.github.io/productcamp2026`
 
 ### Domínio customizado
-1. Em **Settings → Pages → Custom domain:** insira `www.productcamp.com.br`
+1. Em Settings → Pages → Custom domain: insira `www.productcamp.com.br`
 2. No painel de DNS do registrador, crie:
 
 | Tipo | Nome | Valor |
@@ -168,29 +182,41 @@ O site passa a usar a nova imagem automaticamente.
 | A | @ | 185.199.111.153 |
 | CNAME | www | seuusuario.github.io |
 
-### Atualizações
+### Atualizar conteúdo
 1. Acesse o repositório no GitHub
-2. **Add file → Upload files**
-3. Arraste os arquivos novos (substituem automaticamente os antigos de mesmo nome)
-4. **Commit changes** — site atualiza em ~1 minuto
+2. Add file → Upload files
+3. Arraste os arquivos novos
+4. Commit changes — site atualiza em ~1 minuto
 
 ---
 
-## Branding
+## 🎨 Branding
 
 | Elemento | Valor |
-|---|---|
-| Cor primária (navy) | `#2B1E39` |
-| Rosa / pink | `#DF0C78` |
-| Ciano | `#18CEF4` |
-| Branco | `#FFFFFF` |
+|----------|-------|
+| Cor primária (navy) | #2B1E39 |
+| Rosa / pink | #DF0C78 |
+| Ciano | #18CEF4 |
+| Branco | #FFFFFF |
 | Fonte | Inter Tight (Light, Regular, Medium, SemiBold) |
-| Logo nav/footer | `logo_escuro.svg` (fundo transparente, texto branco) |
 
 ---
 
-## Créditos
+## 📞 Suporte
 
-**Organização:** PM3
-**Desenvolvimento:** Gerado e mantido com Claude (Anthropic)
-**Hospedagem:** GitHub Pages
+- **Dúvidas sobre atualizar trilhas?** Veja seção "Adicionar/Atualizar coordenador de trilha"
+- **Erro nas imagens?** Verifique se estão na raiz do repositório com nome exato
+- **Teste local antes de fazer push** — abra o arquivo em navegador (F5 para refresh)
+
+---
+
+## 📌 Versão
+
+- **Última atualização:** Junho 2026
+- **Versão:** 2.0 (Seção de Trilhas com Coordenadores)
+- **Desenvolvido com:** Claude (Anthropic)
+- **Realização:** PM3
+
+---
+
+**Pronto para produção! 🚀**
