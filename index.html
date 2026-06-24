@@ -789,110 +789,176 @@
     gap: 16px;
   }
 
-  .tracks-grid {
+  /* Layout bifurcado: coluna fixa + abas */
+  .tracks-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    align-items: start;
   }
 
-  .track-card {
+  /* ── COLUNA ESQUERDA: COORDENADORA GERAL ── */
+  .general-coordinator-col {
+    position: sticky;
+    top: 120px;
+  }
+
+  .coordinator-card {
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
     border-radius: 16px;
     overflow: hidden;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .coordinator-card:hover {
+    border-color: rgba(223,12,120,0.4);
+    transform: translateY(-4px);
+  }
+
+  .coordinator-photo-wrap {
     position: relative;
-    cursor: default;
-    transition: transform 0.3s, border-color 0.3s;
-  }
-
-  .track-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(223,12,120,0.35);
-  }
-
-  .track-photo {
     width: 100%;
     aspect-ratio: 3/4;
-    object-fit: cover;
-    display: block;
-    filter: brightness(0.82) saturate(1.1);
-    transition: filter 0.3s;
-  }
-
-  .track-card:hover .track-photo { filter: brightness(0.92) saturate(1.2); }
-
-  .track-photo-placeholder {
-    width: 100%;
-    aspect-ratio: 3/4;
-    background: linear-gradient(160deg, var(--navy-card) 0%, rgba(223,12,120,0.06) 60%, rgba(24,206,244,0.04) 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
     overflow: hidden;
-  }
-
-  .track-photo-placeholder::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 24px,
-      rgba(255,255,255,0.02) 24px,
-      rgba(255,255,255,0.02) 25px
-    );
-  }
-
-  .track-placeholder-icon {
-    width: 48px;
-    height: 48px;
-    opacity: 0.25;
-  }
-
-  .track-placeholder-label {
-    position: absolute;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 11px;
-    color: var(--white-40);
-    white-space: nowrap;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .track-bottom {
-    padding: 16px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
     background: var(--navy-card);
-    border-top: 1px solid var(--navy-border);
   }
 
-  .track-icon-wrap {
-    flex-shrink: 0;
-    width: 36px;
-    height: 36px;
-  }
-
-  .track-icon-wrap img {
+  .coordinator-photo-wrap img {
     width: 100%;
     height: 100%;
-    object-fit: contain;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+    transition: transform 0.4s ease;
   }
 
-  .track-name {
-    font-family: var(--font-display);
-    font-size: 14px;
+  .coordinator-card:hover .coordinator-photo-wrap img {
+    transform: scale(1.04);
+  }
+
+  .coordinator-badge {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    border-radius: 100px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #111;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    z-index: 2;
+  }
+
+  .coordinator-divider {
+    height: 1px;
+    border: none;
+    border-top: 2px dashed var(--navy-border);
+    margin: 0;
+  }
+
+  .coordinator-info {
+    padding: 18px 16px 20px;
+  }
+
+  .coordinator-role {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--pink);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  .coordinator-name {
+    font-size: 16px;
     font-weight: 600;
     color: var(--white);
     line-height: 1.25;
+    margin-bottom: 6px;
   }
 
-  /* ── SPEAKERS ── */
+  .coordinator-title {
+    font-size: 12px;
+    color: var(--white-70);
+    line-height: 1.4;
+  }
+
+  /* ── COLUNA DIREITA: ABAS + CONTEÚDO ── */
+  .tracks-tabs-wrapper { }
+
+  .tracks-tabs-nav {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--navy-border);
+    padding-bottom: 0;
+    flex-wrap: wrap;
+  }
+
+  .track-tab-btn {
+    background: none;
+    border: none;
+    color: var(--white-40);
+    font-size: 15px;
+    font-weight: 600;
+    font-family: var(--font-body);
+    padding: 14px 18px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+    border-bottom: 2px solid transparent;
+    position: relative;
+    bottom: -1px;
+  }
+
+  .track-tab-btn:hover {
+    color: var(--white-70);
+  }
+
+  .track-tab-btn.active {
+    color: var(--white);
+    border-bottom-color: var(--pink);
+  }
+
+  /* Conteúdo das abas */
+  .tracks-tab-content {
+    display: none;
+  }
+
+  .tracks-tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Grid dos coordenadores: 2 colunas */
+  .track-coordinators-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .track-description {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 14px;
+    padding: 24px;
+    font-size: 15px;
+    color: var(--white-70);
+    line-height: 1.7;
+  }
+
+    /* ── SPEAKERS ── */
   .speakers { background: var(--navy); }
 
   .speakers-grid {
@@ -2106,41 +2172,175 @@
       <p class="section-subtitle section-subtitle--right">Aprendizado na prática com os maiores nomes do mercado em um só lugar.</p>
     </div>
 
-    <div class="tracks-grid">
+    <!-- LAYOUT BIFURCADO: COLUNA FIXA + ABAS -->
+    <div class="tracks-container">
 
-      <!-- Trilha 1 — foto placeholder (KV a definir) -->
-      <div class="track-card">
-        <img class="track-photo track-photo--top" src="trilha-pm.webp" width="900" height="601" alt="Product Management" loading="lazy">
-        <div class="track-bottom">
-          <div class="track-name">Product Management</div>
+      <!-- COLUNA ESQUERDA: COORDENADORA GERAL (FIXA) -->
+      <div class="general-coordinator-col">
+        <div class="coordinator-card">
+          <div class="coordinator-photo-wrap">
+            <span class="coordinator-badge">Coordenação Geral</span>
+            <img src="priscila_lugao.jpg" width="400" height="500" alt="Priscila Lugão" loading="lazy">
+          </div>
+          <hr class="coordinator-divider">
+          <div class="coordinator-info">
+            <span class="coordinator-role">Coordenadora Geral</span>
+            <div class="coordinator-name">Priscila Lugão</div>
+            <div class="coordinator-title">Product Coordinator · Med Review</div>
+          </div>
         </div>
       </div>
 
-      <!-- Trilha 2 — foto placeholder -->
-      <div class="track-card">
-        <img class="track-photo track-photo--top" src="trilha-ai.webp" width="900" height="600" alt="Building &amp; Automation" loading="lazy">
-        <div class="track-bottom">
-          <div class="track-name">Building &amp; Automation</div>
-        </div>
-      </div>
+      <!-- COLUNA DIREITA: ABAS DAS TRILHAS -->
+      <div class="tracks-tabs-wrapper">
 
-      <!-- Trilha 3 — foto placeholder -->
-      <div class="track-card">
-        <img class="track-photo track-photo--top" src="trilha-lideranca.webp" width="800" height="1200" alt="Liderança e Negócios" loading="lazy">
-        <div class="track-bottom">
-          <div class="track-name">Liderança &amp; Negócios</div>
+        <!-- ABAS NAVEGAÇÃO -->
+        <div class="tracks-tabs-nav">
+          <button class="track-tab-btn active" data-tab="pm">Product Management</button>
+          <button class="track-tab-btn" data-tab="building">Building & Automation</button>
+          <button class="track-tab-btn" data-tab="marketing">Marketing & Design</button>
+          <button class="track-tab-btn" data-tab="leadership">Liderança & Negócios</button>
         </div>
-      </div>
 
-      <!-- Trilha 4 — foto placeholder -->
-      <div class="track-card">
-        <img class="track-photo track-photo--top" src="trilha-marketing.webp" width="900" height="600" alt="Marketing e Design" loading="lazy">
-        <div class="track-bottom">
-          <div class="track-name">Marketing &amp; Design</div>
+        <!-- TAB 1: PRODUCT MANAGEMENT -->
+        <div class="tracks-tab-content active" id="tab-pm">
+          <div class="track-coordinators-grid">
+            <div class="coordinator-card">
+              <div class="coordinator-photo-wrap">
+                <span class="coordinator-badge">Coordenador</span>
+                <img src="eduardo_borges.jpg" width="400" height="500" alt="Eduardo Borges" loading="lazy">
+              </div>
+              <hr class="coordinator-divider">
+              <div class="coordinator-info">
+                <span class="coordinator-role">Coordenador da Trilha</span>
+                <div class="coordinator-name">Eduardo Borges</div>
+                <div class="coordinator-title">Product Coordinator · Sherwin-Williams</div>
+              </div>
+            </div>
+
+            <div class="coordinator-card">
+              <div class="coordinator-photo-wrap">
+                <span class="coordinator-badge">Coordenadora</span>
+                <img src="ingrid_coutinho.jpg" width="400" height="500" alt="Ingrid Coutinho" loading="lazy">
+              </div>
+              <hr class="coordinator-divider">
+              <div class="coordinator-info">
+                <span class="coordinator-role">Coordenadora da Trilha</span>
+                <div class="coordinator-name">Ingrid Coutinho</div>
+                <div class="coordinator-title">Product Manager · Itaú</div>
+              </div>
+            </div>
+          </div>
+          <div class="track-description">
+            Da descoberta à decisão: desenvolva o product sense, a visão estratégica e a capacidade de priorização necessárias para construir produtos relevantes em um mundo impulsionado por IA.
+          </div>
         </div>
-      </div>
 
+        <!-- TAB 2: BUILDING & AUTOMATION -->
+        <div class="tracks-tab-content" id="tab-building">
+          <div class="track-coordinators-grid">
+            <div class="coordinator-card">
+              <div class="coordinator-photo-wrap">
+                <span class="coordinator-badge">Coordenador</span>
+                <img src="Gabriel_Werlich.jpg" width="400" height="500" alt="Gabriel Werlich" loading="lazy">
+              </div>
+              <hr class="coordinator-divider">
+              <div class="coordinator-info">
+                <span class="coordinator-role">Coordenador da Trilha</span>
+                <div class="coordinator-name">Gabriel Werlich</div>
+                <div class="coordinator-title">Co-Founder & Product Director · Conta Mais</div>
+              </div>
+            </div>
+
+            <div class="coordinator-card">
+              <div class="coordinator-photo-wrap">
+                <span class="coordinator-badge">Coordenadora</span>
+                <img src="Talita_Paoletti.jpg" width="400" height="500" alt="Talita Paoletti" loading="lazy">
+              </div>
+              <hr class="coordinator-divider">
+              <div class="coordinator-info">
+                <span class="coordinator-role">Coordenadora da Trilha</span>
+                <div class="coordinator-name">Talita Paoletti</div>
+                <div class="coordinator-title">Group Product Manager · Grupo Boticário</div>
+              </div>
+            </div>
+          </div>
+          <div class="track-description">
+            Do hype à aplicação: descubra como a IA está transformando produtos, operações e negócios, ampliando a capacidade de construir, automatizar e escalar resultados.
+          </div>
+        </div>
+
+        <!-- TAB 3: MARKETING & DESIGN -->
+        <div class="tracks-tab-content" id="tab-marketing">
+          <div class="track-coordinators-grid">
+            <div class="coordinator-card">
+              <div class="coordinator-photo-wrap">
+                <span class="coordinator-badge">Coordenadora</span>
+                <img src="Mariana_Tosi.jpg" width="400" height="500" alt="Mariana Tosi" loading="lazy">
+              </div>
+              <hr class="coordinator-divider">
+              <div class="coordinator-info">
+                <span class="coordinator-role">Coordenadora da Trilha</span>
+                <div class="coordinator-name">Mariana Tosi</div>
+                <div class="coordinator-title">Marketing Manager · Insider One</div>
+              </div>
+            </div>
+
+            <div class="coordinator-card">
+              <div class="coordinator-photo-wrap">
+                <span class="coordinator-badge">Coordenador</span>
+                <img src="Alex_Soares.jpg" width="400" height="500" alt="Alex Soares" loading="lazy">
+              </div>
+              <hr class="coordinator-divider">
+              <div class="coordinator-info">
+                <span class="coordinator-role">Coordenador da Trilha</span>
+                <div class="coordinator-name">Alex Soares</div>
+                <div class="coordinator-title">Design Lead · Totvs</div>
+              </div>
+            </div>
+          </div>
+          <div class="track-description">
+            Aquisição, retenção e monetização: tudo o que você precisa para criar experiências relevantes e impulsionar o crescimento de produtos e negócios.
+          </div>
+        </div>
+
+        <!-- TAB 4: LIDERANÇA & NEGÓCIOS -->
+        <div class="tracks-tab-content" id="tab-leadership">
+          <div class="track-coordinators-grid">
+            <div class="coordinator-card">
+              <div class="coordinator-photo-wrap">
+                <span class="coordinator-badge">Coordenador</span>
+                <img src="Rafael_Justino.jpg" width="400" height="500" alt="Rafael Justino" loading="lazy">
+              </div>
+              <hr class="coordinator-divider">
+              <div class="coordinator-info">
+                <span class="coordinator-role">Coordenador da Trilha</span>
+                <div class="coordinator-name">Rafael Justino</div>
+                <div class="coordinator-title">CPO · Serrabits</div>
+              </div>
+            </div>
+
+            <div class="coordinator-card">
+              <div class="coordinator-photo-wrap">
+                <span class="coordinator-badge">Coordenadora</span>
+                <img src="Fernanda_Faria.jpg" width="400" height="500" alt="Fernanda Faria" loading="lazy">
+              </div>
+              <hr class="coordinator-divider">
+              <div class="coordinator-info">
+                <span class="coordinator-role">Coordenadora da Trilha</span>
+                <div class="coordinator-name">Fernanda Faria</div>
+                <div class="coordinator-title">Product Manager · Nubank</div>
+              </div>
+            </div>
+          </div>
+          <div class="track-description">
+            Liderança que inspira, estratégia que posiciona: aprenda a conectar pessoas, tecnologia e negócios para construir organizações mais inteligentes, competitivas e preparadas para o futuro.
+          </div>
+        </div>
+
+      </div>
     </div>
+
   </div>
 </section>
 
@@ -2769,7 +2969,7 @@
           <a href="https://www.linkedin.com/company/productcampbr/" target="_blank" class="social-link" aria-label="LinkedIn">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
           </a>
-          <a href="https://www.youtube.com/channel/UCW5gUZ7lKGrAbLOkHv2xfbw" target="_blank" class="social-link" aria-label="YouTube">
+          <a href="https://www.youtube.com/@ProductCampBrasil" target="_blank" class="social-link" aria-label="YouTube">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.495 6.205a3.007 3.007 0 00-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 00.527 6.205a31.247 31.247 0 00-.522 5.805 31.247 31.247 0 00.522 5.783 3.007 3.007 0 002.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 002.088-2.088 31.247 31.247 0 00.5-5.783 31.247 31.247 0 00-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
           </a>
           <a href="https://www.facebook.com/productcampbr/?locale=pt_BR" target="_blank" class="social-link" aria-label="Facebook">
@@ -2900,5 +3100,31 @@
     observer.observe(statsBar);
   }
 </script>
+<script>
+  // ─────────────────────────────────────────
+  // Sistema de abas das trilhas
+  // ─────────────────────────────────────────
+  const tabBtns = document.querySelectorAll('.track-tab-btn');
+  const tabContents = document.querySelectorAll('.tracks-tab-content');
+
+  if (tabBtns.length > 0) {
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active de todos
+        tabBtns.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+
+        // Ativa a selecionada
+        btn.classList.add('active');
+        const tabId = btn.getAttribute('data-tab');
+        const tabContent = document.getElementById(`tab-${tabId}`);
+        if (tabContent) {
+          tabContent.classList.add('active');
+        }
+      });
+    });
+  }
+</script>
+
 </body>
 </html>
