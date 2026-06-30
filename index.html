@@ -3220,5 +3220,23 @@
   }
 </script>
 
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmKeys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'];
+
+    const utms = {};
+    utmKeys.forEach(k => { if (urlParams.get(k)) utms[k] = urlParams.get(k); });
+
+    if (Object.keys(utms).length === 0) return;
+
+    document.querySelectorAll('a[href*="sympla.com.br"]').forEach(link => {
+      const url = new URL(link.href);
+      Object.entries(utms).forEach(([k, v]) => url.searchParams.set(k, v));
+      link.href = url.toString();
+    });
+  });
+</script>
+
 </body>
 </html>
