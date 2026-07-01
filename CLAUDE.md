@@ -99,6 +99,42 @@ O site é pensado **primeiro para mobile** — a maioria do tráfego de evento v
 - **Commit só quando o usuário pedir** explicitamente.
 - Lembrar: como o Pages publica a `main` automaticamente, **mergear na `main` = publicar em produção**. Tratar merges com esse cuidado.
 
+## Trabalhar de forma saudável com o GitHub
+
+Regras para evitar quebrar produção (já aconteceu: uma edição feita sobre uma base
+desatualizada reintroduziu caminhos de arquivos que tinham sido movidos, quebrando o
+hero e o logo em produção).
+
+**1. Sempre parta de uma `main` sincronizada.**
+   - Antes de criar uma branch nova, atualize a `main` local:
+     ```
+     git checkout main && git fetch origin && git pull --ff-only origin main
+     ```
+   - Nunca comece a trabalhar em cima de uma `main` local defasada. O `index.html` é um
+     arquivo único e grande — editar uma versão antiga sobrescreve o trabalho de outros.
+
+**2. Sincronize a branch com a `main` ANTES de abrir/mergear o PR.**
+   - Ok manter uma branch dessincronizada de propósito por um tempo (trabalho longo,
+     experimento). Mas antes do PR, traga a `main` para dentro dela e resolva conflitos:
+     ```
+     git fetch origin && git merge origin/main   # (ou rebase, se preferir histórico linear)
+     ```
+   - Depois valide que nada quebrou (ver regra 4) — especialmente **caminhos de assets**,
+     que são a causa mais comum de regressão aqui.
+
+**3. Nunca edite `index.html` pela interface web do GitHub.**
+   - A edição web parte de uma base que pode estar desatualizada e não há validação.
+   - A `main` está protegida (PR + 1 aprovação obrigatórios; push direto e force-push
+     bloqueados para não-admins). Admins conseguem bypass, mas **evitem** — o objetivo da
+     proteção é justamente forçar o fluxo de PR.
+
+**4. Antes de mergear, valide as referências de assets.**
+   - Confirme que todo `src`/`href`/`url()` do `index.html` aponta para um arquivo que
+     existe (fontes em `assets/fonts/`, imagens em `assets/img/...`). Um caminho errado
+     não dá erro de build — só quebra silenciosamente em produção.
+
+**5. Um PR = uma mudança coerente.** Facilita revisão e reverter se algo quebrar.
+
 ## Não mexer
 
 - Registros DNS de e-mail/marketing (HubSpot, SendGrid/RD Station, Google, Sympla, Circle) — não têm relação com o site.
