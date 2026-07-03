@@ -459,6 +459,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     border-radius: 14px;
     overflow: hidden;
     transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    aspect-ratio: 4/5;
   }
 
   .coord-card:hover {
@@ -467,8 +469,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
 
   .coord-photo-wrap {
-    position: relative;
-    aspect-ratio: 4/5;
+    position: absolute;
+    inset: 0;
     overflow: hidden;
     background: var(--navy-mid);
   }
@@ -490,40 +492,34 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   }
 
   .coord-city-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: rgba(24,206,244,0.15);
-    border: 1px solid rgba(24,206,244,0.35);
-    color: var(--cyan);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 100px;
+    display: none;
   }
 
   .coord-divider {
-    border: none;
-    border-top: 1px solid var(--navy-border);
-    margin: 0;
+    display: none;
   }
 
   .coord-info {
-    padding: 14px 16px 18px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 36px 14px 14px;
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.78));
+    z-index: 1;
   }
 
   .coord-name {
     font-size: 15px;
     font-weight: 600;
     line-height: 1.3;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
+    color: #fff;
   }
 
   .coord-location {
     font-size: 12px;
-    color: var(--white-40);
+    color: rgba(255,255,255,0.65);
     font-weight: 500;
   }
 
