@@ -411,8 +411,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     padding: 28px 24px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 8px;
     transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
   }
 
   .city-card:hover {
@@ -436,31 +437,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     text-transform: uppercase;
   }
 
-  .city-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--pink-muted);
-    border: 1px solid rgba(223,12,120,0.25);
-    color: var(--pink-light);
-    font-size: 13px;
-    font-weight: 600;
-    padding: 9px 16px;
-    border-radius: 8px;
-    margin-top: auto;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-    width: fit-content;
-  }
-
-  .city-cta:hover {
-    background: var(--pink);
-    border-color: var(--pink);
-    color: #fff;
-  }
-
-  .city-cta svg {
-    flex-shrink: 0;
-  }
 
   /* ── COORDENADORES ── */
   .coordinators-section {
@@ -740,161 +716,65 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="cities-grid">
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">MG</div>
-          <div class="city-name">Belo Horizonte</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-belo-horizonte-mg" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-belo-horizonte-mg" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">MG</div>
+        <div class="city-name">Belo Horizonte</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">DF</div>
-          <div class="city-name">Brasília</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-brasilia-df" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-brasilia-df" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">DF</div>
+        <div class="city-name">Brasília</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">SP</div>
-          <div class="city-name">Campinas</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-campinas-sp" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-campinas-sp" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">SP</div>
+        <div class="city-name">Campinas</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">SC</div>
-          <div class="city-name">Florianópolis</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-florianopolis-sc" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-florianopolis-sc" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">SC</div>
+        <div class="city-name">Florianópolis</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">CE</div>
-          <div class="city-name">Fortaleza</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-fortaleza-ce" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-fortaleza-ce" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">CE</div>
+        <div class="city-name">Fortaleza</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">MG</div>
-          <div class="city-name">Juiz de Fora</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-juiz-de-fora-mg" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-juiz-de-fora-mg" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">MG</div>
+        <div class="city-name">Juiz de Fora</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">PE</div>
-          <div class="city-name">Recife</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-recife-pe" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-recife-pe" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">PE</div>
+        <div class="city-name">Recife</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">RJ</div>
-          <div class="city-name">Rio de Janeiro</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-rio-de-janeiro-rj" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-rio-de-janeiro-rj" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">RJ</div>
+        <div class="city-name">Rio de Janeiro</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">BA</div>
-          <div class="city-name">Salvador</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-salvador-ba" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-salvador-ba" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">BA</div>
+        <div class="city-name">Salvador</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">SP</div>
-          <div class="city-name">São Paulo</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-sao-paulo-sp" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-sao-paulo-sp" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">SP</div>
+        <div class="city-name">São Paulo</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">MG</div>
-          <div class="city-name">Uberlândia</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-uberlandia-mg" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-uberlandia-mg" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">MG</div>
+        <div class="city-name">Uberlândia</div>
+      </a>
 
-      <div class="city-card">
-        <div>
-          <div class="city-state">ES</div>
-          <div class="city-name">Vitória</div>
-        </div>
-        <a href="https://luma.com/pcamp-pocket-vitoria-es" target="_blank" rel="noopener" class="city-cta">
-          Garantir ingresso
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2 6h8M7 3l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+      <a href="https://luma.com/pcamp-pocket-vitoria-es" target="_blank" rel="noopener" class="city-card">
+        <div class="city-state">ES</div>
+        <div class="city-name">Vitória</div>
+      </a>
 
     </div>
   </div>
@@ -910,21 +790,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <div class="coordinators-grid">
-
-      <!-- Adrian Espinola — sem foto no sheet3, placeholder -->
-      <div class="coord-card">
-        <div class="coord-photo-wrap">
-          <div class="coord-photo-placeholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-          </div>
-          <span class="coord-city-badge">Campinas/SP</span>
-        </div>
-        <hr class="coord-divider">
-        <div class="coord-info">
-          <div class="coord-name">Adrian Espinola</div>
-          <div class="coord-location">Campinas/SP</div>
-        </div>
-      </div>
 
       <!-- Alice Pizetta -->
       <div class="coord-card">
