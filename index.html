@@ -1292,6 +1292,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     padding: 440px 24px 40px;
   }
 
+  /* reduz o espaço no topo em telas menores (título ainda cai sobre a área
+     escura do gradiente); desktop mantém 440px */
+  @media (max-width: 768px) {
+    .tickets-hero-text { padding-top: 320px; }
+  }
+  @media (max-width: 560px) {
+    .tickets-hero-text { padding-top: 240px; }
+  }
+
   .tickets-hero-text .section-label {
     justify-content: center;
     margin-bottom: 10px;
