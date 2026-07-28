@@ -1016,6 +1016,187 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     }
   }
 
+  /* ── KEYNOTE (primeiro keynote confirmado) ── */
+  .keynote { background: var(--navy); }
+
+  .keynote-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 360px) 1fr;
+    gap: 40px;
+    align-items: start;
+    margin-top: 48px;
+  }
+
+  /* card do palestrante — versão ampliada do speaker-card */
+  .keynote-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    padding: 32px 28px;
+    text-align: center;
+    position: relative;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .keynote-card:hover {
+    border-color: rgba(223,12,120,0.4);
+    transform: translateY(-4px);
+  }
+
+  /* rótulo de contexto acima da foto (mesma pílula do speaker-company) */
+  .keynote-company {
+    display: inline-block;
+    background: white;
+    border-radius: 100px;
+    padding: 5px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #111;
+    letter-spacing: 0.01em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    margin-bottom: 24px;
+  }
+
+  /* foto circular ampliada */
+  .keynote-photo {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 20px;
+    border: 1px solid var(--navy-border);
+    background: var(--navy);
+  }
+
+  .keynote-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform 0.4s ease;
+  }
+
+  .keynote-card:hover .keynote-photo img { transform: scale(1.04); }
+
+  .keynote-name {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .keynote-role {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--pink);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 18px;
+  }
+
+  /* selo de destaque */
+  .keynote-seal {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--pink-muted);
+    border: 1px solid rgba(223,12,120,0.2);
+    color: var(--pink-light);
+    border-radius: 100px;
+    padding: 7px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  /* coluna direita: bio + credenciais */
+  .keynote-bio {
+    font-size: 17px;
+    color: var(--white-70);
+    line-height: 1.7;
+    margin-bottom: 32px;
+  }
+
+  .keynote-bio strong { color: var(--white); font-weight: 600; }
+
+  .keynote-creds-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--white-40);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .keynote-creds {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .cred-card {
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 14px;
+    padding: 20px;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .cred-card:hover {
+    border-color: rgba(223,12,120,0.4);
+    transform: translateY(-4px);
+  }
+
+  /* chip de ícone — mesmo padrão do .stat-icon */
+  .cred-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    background: var(--pink-muted);
+    border: 1px solid rgba(223,12,120,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .cred-icon svg {
+    width: 18px; height: 18px;
+    stroke: var(--pink);
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* min-height mantém os títulos alinhados na mesma altura entre os 3 cards */
+  .cred-title {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.25;
+    margin-bottom: 8px;
+    min-height: 40px;
+  }
+
+  .cred-desc {
+    font-size: 13px;
+    color: var(--white-70);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 1024px) {
+    .keynote-grid { grid-template-columns: 1fr; gap: 32px; }
+    .keynote-card { max-width: 420px; }
+  }
+
+  @media (max-width: 768px) {
+    .keynote-creds { grid-template-columns: 1fr; }
+    .cred-title { min-height: 0; }
+  }
+
   /* ── SPEAKERS ── */
   .speakers { background: var(--navy); }
 
@@ -2456,6 +2637,57 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
 
+  </div>
+</section>
+
+<!-- KEYNOTE -->
+<section class="keynote" id="keynote">
+  <div class="container">
+    <div class="section-label">Primeiro keynote confirmado</div>
+    <h2 class="section-title">Mike Belsito é o primeiro keynote<br>confirmado nos palcos do Product Camp 2026</h2>
+
+    <div class="keynote-grid">
+      <!-- card do palestrante (versão ampliada do speaker-card) -->
+      <div class="keynote-card">
+        <span class="keynote-company">Pendo &amp; Mind the Product</span>
+        <div class="keynote-photo">
+          <img src="assets/img/speakers/sp-mike.webp" width="360" height="360" alt="Foto de Mike Belsito, Head of Product Evangelism na Pendo" loading="lazy">
+        </div>
+        <div class="keynote-name">Mike Belsito</div>
+        <div class="keynote-role">Head of Product Evangelism</div>
+        <span class="keynote-seal">🎤 Keynote internacional</span>
+      </div>
+
+      <!-- bio + credenciais -->
+      <div class="keynote-body">
+        <p class="keynote-bio">Cofundador do <strong>Product Collective</strong>, casa da Industry: The Product Conference. Mike passou mais de dez anos liderando duas das comunidades mais respeitadas do PM global, hoje unidas sob a <strong>Pendo</strong>.</p>
+
+        <div class="keynote-creds-title">Por que ele é referência</div>
+        <div class="keynote-creds">
+          <div class="cred-card">
+            <div class="cred-icon">
+              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div class="cred-title">Top 40 Influenciador</div>
+            <p class="cred-desc">Eleito diversas vezes um dos maiores nomes globais em Product Management.</p>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">
+              <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            </div>
+            <div class="cred-title">Autor best-seller</div>
+            <p class="cred-desc"><em>Startup Seed Funding for the Rest of Us</em> é um dos livros mais vendidos da Amazon e mais um novo título a caminho pela Wiley.</p>
+          </div>
+          <div class="cred-card">
+            <div class="cred-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><path d="M12 19v4M8 23h8"/></svg>
+            </div>
+            <div class="cred-title">Voz do Rocketship.FM</div>
+            <p class="cred-desc">Co-apresentador de um dos principais podcasts sobre startups do mercado.</p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
