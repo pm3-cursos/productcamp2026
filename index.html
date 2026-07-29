@@ -3370,7 +3370,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
   }
   window.addEventListener('scroll', updateNav, { passive: true });
-  updateNav();
+  requestAnimationFrame(updateNav);
 
   if (toggle && links) {
     toggle.addEventListener('click', () => {
