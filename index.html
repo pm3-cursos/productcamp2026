@@ -860,10 +860,14 @@ window.dataLayer = window.dataLayer || [];
     margin-bottom: 28px;
   }
 
-  /* ── LAYOUT GRID: 3 COLUNAS IGUAIS (PRISCILA | COORD 1 | COORD 2) ── */
+  /* ── LAYOUT GRID: 3 COLUNAS (PRISCILA | COORD 1 | COORD 2) ──
+     Largura da coluna calculada para igualar o tamanho dos cards
+     de .speakers-grid (5 colunas, gap 12px, mesmo .container 1160px),
+     pra foto de coordenador e de palestrante ficarem no mesmo tamanho. */
   .tracks-content-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, calc((min(100vw, 1160px) - 96px) / 5));
+    justify-content: center;
     gap: 20px;
   }
 
@@ -935,6 +939,8 @@ window.dataLayer = window.dataLayer || [];
 
   .coordinator-info {
     padding: 18px 16px 20px;
+    /* altura fixa pra o card não variar de tamanho conforme o texto (nome/cargo) */
+    min-height: 140px;
   }
 
   .coordinator-role {
@@ -981,11 +987,6 @@ window.dataLayer = window.dataLayer || [];
       text-align: left;
       max-width: 100%;
     }
-
-    .tracks-content-grid {
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
   }
 
   @media (max-width: 768px) {
@@ -1006,11 +1007,6 @@ window.dataLayer = window.dataLayer || [];
     .track-tab-btn {
       padding: 12px 12px;
       font-size: 13px;
-    }
-
-    .tracks-content-grid {
-      grid-template-columns: 1fr;
-      gap: 24px;
     }
 
     .track-description {
@@ -1278,6 +1274,8 @@ window.dataLayer = window.dataLayer || [];
     justify-content: space-between;
     align-items: flex-start;
     gap: 8px;
+    /* altura fixa pra o card não variar de tamanho conforme o texto (nome/cargo) */
+    min-height: 70px;
   }
 
   .speaker-name {
@@ -1954,6 +1952,7 @@ window.dataLayer = window.dataLayer || [];
     .tracks-header { flex-direction: column; align-items: flex-start; }
     .tracks-header p { text-align: left !important; }
     .speakers-grid { grid-template-columns: repeat(2, 1fr); }
+    .tracks-content-grid { grid-template-columns: repeat(2, calc((min(100vw, 1160px) - 60px) / 2)); }
     .venue-layout { grid-template-columns: 1fr; }
     .venue-photos { grid-template-columns: 1fr 1fr; }
     .venue-photo:first-child { grid-column: span 2; aspect-ratio: 16/7; }
