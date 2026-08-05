@@ -64,7 +64,8 @@ productcamp2026/
 | **Hero** | Mote: User. Builder. Thinker. Leader. com imagem de fundo |
 | **Stats** | +80 palestrantes, 6 palcos, +3.000 participantes, 2 dias — contador animado |
 | **About** | 4 pilares (User/Builder/Thinker/Leader) em grid responsivo |
-| **Trilhas** | 🆕 **Novo layout:** Coluna fixa (coordenadora geral) + abas interativas (4 trilhas com 2 coordenadores cada) |
+| **Trilhas** | 🆕 **Novo layout:** rolagem em dois eixos — 4 trilhas empilhadas em container de altura fixa (scroll vertical), cada uma sendo uma fileira horizontal de cards |
+| **Coordenação geral** | Dobra dedicada à Priscila Lugão, em layout horizontal (foto ao lado do texto) |
 | **Speakers** | Grid 5 colunas — foto, empresa, nome e cargo |
 | **Local** | 2 colunas: texto + mosaico de fotos |
 | **Ingressos** | 2 cards (Passaporte e VIP) com preços |
@@ -76,25 +77,39 @@ productcamp2026/
 
 ## 🆕 Seção de Trilhas (Redesign 2026)
 
-### Estrutura
-- **Coluna fixa (esquerda):** Coordenadora Geral (Priscila Lugão) — sempre visível
-- **Coluna direita:** 4 abas para navegar entre trilhas
-- **Cada aba:** 2 coordenadores (lado a lado) + descrição da trilha
+### Estrutura — rolagem em dois eixos
+- **Vertical:** as 4 trilhas ficam empilhadas dentro de `.tracks-scroller`, um container de
+  **altura fixa** (`--tracks-viewport-h`). Rolar para baixo troca de trilha.
+- **Horizontal:** cada trilha (`.track-lane`) é uma **fileira** (`.track-row`) que começa pelos
+  coordenadores e segue com os palestrantes. **Palestrante novo entra pelo lado — a altura da
+  seção nunca muda.**
+- **Indicadores:** setas clicáveis nas pontas de cada fileira (somem no início/fim), degradês nas
+  bordas, degradê no rodapé do container e o botão "Ver as outras trilhas" (some ao chegar no fim).
+- **Mobile:** swipe nativo nas fileiras; no desktop, título/descrição da trilha ficam em coluna à
+  esquerda para deixar a fileira mais baixa.
 
-### Coordenadores
+### Card (`.coordinator-card`)
+Sem badge sobre a foto (tampava o rosto). A distinção é pela **cor do rótulo na base**:
+**rosa = coordenação**, **ciano = palestrante** (`.coordinator-card--speaker`).
+Ordem das infos: rótulo → nome → **empresa** (destaque) → cargo (menor e apagado).
+Palestrante sem empresa: **omitir** a linha `.coordinator-company` — nunca usar placeholder.
+
+### Coordenação das trilhas
 
 | Trilha | Coordenador 1 | Coordenador 2 |
 |--------|---------------|---------------|
-| **Geral** | Priscila Lugão — Product Coordinator · Med Review | — |
-| **Product Management** | Eduardo Borges — Sherwin-Williams | Ingrid Coutinho — Itaú |
+| **Product Management** | Eduardo Borges — Monuv | Ingrid Coutinho — Itaú |
 | **Building & Automation** | Gabriel Werlich — Conta Mais | Talita Paoletti — Grupo Boticário |
 | **Marketing & Design** | Mariana Tosi — Insider One | Alex Soares — Totvs |
 | **Liderança & Negócios** | Rafael Justino — Serrabits | Fernanda Faria — Nubank |
 
+A **Coordenação Geral** (Priscila Lugão — Product Coordinator, Med Review) não aparece mais dentro
+das trilhas: ganhou dobra própria (`.general-coord`) logo abaixo do bloco de trilhas.
+
 ### Recursos técnicos
-- Layout bifurcado responsivo (desktop 2 colunas, tablet/mobile stacked)
-- Abas interativas com navegação suave (fade-in 0.3s)
-- Coordenadora geral sticky (segue ao scroll)
+- Layout responsivo (desktop: descrição em coluna lateral; mobile: empilhado)
+- Scroll nativo com `scroll-snap` — sem biblioteca de carrossel
+- `prefers-reduced-motion` respeitado
 - Sem dependências externas
 
 ---
@@ -117,26 +132,32 @@ productcamp2026/
 3. Edite e salve
 4. Faça upload no GitHub → site atualiza em ~1 minuto
 
-### Adicionar/Atualizar coordenador de trilha
-1. Copie a foto em `.jpg` para a raiz do repositório
+### Adicionar palestrante ou coordenador a uma trilha
+1. Suba a foto **400×400 em `.webp`** em `assets/img/speakers/` (palestrante) ou
+   `assets/img/coordinators/` (coordenação)
 2. Abra `index.html` e localize a seção `.tracks-section`
-3. Encontre a trilha desejada (`id="tab-pm"`, `id="tab-building"`, etc.)
-4. Atualize o bloco do coordenador:
+3. Encontre a `.track-row` da trilha desejada (elas estão comentadas: `TRILHA 1`, `TRILHA 2`…)
+4. Cole o bloco no **fim da fileira** (coordenadores primeiro, palestrantes depois):
 
 ```html
-<div class="coordinator-card">
+<article class="coordinator-card coordinator-card--speaker" role="listitem">
   <div class="coordinator-photo-wrap">
-    <span class="coordinator-badge">Coordenador/a</span>
-    <img src="nome_coordenador.jpg" width="400" height="500" alt="Nome Completo" loading="lazy">
+    <img src="assets/img/speakers/sp-nome.webp" width="400" height="400"
+         alt="Foto de Nome Completo, Cargo na Empresa" loading="lazy">
   </div>
   <hr class="coordinator-divider">
   <div class="coordinator-info">
-    <span class="coordinator-role">Coordenador/a da Trilha</span>
+    <span class="coordinator-role">Palestrante</span>
     <div class="coordinator-name">Nome Completo</div>
-    <div class="coordinator-title">Cargo · Empresa</div>
+    <div class="coordinator-company">Empresa</div>
+    <div class="coordinator-title">Cargo</div>
   </div>
-</div>
+</article>
 ```
+
+Para **coordenação**, remova o modificador `coordinator-card--speaker` (rótulo volta ao rosa) e
+troque o rótulo para `Coordenação`. **Sem empresa confirmada:** omita `.coordinator-company`.
+A fileira cresce para o lado — não é preciso mexer em altura nem em nenhum CSS.
 
 ### Adicionar um palestrante
 1. Copie o bloco abaixo e cole dentro de `.speakers-grid`:
