@@ -64,7 +64,7 @@ productcamp2026/
 | **Hero** | Mote: User. Builder. Thinker. Leader. com imagem de fundo |
 | **Stats** | +80 palestrantes, 6 palcos, +3.000 participantes, 2 dias — contador animado |
 | **About** | 4 pilares (User/Builder/Thinker/Leader) em grid responsivo |
-| **Trilhas** | 🆕 **Novo layout:** rolagem em dois eixos — 4 trilhas empilhadas em container de altura fixa (scroll vertical), cada uma sendo uma fileira horizontal de cards |
+| **Trilhas** | 🆕 **Novo layout:** as 4 trilhas empilhadas e todas visíveis; cada uma é nome + descrição + fileira horizontal de cards |
 | **Coordenação geral** | Dobra dedicada à Priscila Lugão, em layout horizontal (foto ao lado do texto) |
 | **Speakers** | Grid 5 colunas — foto, empresa, nome e cargo |
 | **Local** | 2 colunas: texto + mosaico de fotos |
@@ -77,16 +77,21 @@ productcamp2026/
 
 ## 🆕 Seção de Trilhas (Redesign 2026)
 
-### Estrutura — rolagem em dois eixos
-- **Vertical:** as 4 trilhas ficam empilhadas dentro de `.tracks-scroller`, um container de
-  **altura fixa** (`--tracks-viewport-h`). Rolar para baixo troca de trilha.
-- **Horizontal:** cada trilha (`.track-lane`) é uma **fileira** (`.track-row`) que começa pelos
-  coordenadores e segue com os palestrantes. **Palestrante novo entra pelo lado — a altura da
-  seção nunca muda.**
-- **Indicadores:** setas clicáveis nas pontas de cada fileira (somem no início/fim), degradês nas
-  bordas, degradê no rodapé do container e o botão "Ver as outras trilhas" (some ao chegar no fim).
-- **Mobile:** swipe nativo nas fileiras; no desktop, título/descrição da trilha ficam em coluna à
-  esquerda para deixar a fileira mais baixa.
+### Estrutura
+As **4 trilhas ficam todas visíveis**, empilhadas na página. **Não** existe container de altura fixa
+nem barra de rolagem vertical interna — ninguém precisa rolar uma barra para achar as outras trilhas.
+
+Cada trilha (`.track-lane`) tem 3 níveis empilhados:
+1. **Nome** (`.track-lane-title`) — com a barra rosa de destaque à esquerda;
+2. **Descrição** (`.track-lane-desc`) — logo abaixo do nome, alinhada pelo mesmo eixo;
+3. **Fileira de cards** (`.track-row`) — coordenadores da trilha primeiro, palestrantes depois.
+
+Só a **fileira** rola, e na horizontal: **palestrante novo entra pelo lado, sem esticar a altura.**
+
+- **Desktop:** setas clicáveis nas pontas da fileira. Só aparecem quando há overflow e somem ao
+  chegar no início/fim (o JS aplica `is-start`/`is-end`).
+- **Mobile/touch:** sem setas — a fileira é arrastada com o dedo (swipe nativo). Os degradês nas
+  pontas continuam indicando que há mais gente para o lado.
 
 ### Card (`.coordinator-card`)
 Sem badge sobre a foto (tampava o rosto). A distinção é pela **cor do rótulo na base**:
@@ -107,7 +112,7 @@ A **Coordenação Geral** (Priscila Lugão — Product Coordinator, Med Review) 
 das trilhas: ganhou dobra própria (`.general-coord`) logo abaixo do bloco de trilhas.
 
 ### Recursos técnicos
-- Layout responsivo (desktop: descrição em coluna lateral; mobile: empilhado)
+- Layout responsivo — a fileira só encolhe a largura do card (`--track-card-w`)
 - Scroll nativo com `scroll-snap` — sem biblioteca de carrossel
 - `prefers-reduced-motion` respeitado
 - Sem dependências externas
