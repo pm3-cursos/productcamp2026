@@ -99,6 +99,26 @@ Sem badge sobre a foto (tampava o rosto). A distinção é pela **cor do rótulo
 Ordem das infos: rótulo → nome → **empresa** (destaque) → cargo (menor e apagado).
 Palestrante sem empresa: **omitir** a linha `.coordinator-company` — nunca usar placeholder.
 
+O bloco de texto do card tem **altura fixa** (`--track-info-h`), dimensionada para o pior caso
+(nome em 2 linhas + empresa + cargo em 3 linhas). É o que mantém todos os cards do mesmo tamanho
+**entre as 4 trilhas**, não só dentro de uma fileira. Nenhum cargo é truncado — cargo mais longo
+que isso pede aumentar a variável, não cortar o texto.
+
+### Cards "Em breve" (`.coordinator-card--soon`)
+A fileira tem largura **fixa de 1112px** no desktop (o `.container` trava em 1160px). Com 3–4
+pessoas confirmadas sobrava um vão à direita, então cada trilha é completada até **7 cards** com
+placeholders de silhueta e o nome "Em breve".
+
+- Silhueta desenhada em **CSS puro** (`.soon-avatar`, pseudo-elementos) — zero requisição, zero KB.
+- `aria-hidden="true"`: são decorativos, não entram na lista para leitor de tela.
+- Aparecem **só a partir de 1160px**. Abaixo disso somem — se ficassem, virariam overflow e o
+  usuário rolaria a fileira no celular só para encontrar "Em breve".
+- A conta: `7 × 148 + 6 × 12 = 1108`, contra 1112px disponíveis.
+
+> **Ao confirmar um palestrante, SUBSTITUA um card "Em breve"** pelo card real, em vez de
+> acrescentar. Assim o total continua 7 e a fileira segue fechada. Passando de 7 confirmados os
+> placeholders já acabaram, é só somar cards e a fileira passa a rolar de verdade.
+
 ### Coordenação das trilhas
 
 | Trilha | Coordenador 1 | Coordenador 2 |
@@ -114,6 +134,7 @@ das trilhas: ganhou dobra própria (`.general-coord`) logo abaixo do bloco de tr
 ### Recursos técnicos
 - Layout responsivo — a fileira só encolhe a largura do card (`--track-card-w`)
 - Scroll nativo com `scroll-snap` — sem biblioteca de carrossel
+- `ResizeObserver` recalcula `is-start`/`is-end` quando a fileira muda de largura
 - `prefers-reduced-motion` respeitado
 - Sem dependências externas
 
@@ -142,7 +163,9 @@ das trilhas: ganhou dobra própria (`.general-coord`) logo abaixo do bloco de tr
    `assets/img/coordinators/` (coordenação)
 2. Abra `index.html` e localize a seção `.tracks-section`
 3. Encontre a `.track-row` da trilha desejada (elas estão comentadas: `TRILHA 1`, `TRILHA 2`…)
-4. Cole o bloco no **fim da fileira** (coordenadores primeiro, palestrantes depois):
+4. Localize o **primeiro card "Em breve"** (`coordinator-card--soon`) da fileira e **substitua o
+   bloco inteiro** pelo card real. Se a trilha já não tiver mais nenhum "Em breve", aí é só colar
+   no fim da fileira (coordenadores primeiro, palestrantes depois):
 
 ```html
 <article class="coordinator-card coordinator-card--speaker" role="listitem">
@@ -162,7 +185,7 @@ das trilhas: ganhou dobra própria (`.general-coord`) logo abaixo do bloco de tr
 
 Para **coordenação**, remova o modificador `coordinator-card--speaker` (rótulo volta ao rosa) e
 troque o rótulo para `Coordenação`. **Sem empresa confirmada:** omita `.coordinator-company`.
-A fileira cresce para o lado — não é preciso mexer em altura nem em nenhum CSS.
+Não é preciso mexer em altura nem em nenhum CSS.
 
 ### Adicionar um palestrante
 1. Copie o bloco abaixo e cole dentro de `.speakers-grid`:

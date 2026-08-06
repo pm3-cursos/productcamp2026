@@ -794,8 +794,11 @@ window.dataLayer = window.dataLayer || [];
      horizontal: é assim que palestrante novo entra, sem esticar a altura. */
   .tracks-section {
     background: var(--navy-mid);
-    --track-card-w: 150px;
+    /* 148px = a medida que faz 7 cards preencherem exatamente a fileira:
+       7 × 148 + 6 × 12 = 1108, contra os 1112px fixos do .container. */
+    --track-card-w: 148px;
     --track-card-gap: 12px;
+    --track-info-h: 180px;
   }
 
   .tracks-header { margin-bottom: 32px; }
@@ -983,11 +986,13 @@ window.dataLayer = window.dataLayer || [];
     margin: 0;
   }
 
+  /* Altura FIXA (não min-height): dimensionada para o pior caso — nome em
+     2 linhas + empresa + cargo em 3 linhas. Assim os cards ficam iguais não
+     só dentro de uma fileira (onde o flex já esticava), mas entre as 4
+     trilhas. Nenhum cargo é truncado; sobra respiro nos cards curtos. */
   .coordinator-info {
     padding: 14px 14px 16px;
-    /* altura fixa pra o card não variar de tamanho conforme o texto
-       (com ou sem linha de empresa, todos os cards ficam iguais) */
-    min-height: 106px;
+    height: var(--track-info-h);
   }
 
   /* rótulo do tipo: ROSA = coordenação, CIANO = palestrante */
@@ -1026,6 +1031,76 @@ window.dataLayer = window.dataLayer || [];
     line-height: 1.35;
   }
 
+  /* ── CARD "EM BREVE" ──
+     Só existe para fechar a fileira no desktop, onde ela tem largura fixa
+     (1112px) e sobrariam lacunas. É decorativo: aria-hidden, sem conteúdo
+     indexável. Fica OCULTO por padrão e só aparece a partir de 1160px —
+     abaixo disso a fileira é mais estreita e os placeholders virariam
+     overflow, obrigando a rolar para achar só "Em breve". */
+  .coordinator-card--soon {
+    display: none;
+    background: transparent;
+    border-style: dashed;
+    cursor: default;
+  }
+
+  .coordinator-card--soon:hover {
+    border-color: var(--navy-border);
+    transform: none;
+  }
+
+  .coordinator-card--soon .coordinator-photo-wrap {
+    background: rgba(255,255,255,0.03);
+    display: grid;
+    place-items: center;
+  }
+
+  /* silhueta desenhada em CSS puro: zero requisição, zero KB */
+  .soon-avatar {
+    width: 46%;
+    aspect-ratio: 1;
+    position: relative;
+    opacity: 0.5;
+  }
+
+  .soon-avatar::before,
+  .soon-avatar::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--white-40);
+  }
+
+  /* cabeça */
+  .soon-avatar::before {
+    top: 6%;
+    width: 42%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+  }
+
+  /* ombros */
+  .soon-avatar::after {
+    bottom: 4%;
+    width: 78%;
+    height: 46%;
+    border-radius: 50% 50% 0 0 / 68% 68% 0 0;
+  }
+
+  .coordinator-card--soon .coordinator-divider { border-top-style: dashed; }
+
+  .coordinator-card--soon .coordinator-role { color: var(--white-40); }
+
+  .coordinator-card--soon .coordinator-name {
+    color: var(--white-40);
+    font-weight: 500;
+  }
+
+  @media (min-width: 1160px) {
+    .coordinator-card--soon { display: block; }
+  }
+
   /* ── RESPONSIVIDADE ── */
   @media (max-width: 900px) {
     .tracks-section { --track-card-w: 144px; }
@@ -1035,6 +1110,7 @@ window.dataLayer = window.dataLayer || [];
     .tracks-section {
       --track-card-w: 138px;
       --track-card-gap: 10px;
+      --track-info-h: 172px;
     }
 
     .track-lane + .track-lane { margin-top: 26px; padding-top: 24px; }
@@ -1042,7 +1118,7 @@ window.dataLayer = window.dataLayer || [];
     .track-lane-title { font-size: 17px; padding-left: 11px; }
     .track-lane-desc { font-size: 12.5px; padding-left: 14px; }
 
-    .coordinator-info { padding: 12px 12px 14px; min-height: 100px; }
+    .coordinator-info { padding: 12px 12px 14px; }
     .coordinator-name { font-size: 14px; }
     .coordinator-company { font-size: 12px; }
   }
@@ -2621,6 +2697,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ║                                                                  ║
   ║  Sem empresa confirmada? Omita a linha .coordinator-company —    ║
   ║  nunca use placeholder nem "ex-empresa".                         ║
+  ║                                                                  ║
+  ║  CADA TRILHA TEM 7 CARDS: os reais + cards "Em breve"            ║
+  ║  (.coordinator-card--soon), que existem só para fechar a fileira ║
+  ║  no desktop e somem sozinhos abaixo de 1160px.                   ║
+  ║  Ao confirmar um palestrante, SUBSTITUA um card "Em breve" pelo  ║
+  ║  card real em vez de acrescentar — assim o total segue 7 e a     ║
+  ║  fileira continua sem sobra nem rolagem à toa.                   ║
+  ║  Passando de 7 confirmados, aí sim é só somar: os "Em breve"     ║
+  ║  já acabaram e a fileira passa a rolar de verdade.               ║
   ╚══════════════════════════════════════════════════════════════════╝
 -->
 <section class="tracks-section" id="trilhas">
@@ -2679,6 +2764,44 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <div class="coordinator-name">Caio Tozzini</div>
               <div class="coordinator-company">ClickBus</div>
               <div class="coordinator-title">Sr. Director of Product Management</div>
+            </div>
+          </article>
+
+          <!-- Fecham a fileira no desktop. Ao confirmar um palestrante novo,
+               troque UM destes blocos pelo card real (some sozinho no mobile). -->
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
             </div>
           </article>
 
@@ -2753,6 +2876,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
           </article>
 
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
         </div>
         <button class="track-row-arrow track-row-arrow--next" type="button" aria-label="Ver mais pessoas da trilha Building &amp; Automation">
           <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
@@ -2824,6 +2974,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
           </article>
 
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
         </div>
         <button class="track-row-arrow track-row-arrow--next" type="button" aria-label="Ver mais pessoas da trilha Marketing &amp; Design">
           <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
@@ -2892,6 +3069,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <div class="coordinator-name">Stephanie Fischer de S. Campos</div>
               <div class="coordinator-company">Grupo Boticário</div>
               <div class="coordinator-title">Head de Produto e Engenharia (Ativação e Gen AI)</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
             </div>
           </article>
 
@@ -3707,6 +3911,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       };
 
       row.addEventListener('scroll', update, { passive: true });
+
+      // O update() inicial roda durante o parse. Se a largura da fileira ainda
+      // mudar depois (fonte carregando, breakpoint entrando, placeholder
+      // aparecendo), o ResizeObserver recalcula — sem ele dá para o estado
+      // travar com uma seta visível apontando para lugar nenhum.
+      if (window.ResizeObserver) {
+        new ResizeObserver(update).observe(row);
+      }
 
       wrap.querySelectorAll('.track-row-arrow').forEach(btn => {
         btn.addEventListener('click', () => {
