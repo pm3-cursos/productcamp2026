@@ -64,7 +64,8 @@ productcamp2026/
 | **Hero** | Mote: User. Builder. Thinker. Leader. com imagem de fundo |
 | **Stats** | +80 palestrantes, 6 palcos, +3.000 participantes, 2 dias — contador animado |
 | **About** | 4 pilares (User/Builder/Thinker/Leader) em grid responsivo |
-| **Trilhas** | 🆕 **Novo layout:** Coluna fixa (coordenadora geral) + abas interativas (4 trilhas com 2 coordenadores cada) |
+| **Trilhas** | 🆕 **Novo layout:** as 4 trilhas empilhadas e todas visíveis; cada uma é nome + descrição + fileira horizontal de cards |
+| **Coordenação geral** | Dobra dedicada à Priscila Lugão, em layout horizontal (foto ao lado do texto) |
 | **Speakers** | Grid 5 colunas — foto, empresa, nome e cargo |
 | **Local** | 2 colunas: texto + mosaico de fotos |
 | **Ingressos** | 2 cards (Passaporte e VIP) com preços |
@@ -77,24 +78,61 @@ productcamp2026/
 ## 🆕 Seção de Trilhas (Redesign 2026)
 
 ### Estrutura
-- **Coluna fixa (esquerda):** Coordenadora Geral (Priscila Lugão) — sempre visível
-- **Coluna direita:** 4 abas para navegar entre trilhas
-- **Cada aba:** 2 coordenadores (lado a lado) + descrição da trilha
+As **4 trilhas ficam todas visíveis**, empilhadas na página. **Não** existe container de altura fixa
+nem barra de rolagem vertical interna — ninguém precisa rolar uma barra para achar as outras trilhas.
 
-### Coordenadores
+Cada trilha (`.track-lane`) tem 3 níveis empilhados:
+1. **Nome** (`.track-lane-title`) — com a barra rosa de destaque à esquerda;
+2. **Descrição** (`.track-lane-desc`) — logo abaixo do nome, alinhada pelo mesmo eixo;
+3. **Fileira de cards** (`.track-row`) — coordenadores da trilha primeiro, palestrantes depois.
+
+Só a **fileira** rola, e na horizontal: **palestrante novo entra pelo lado, sem esticar a altura.**
+
+- **Desktop:** setas clicáveis nas pontas da fileira. Só aparecem quando há overflow e somem ao
+  chegar no início/fim (o JS aplica `is-start`/`is-end`).
+- **Mobile/touch:** sem setas — a fileira é arrastada com o dedo (swipe nativo). Os degradês nas
+  pontas continuam indicando que há mais gente para o lado.
+
+### Card (`.coordinator-card`)
+Sem badge sobre a foto (tampava o rosto). A distinção é pela **cor do rótulo na base**:
+**rosa = coordenação**, **ciano = palestrante** (`.coordinator-card--speaker`).
+Ordem das infos: rótulo → nome → **empresa** (destaque) → cargo (menor e apagado).
+Palestrante sem empresa: **omitir** a linha `.coordinator-company` — nunca usar placeholder.
+
+O bloco de texto do card tem **altura fixa** (`--track-info-h`), dimensionada para o pior caso
+(nome em 2 linhas + empresa + cargo em 3 linhas). É o que mantém todos os cards do mesmo tamanho
+**entre as 4 trilhas**, não só dentro de uma fileira. Nenhum cargo é truncado — cargo mais longo
+que isso pede aumentar a variável, não cortar o texto.
+
+### Card "Em breve" (`.coordinator-card--soon`)
+Cada trilha termina com **um** placeholder de silhueta com o nome "Em breve", sinalizando que a
+trilha ainda vai receber gente.
+
+- Silhueta desenhada em **CSS puro** (`.soon-avatar`, pseudo-elementos) — zero requisição, zero KB.
+- `aria-hidden="true"`: é decorativo, não entra na lista para leitor de tela.
+- Aparece **só a partir de 1160px**. No mobile a fileira já rola, e um card sem informação no fim
+  da rolagem só entrega frustração.
+
+> **Ao confirmar um palestrante, cole o card real ANTES do "Em breve"** — ele fica sempre por
+> último na fileira.
+
+### Coordenação das trilhas
 
 | Trilha | Coordenador 1 | Coordenador 2 |
 |--------|---------------|---------------|
-| **Geral** | Priscila Lugão — Product Coordinator · Med Review | — |
-| **Product Management** | Eduardo Borges — Sherwin-Williams | Ingrid Coutinho — Itaú |
+| **Product Management** | Eduardo Borges — Monuv | Ingrid Coutinho — Itaú |
 | **Building & Automation** | Gabriel Werlich — Conta Mais | Talita Paoletti — Grupo Boticário |
 | **Marketing & Design** | Mariana Tosi — Insider One | Alex Soares — Totvs |
 | **Liderança & Negócios** | Rafael Justino — Serrabits | Fernanda Faria — Nubank |
 
+A **Coordenação Geral** (Priscila Lugão — Product Coordinator, Med Review) não aparece mais dentro
+das trilhas: ganhou dobra própria (`.general-coord`) logo abaixo do bloco de trilhas.
+
 ### Recursos técnicos
-- Layout bifurcado responsivo (desktop 2 colunas, tablet/mobile stacked)
-- Abas interativas com navegação suave (fade-in 0.3s)
-- Coordenadora geral sticky (segue ao scroll)
+- Layout responsivo — a fileira só encolhe a largura do card (`--track-card-w`)
+- Scroll nativo com `scroll-snap` — sem biblioteca de carrossel
+- `ResizeObserver` recalcula `is-start`/`is-end` quando a fileira muda de largura
+- `prefers-reduced-motion` respeitado
 - Sem dependências externas
 
 ---
@@ -117,26 +155,33 @@ productcamp2026/
 3. Edite e salve
 4. Faça upload no GitHub → site atualiza em ~1 minuto
 
-### Adicionar/Atualizar coordenador de trilha
-1. Copie a foto em `.jpg` para a raiz do repositório
+### Adicionar palestrante ou coordenador a uma trilha
+1. Suba a foto **400×400 em `.webp`** em `assets/img/speakers/` (palestrante) ou
+   `assets/img/coordinators/` (coordenação)
 2. Abra `index.html` e localize a seção `.tracks-section`
-3. Encontre a trilha desejada (`id="tab-pm"`, `id="tab-building"`, etc.)
-4. Atualize o bloco do coordenador:
+3. Encontre a `.track-row` da trilha desejada (elas estão comentadas: `TRILHA 1`, `TRILHA 2`…)
+4. Cole o bloco **logo antes do card "Em breve"** (`coordinator-card--soon`), que fecha a fileira.
+   A ordem dentro da fileira é: coordenadores, palestrantes, "Em breve":
 
 ```html
-<div class="coordinator-card">
+<article class="coordinator-card coordinator-card--speaker" role="listitem">
   <div class="coordinator-photo-wrap">
-    <span class="coordinator-badge">Coordenador/a</span>
-    <img src="nome_coordenador.jpg" width="400" height="500" alt="Nome Completo" loading="lazy">
+    <img src="assets/img/speakers/sp-nome.webp" width="400" height="400"
+         alt="Foto de Nome Completo, Cargo na Empresa" loading="lazy">
   </div>
   <hr class="coordinator-divider">
   <div class="coordinator-info">
-    <span class="coordinator-role">Coordenador/a da Trilha</span>
+    <span class="coordinator-role">Palestrante</span>
     <div class="coordinator-name">Nome Completo</div>
-    <div class="coordinator-title">Cargo · Empresa</div>
+    <div class="coordinator-company">Empresa</div>
+    <div class="coordinator-title">Cargo</div>
   </div>
-</div>
+</article>
 ```
+
+Para **coordenação**, remova o modificador `coordinator-card--speaker` (rótulo volta ao rosa) e
+troque o rótulo para `Coordenação`. **Sem empresa confirmada:** omita `.coordinator-company`.
+Não é preciso mexer em altura nem em nenhum CSS.
 
 ### Adicionar um palestrante
 1. Copie o bloco abaixo e cole dentro de `.speakers-grid`:

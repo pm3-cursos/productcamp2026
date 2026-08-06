@@ -787,94 +787,153 @@ window.dataLayer = window.dataLayer || [];
 
   .tag:hover { border-color: var(--pink); color: var(--pink); }
 
-  /* ── TRILHAS ── */
-  .tracks-section { background: var(--navy-mid); }
-
-  .tracks-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 48px;
-    flex-wrap: wrap;
-    gap: 16px;
+  /* ── TRILHAS ──
+     As 4 trilhas ficam TODAS visíveis, empilhadas na página (sem container de
+     altura fixa e sem barra de rolagem vertical interna). Cada trilha tem
+     3 níveis: nome → descrição → fileira de cards. Só a FILEIRA rola, e na
+     horizontal: é assim que palestrante novo entra, sem esticar a altura. */
+  .tracks-section {
+    background: var(--navy-mid);
+    --track-card-w: 148px;
+    --track-card-gap: 12px;
+    --track-info-h: 180px;
   }
 
-  /* ── ABAS DE NAVEGAÇÃO ── */
-  .tracks-tabs-nav {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 32px;
-    border-bottom: 1px solid var(--navy-border);
-    padding-bottom: 0;
-    flex-wrap: wrap;
+  .tracks-header { margin-bottom: 32px; }
+  .tracks-header .section-subtitle { margin-top: 4px; }
+
+  /* ── UMA TRILHA = NOME + DESCRIÇÃO + FILEIRA ── */
+  .track-lane + .track-lane {
+    border-top: 1px solid var(--navy-border);
+    margin-top: 32px;
+    padding-top: 28px;
   }
 
-  .track-tab-btn {
-    background: none;
-    border: none;
-    color: var(--white-40);
-    font-size: 15px;
+  .track-lane-head { margin-bottom: 16px; }
+
+  /* barra de destaque no nome da trilha; a descrição alinha pelo mesmo eixo */
+  .track-lane-title {
+    font-family: var(--font-display);
+    font-size: 19px;
     font-weight: 600;
-    font-family: var(--font-body);
-    padding: 14px 18px;
-    cursor: pointer;
-    transition: color 0.2s, border-color 0.2s;
-    border-bottom: 2px solid transparent;
-    position: relative;
-    bottom: -1px;
-  }
-
-  .track-tab-btn:hover {
-    color: var(--white-70);
-  }
-
-  .track-tab-btn.active {
+    line-height: 1.25;
+    letter-spacing: -0.01em;
     color: var(--white);
-    border-bottom-color: var(--pink);
+    border-left: 3px solid var(--pink);
+    padding-left: 13px;
   }
 
-  /* Conteúdo das abas */
-  .tracks-tab-content {
-    display: none;
-  }
-
-  .tracks-tab-content.active {
-    display: block;
-    animation: fadeIn 0.3s ease;
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ── DESCRIÇÃO (TOPO, FULL WIDTH) ── */
-  .track-description {
-    background: var(--navy-card);
-    border: 1px solid var(--navy-border);
-    border-radius: 14px;
-    padding: 24px;
-    font-size: 15px;
+  .track-lane-desc {
+    font-size: 13px;
     color: var(--white-70);
-    line-height: 1.7;
-    margin-bottom: 28px;
+    line-height: 1.55;
+    max-width: 780px;
+    margin-top: 8px;
+    padding-left: 16px;
   }
 
-  /* ── LAYOUT GRID: 3 COLUNAS (PRISCILA | COORD 1 | COORD 2) ──
-     Largura da coluna calculada para igualar o tamanho dos cards
-     de .speakers-grid (5 colunas, gap 12px, mesmo .container 1160px),
-     pra foto de coordenador e de palestrante ficarem no mesmo tamanho. */
-  .tracks-content-grid {
-    display: grid;
-    grid-template-columns: repeat(3, calc((min(100vw, 1160px) - 96px) / 5));
-    justify-content: center;
-    gap: 20px;
+  /* ── FILEIRA HORIZONTAL DE CARDS ── */
+  .track-row-wrap {
+    position: relative;
+    min-width: 0;
   }
 
-  /* ── COLUNA ESQUERDA: PRISCILA ── */
-  .general-coordinator-col {
+  .track-row {
     display: flex;
-    flex-direction: column;
+    gap: var(--track-card-gap);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .track-row::-webkit-scrollbar { display: none; }
+
+  .track-row > .coordinator-card {
+    flex: 0 0 var(--track-card-w);
+    width: var(--track-card-w);
+    scroll-snap-align: start;
+  }
+
+  /* degradê nas pontas: indica que a fileira continua (também no mobile) */
+  .track-row-wrap::before,
+  .track-row-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 48px;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .track-row-wrap::before {
+    left: 0;
+    background: linear-gradient(90deg, var(--navy-mid), rgba(35,23,49,0));
+  }
+
+  .track-row-wrap::after {
+    right: 0;
+    background: linear-gradient(270deg, var(--navy-mid), rgba(35,23,49,0));
+  }
+
+  .track-row-wrap:not(.is-start)::before,
+  .track-row-wrap:not(.is-end)::after { opacity: 1; }
+
+  /* setas clicáveis nas pontas (somem no início/fim da fileira) */
+  .track-row-arrow {
+    position: absolute;
+    /* centralizado na foto do card (altura da foto = largura × 4/3) */
+    top: calc(var(--track-card-w) * 2 / 3);
+    transform: translateY(-50%);
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(43,30,57,0.94);
+    border: 1px solid var(--navy-border);
+    color: var(--white);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    z-index: 3;
+    padding: 0;
+    transition: opacity 0.2s, visibility 0.2s, background 0.2s, border-color 0.2s;
+  }
+
+  .track-row-arrow:hover {
+    background: var(--pink);
+    border-color: var(--pink);
+  }
+
+  .track-row-arrow svg {
+    width: 16px; height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .track-row-arrow--prev { left: 4px; }
+  .track-row-arrow--next { right: 4px; }
+
+  /* setas só aparecem quando a fileira tem overflow (JS aplica is-start/is-end) */
+  .track-row-wrap.is-start .track-row-arrow--prev,
+  .track-row-wrap.is-end .track-row-arrow--next {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  /* mobile/touch: sem setas — a fileira é arrastada com o dedo.
+     Os degradês nas pontas seguem indicando que há mais gente para o lado. */
+  @media (hover: none) and (pointer: coarse) {
+    .track-row-arrow { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .track-row { scroll-behavior: auto; }
   }
 
   .coordinator-card {
@@ -913,21 +972,9 @@ window.dataLayer = window.dataLayer || [];
     transform: scale(1.04);
   }
 
-  .coordinator-badge {
-    position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: white;
-    border-radius: 100px;
-    padding: 4px 14px;
-    font-size: 11px;
-    font-weight: 600;
-    color: #111;
-    white-space: nowrap;
-    letter-spacing: 0.01em;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    z-index: 2;
+  /* palestrante: mesma estrutura, acento ciano (coordenação fica no rosa) */
+  .coordinator-card--speaker:hover {
+    border-color: rgba(24,206,244,0.45);
   }
 
   .coordinator-divider {
@@ -937,82 +984,243 @@ window.dataLayer = window.dataLayer || [];
     margin: 0;
   }
 
+  /* Altura FIXA (não min-height): dimensionada para o pior caso — nome em
+     2 linhas + empresa + cargo em 3 linhas. Assim os cards ficam iguais não
+     só dentro de uma fileira (onde o flex já esticava), mas entre as 4
+     trilhas. Nenhum cargo é truncado; sobra respiro nos cards curtos. */
   .coordinator-info {
-    padding: 18px 16px 20px;
-    /* altura fixa pra o card não variar de tamanho conforme o texto (nome/cargo) */
-    min-height: 140px;
+    padding: 14px 14px 16px;
+    height: var(--track-info-h);
   }
 
+  /* rótulo do tipo: ROSA = coordenação, CIANO = palestrante */
   .coordinator-role {
     font-size: 10px;
     font-weight: 600;
     color: var(--pink);
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    margin-bottom: 8px;
+    margin-bottom: 7px;
     display: block;
   }
 
+  .coordinator-card--speaker .coordinator-role { color: var(--cyan); }
+
   .coordinator-name {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--white);
     line-height: 1.25;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
+  }
+
+  /* empresa em linha própria e com mais destaque que o cargo */
+  .coordinator-company {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.3;
+    margin-bottom: 3px;
   }
 
   .coordinator-title {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--white-70);
-    line-height: 1.4;
+    line-height: 1.35;
   }
 
-  /* ── COLUNA DIREITA: 2 COORDENADORES ── */
-  .track-coordinators-grid {
-    display: contents;
+  /* ── CARD "EM BREVE" ──
+     Um por trilha, sempre no fim da fileira: sinaliza que ainda vem gente.
+     É decorativo — aria-hidden, sem conteúdo indexável. Fica OCULTO por
+     padrão e só aparece a partir de 1160px: no mobile a fileira já rola,
+     e um card sem informação no fim da rolagem só entrega frustração. */
+  .coordinator-card--soon {
+    display: none;
+    background: transparent;
+    border-style: dashed;
+    cursor: default;
   }
 
-  .track-coordinators-row {
-    display: contents;
+  .coordinator-card--soon:hover {
+    border-color: var(--navy-border);
+    transform: none;
+  }
+
+  .coordinator-card--soon .coordinator-photo-wrap {
+    background: rgba(255,255,255,0.03);
+    display: grid;
+    place-items: center;
+  }
+
+  /* silhueta desenhada em CSS puro: zero requisição, zero KB */
+  .soon-avatar {
+    width: 46%;
+    aspect-ratio: 1;
+    position: relative;
+    opacity: 0.5;
+  }
+
+  .soon-avatar::before,
+  .soon-avatar::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--white-40);
+  }
+
+  /* cabeça */
+  .soon-avatar::before {
+    top: 6%;
+    width: 42%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+  }
+
+  /* ombros */
+  .soon-avatar::after {
+    bottom: 4%;
+    width: 78%;
+    height: 46%;
+    border-radius: 50% 50% 0 0 / 68% 68% 0 0;
+  }
+
+  .coordinator-card--soon .coordinator-divider { border-top-style: dashed; }
+
+  .coordinator-card--soon .coordinator-role { color: var(--white-40); }
+
+  .coordinator-card--soon .coordinator-name {
+    color: var(--white-40);
+    font-weight: 500;
+  }
+
+  @media (min-width: 1160px) {
+    .coordinator-card--soon { display: block; }
   }
 
   /* ── RESPONSIVIDADE ── */
-  @media (max-width: 1024px) {
-    .tracks-header {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .section-subtitle {
-      text-align: left;
-      max-width: 100%;
-    }
+  @media (max-width: 900px) {
+    .tracks-section { --track-card-w: 144px; }
   }
 
   @media (max-width: 768px) {
-    .tracks-header {
-      flex-direction: column;
-      align-items: flex-start;
+    .tracks-section {
+      --track-card-w: 138px;
+      --track-card-gap: 10px;
+      --track-info-h: 172px;
     }
 
-    .section-subtitle {
-      text-align: left;
-      max-width: 100%;
+    .track-lane + .track-lane { margin-top: 26px; padding-top: 24px; }
+
+    .track-lane-title { font-size: 17px; padding-left: 11px; }
+    .track-lane-desc { font-size: 12.5px; padding-left: 14px; }
+
+    .coordinator-info { padding: 12px 12px 14px; }
+    .coordinator-name { font-size: 14px; }
+    .coordinator-company { font-size: 12px; }
+  }
+
+  /* ── COORDENAÇÃO GERAL DE CONTEÚDO ──
+     Layout horizontal (foto ao lado do texto), diferente do card vertical
+     das trilhas e do bloco centralizado do keynote. */
+  .general-coord {
+    background: var(--navy-mid);
+    padding-top: 8px;
+  }
+
+  .general-coord .section-title { margin-bottom: 20px; }
+
+  .gc-panel {
+    position: relative;
+    display: grid;
+    grid-template-columns: 168px 1fr;
+    gap: 28px;
+    align-items: center;
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 20px;
+    padding: 24px 28px;
+    overflow: hidden;
+    transition: border-color 0.25s;
+  }
+
+  .gc-panel:hover { border-color: rgba(223,12,120,0.4); }
+
+  .gc-panel::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--pink), var(--cyan));
+  }
+
+  .gc-photo {
+    width: 168px;
+    height: 168px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--navy-border);
+    background: var(--navy);
+  }
+
+  .gc-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+  }
+
+  .gc-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--pink);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .gc-name {
+    font-family: var(--font-display);
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-bottom: 6px;
+  }
+
+  /* mesma hierarquia dos cards das trilhas: empresa acima do cargo */
+  .gc-company {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    line-height: 1.4;
+  }
+
+  .gc-title {
+    font-size: 13px;
+    color: var(--white-70);
+    line-height: 1.4;
+    margin-bottom: 14px;
+  }
+
+  .gc-desc {
+    font-size: 15px;
+    color: var(--white-70);
+    line-height: 1.65;
+    max-width: 660px;
+  }
+
+  @media (max-width: 768px) {
+    .gc-panel {
+      grid-template-columns: 1fr;
+      gap: 18px;
+      padding: 22px 20px;
     }
 
-    .tracks-tabs-nav {
-      gap: 4px;
-    }
-
-    .track-tab-btn {
-      padding: 12px 12px;
-      font-size: 13px;
-    }
-
-    .track-description {
-      padding: 18px;
-      font-size: 14px;
-    }
+    .gc-photo { width: 120px; height: 120px; }
+    .gc-name { font-size: 22px; }
+    .gc-desc { font-size: 14px; }
   }
 
   /* ── KEYNOTE (primeiro keynote confirmado) ── */
@@ -1948,11 +2156,7 @@ window.dataLayer = window.dataLayer || [];
     .about-inner { grid-template-columns: 1fr; }
     .speakers-grid { grid-template-columns: repeat(3, 1fr); }
     .pillars-grid { grid-template-columns: 1fr 1fr; }
-    .tracks-grid { grid-template-columns: 1fr 1fr; }
-    .tracks-header { flex-direction: column; align-items: flex-start; }
-    .tracks-header p { text-align: left !important; }
     .speakers-grid { grid-template-columns: repeat(2, 1fr); }
-    .tracks-content-grid { grid-template-columns: repeat(2, calc((min(100vw, 1160px) - 60px) / 2)); }
     .venue-layout { grid-template-columns: 1fr; }
     .venue-photos { grid-template-columns: 1fr 1fr; }
     .venue-photo:first-child { grid-column: span 2; aspect-ratio: 16/7; }
@@ -2172,9 +2376,8 @@ window.dataLayer = window.dataLayer || [];
   .footer-logo-link { display: inline-block; margin-bottom: 12px; }
   .is-centered { justify-content: center; }
   .text-center { text-align: center; }
-  .section-subtitle--right { max-width: 340px; text-align: right; }
   .section-subtitle--center { margin: 0 auto; }
-  .track-photo--top { object-position: center top; }
+  .section-title--sm { font-size: clamp(22px, 2.6vw, 30px); }
   .venue-img--center { object-position: center center; }
   .venue-img--top { object-position: center top; }
   .venue-img--low { object-position: center 20%; }
@@ -2194,7 +2397,6 @@ window.dataLayer = window.dataLayer || [];
   .ticket-note { font-size: 12px; color: var(--white-40); margin-top: 10px; text-align: center; }
   .muted-line { font-size: 12px; color: var(--white-40); margin-bottom: 4px; }
   @media (max-width: 560px) {
-    .tracks-grid { grid-template-columns: 1fr 1fr; }
     section { padding: 64px 0; }
     .hero-title { font-size: 32px; }
     .pillars-grid { grid-template-columns: 1fr; }
@@ -2468,228 +2670,375 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </section>
 
 <!-- TRILHAS -->
-<section class="tracks-section">
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  COMO ADICIONAR UM PALESTRANTE A UMA TRILHA                      ║
+  ║  Cole o bloco abaixo no FIM da .track-row da trilha desejada     ║
+  ║  (depois dos coordenadores). A fileira cresce para o lado —      ║
+  ║  a altura da seção não muda.                                     ║
+  ║                                                                  ║
+  ║  <article class="coordinator-card coordinator-card--speaker">    ║
+  ║    <div class="coordinator-photo-wrap">                          ║
+  ║      <img src="assets/img/speakers/sp-nome.webp"                 ║
+  ║           width="400" height="400" alt="Foto de Nome, Cargo      ║
+  ║           na Empresa" loading="lazy">                            ║
+  ║    </div>                                                        ║
+  ║    <hr class="coordinator-divider">                              ║
+  ║    <div class="coordinator-info">                                ║
+  ║      <span class="coordinator-role">Palestrante</span>           ║
+  ║      <div class="coordinator-name">Nome Completo</div>           ║
+  ║      <div class="coordinator-company">Empresa</div>              ║
+  ║      <div class="coordinator-title">Cargo</div>                  ║
+  ║    </div>                                                        ║
+  ║  </article>                                                      ║
+  ║                                                                  ║
+  ║  Sem empresa confirmada? Omita a linha .coordinator-company —    ║
+  ║  nunca use placeholder nem "ex-empresa".                         ║
+  ║                                                                  ║
+  ║  Cada trilha termina com UM card "Em breve"                      ║
+  ║  (.coordinator-card--soon), que sinaliza que ainda vem gente e   ║
+  ║  some sozinho abaixo de 1160px. Cole o card novo ANTES dele —    ║
+  ║  o "Em breve" fica sempre por último.                            ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<section class="tracks-section" id="trilhas">
   <div class="container">
     <div class="tracks-header">
-      <div>
-        <div class="section-label">Trilhas de conteúdo</div>
-        <h2 class="section-title">+60 palestras em<br>4 trilhas de conhecimento</h2>
-      </div>
-      <p class="section-subtitle section-subtitle--right">Aprendizado na prática com os maiores nomes do mercado em um só lugar.</p>
+      <div class="section-label">Trilhas de conteúdo</div>
+      <h2 class="section-title">+60 palestras em<br>4 trilhas de conhecimento</h2>
+      <p class="section-subtitle">Aprendizado na prática com os maiores nomes do mercado em um só lugar.</p>
     </div>
 
-    <!-- ABAS DE NAVEGAÇÃO -->
-    <div class="tracks-tabs-nav">
-      <button class="track-tab-btn active" data-tab="pm">Product Management</button>
-      <button class="track-tab-btn" data-tab="building">Building & Automation</button>
-      <button class="track-tab-btn" data-tab="marketing">Marketing & Design</button>
-      <button class="track-tab-btn" data-tab="leadership">Liderança & Negócios</button>
-    </div>
-
-    <!-- TAB 1: PRODUCT MANAGEMENT -->
-    <div class="tracks-tab-content active" id="tab-pm">
-      <div class="track-description">
-        Da descoberta à decisão: desenvolva o product sense, a visão estratégica e a capacidade de priorização necessárias para construir produtos relevantes em um mundo impulsionado por IA.
+    <!-- TRILHA 1: PRODUCT MANAGEMENT -->
+    <div class="track-lane">
+      <div class="track-lane-head">
+        <h3 class="track-lane-title">Product Management</h3>
+        <p class="track-lane-desc">Da descoberta à decisão: desenvolva o product sense, a visão estratégica e a capacidade de priorização necessárias para construir produtos relevantes em um mundo impulsionado por IA.</p>
       </div>
-      <div class="tracks-content-grid">
-        <div class="general-coordinator-col">
-          <div class="coordinator-card">
+      <div class="track-row-wrap is-start">
+        <button class="track-row-arrow track-row-arrow--prev" type="button" aria-label="Ver pessoas anteriores da trilha Product Management">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="track-row" role="list" aria-label="Coordenação e palestrantes da trilha Product Management">
+
+          <article class="coordinator-card" role="listitem">
             <div class="coordinator-photo-wrap">
-              <span class="coordinator-badge">Coordenação Geral</span>
-              <img src="assets/img/coordinators/priscila_lugao.webp" width="400" height="400" alt="Priscila Lugão" loading="lazy">
+              <img src="assets/img/coordinators/eduardo_borges.webp" width="400" height="400" alt="Foto de Eduardo Borges, Staff Product Manager na Monuv" loading="lazy">
             </div>
             <hr class="coordinator-divider">
             <div class="coordinator-info">
-              <span class="coordinator-role">Coordenadora Geral</span>
-              <div class="coordinator-name">Priscila Lugão</div>
-              <div class="coordinator-title">Product Coordinator · Med Review</div>
+              <span class="coordinator-role">Coordenação</span>
+              <div class="coordinator-name">Eduardo Borges</div>
+              <div class="coordinator-company">Monuv</div>
+              <div class="coordinator-title">Staff Product Manager</div>
             </div>
-          </div>
-        </div>
-        <div class="track-coordinators-grid">
-          <div class="track-coordinators-row">
-            <div class="coordinator-card">
-              <div class="coordinator-photo-wrap">
-                <span class="coordinator-badge">Coordenador</span>
-                <img src="assets/img/coordinators/eduardo_borges.webp" width="400" height="400" alt="Eduardo Borges" loading="lazy">
-              </div>
-              <hr class="coordinator-divider">
-              <div class="coordinator-info">
-                <span class="coordinator-role">Coordenador da Trilha</span>
-                <div class="coordinator-name">Eduardo Borges</div>
-                <div class="coordinator-title">Staff Product Manager · Monuv</div>
-              </div>
-            </div>
-            <div class="coordinator-card">
-              <div class="coordinator-photo-wrap">
-                <span class="coordinator-badge">Coordenadora</span>
-                <img src="assets/img/coordinators/ingrid_coutinho.webp" width="400" height="400" alt="Ingrid Coutinho" loading="lazy">
-              </div>
-              <hr class="coordinator-divider">
-              <div class="coordinator-info">
-                <span class="coordinator-role">Coordenadora da Trilha</span>
-                <div class="coordinator-name">Ingrid Coutinho</div>
-                <div class="coordinator-title">Product Manager · Itaú</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </article>
 
-    <!-- TAB 2: BUILDING & AUTOMATION -->
-    <div class="tracks-tab-content" id="tab-building">
-      <div class="track-description">
-        Do hype à aplicação: descubra como a IA está transformando produtos, operações e negócios, ampliando a capacidade de construir, automatizar e escalar resultados.
-      </div>
-      <div class="tracks-content-grid">
-        <div class="general-coordinator-col">
-          <div class="coordinator-card">
+          <article class="coordinator-card" role="listitem">
             <div class="coordinator-photo-wrap">
-              <span class="coordinator-badge">Coordenação Geral</span>
-              <img src="assets/img/coordinators/priscila_lugao.webp" width="400" height="400" alt="Priscila Lugão" loading="lazy">
+              <img src="assets/img/coordinators/ingrid_coutinho.webp" width="400" height="400" alt="Foto de Ingrid Coutinho, Product Manager no Itaú" loading="lazy">
             </div>
             <hr class="coordinator-divider">
             <div class="coordinator-info">
-              <span class="coordinator-role">Coordenadora Geral</span>
-              <div class="coordinator-name">Priscila Lugão</div>
-              <div class="coordinator-title">Product Coordinator · Med Review</div>
+              <span class="coordinator-role">Coordenação</span>
+              <div class="coordinator-name">Ingrid Coutinho</div>
+              <div class="coordinator-company">Itaú</div>
+              <div class="coordinator-title">Product Manager</div>
             </div>
-          </div>
-        </div>
-        <div class="track-coordinators-grid">
-          <div class="track-coordinators-row">
-            <div class="coordinator-card">
-              <div class="coordinator-photo-wrap">
-                <span class="coordinator-badge">Coordenador</span>
-                <img src="assets/img/coordinators/Gabriel_Werlich.webp" width="400" height="400" alt="Gabriel Werlich" loading="lazy">
-              </div>
-              <hr class="coordinator-divider">
-              <div class="coordinator-info">
-                <span class="coordinator-role">Coordenador da Trilha</span>
-                <div class="coordinator-name">Gabriel Werlich</div>
-                <div class="coordinator-title">Co-Founder & Product Director · Conta Mais</div>
-              </div>
-            </div>
-            <div class="coordinator-card">
-              <div class="coordinator-photo-wrap">
-                <span class="coordinator-badge">Coordenadora</span>
-                <img src="assets/img/coordinators/Talita_Paoletti.webp" width="400" height="400" alt="Talita Paoletti" loading="lazy">
-              </div>
-              <hr class="coordinator-divider">
-              <div class="coordinator-info">
-                <span class="coordinator-role">Coordenadora da Trilha</span>
-                <div class="coordinator-name">Talita Paoletti</div>
-                <div class="coordinator-title">Group Product Manager · Grupo Boticário</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+          </article>
 
-    <!-- TAB 3: MARKETING & DESIGN -->
-    <div class="tracks-tab-content" id="tab-marketing">
-      <div class="track-description">
-        Aquisição, retenção e monetização: tudo o que você precisa para criar experiências relevantes e impulsionar o crescimento de produtos e negócios.
-      </div>
-      <div class="tracks-content-grid">
-        <div class="general-coordinator-col">
-          <div class="coordinator-card">
+          <article class="coordinator-card coordinator-card--speaker" role="listitem">
             <div class="coordinator-photo-wrap">
-              <span class="coordinator-badge">Coordenação Geral</span>
-              <img src="assets/img/coordinators/priscila_lugao.webp" width="400" height="400" alt="Priscila Lugão" loading="lazy">
+              <img src="assets/img/speakers/sp-caio-tozzini.webp" width="400" height="400" alt="Foto de Caio Tozzini, Sr. Director of Product Management na ClickBus" loading="lazy">
             </div>
             <hr class="coordinator-divider">
             <div class="coordinator-info">
-              <span class="coordinator-role">Coordenadora Geral</span>
-              <div class="coordinator-name">Priscila Lugão</div>
-              <div class="coordinator-title">Product Coordinator · Med Review</div>
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Caio Tozzini</div>
+              <div class="coordinator-company">ClickBus</div>
+              <div class="coordinator-title">Sr. Director of Product Management</div>
             </div>
-          </div>
+          </article>
+
+          <!-- Sinaliza que a trilha ainda vai receber gente. Ao confirmar um
+               palestrante novo, ADICIONE o card real antes deste bloco — o
+               "Em breve" fica sempre por último. Some sozinho no mobile. -->
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
         </div>
-        <div class="track-coordinators-grid">
-          <div class="track-coordinators-row">
-            <div class="coordinator-card">
-              <div class="coordinator-photo-wrap">
-                <span class="coordinator-badge">Coordenadora</span>
-                <img src="assets/img/coordinators/Mariana_Tosi.webp" width="400" height="400" alt="Mariana Tosi" loading="lazy">
-              </div>
-              <hr class="coordinator-divider">
-              <div class="coordinator-info">
-                <span class="coordinator-role">Coordenadora da Trilha</span>
-                <div class="coordinator-name">Mariana Tosi</div>
-                <div class="coordinator-title">Marketing Manager · Insider One</div>
-              </div>
-            </div>
-            <div class="coordinator-card">
-              <div class="coordinator-photo-wrap">
-                <span class="coordinator-badge">Coordenador</span>
-                <img src="assets/img/coordinators/Alex_Soares.webp" width="400" height="400" alt="Alex Soares" loading="lazy">
-              </div>
-              <hr class="coordinator-divider">
-              <div class="coordinator-info">
-                <span class="coordinator-role">Coordenador da Trilha</span>
-                <div class="coordinator-name">Alex Soares</div>
-                <div class="coordinator-title">Design Lead · Totvs</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <button class="track-row-arrow track-row-arrow--next" type="button" aria-label="Ver mais pessoas da trilha Product Management">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
       </div>
     </div>
 
-    <!-- TAB 4: LIDERANÇA & NEGÓCIOS -->
-    <div class="tracks-tab-content" id="tab-leadership">
-      <div class="track-description">
-        Liderança que inspira, estratégia que posiciona: aprenda a conectar pessoas, tecnologia e negócios para construir organizações mais inteligentes, competitivas e preparadas para o futuro.
+    <!-- TRILHA 2: BUILDING & AUTOMATION -->
+    <div class="track-lane">
+      <div class="track-lane-head">
+        <h3 class="track-lane-title">Building &amp; Automation</h3>
+        <p class="track-lane-desc">Do hype à aplicação: descubra como a IA está transformando produtos, operações e negócios, ampliando a capacidade de construir, automatizar e escalar resultados.</p>
       </div>
-      <div class="tracks-content-grid">
-        <div class="general-coordinator-col">
-          <div class="coordinator-card">
+      <div class="track-row-wrap is-start">
+        <button class="track-row-arrow track-row-arrow--prev" type="button" aria-label="Ver pessoas anteriores da trilha Building &amp; Automation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="track-row" role="list" aria-label="Coordenação e palestrantes da trilha Building &amp; Automation">
+
+          <article class="coordinator-card" role="listitem">
             <div class="coordinator-photo-wrap">
-              <span class="coordinator-badge">Coordenação Geral</span>
-              <img src="assets/img/coordinators/priscila_lugao.webp" width="400" height="400" alt="Priscila Lugão" loading="lazy">
+              <img src="assets/img/coordinators/Gabriel_Werlich.webp" width="400" height="400" alt="Foto de Gabriel Werlich, Co-Founder e Product Director na Conta Mais" loading="lazy">
             </div>
             <hr class="coordinator-divider">
             <div class="coordinator-info">
-              <span class="coordinator-role">Coordenadora Geral</span>
-              <div class="coordinator-name">Priscila Lugão</div>
-              <div class="coordinator-title">Product Coordinator · Med Review</div>
+              <span class="coordinator-role">Coordenação</span>
+              <div class="coordinator-name">Gabriel Werlich</div>
+              <div class="coordinator-company">Conta Mais</div>
+              <div class="coordinator-title">Co-Founder &amp; Product Director</div>
             </div>
-          </div>
+          </article>
+
+          <article class="coordinator-card" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/coordinators/Talita_Paoletti.webp" width="400" height="400" alt="Foto de Talita Paoletti, Group Product Manager no Grupo Boticário" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Coordenação</span>
+              <div class="coordinator-name">Talita Paoletti</div>
+              <div class="coordinator-company">Grupo Boticário</div>
+              <div class="coordinator-title">Group Product Manager</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--speaker" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/speakers/sp-ayana-meyer.webp" width="400" height="400" alt="Foto de Ayana Meyer, Tech Director no iFood" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Ayana Meyer</div>
+              <div class="coordinator-company">iFood</div>
+              <div class="coordinator-title">Tech Director</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--speaker" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/speakers/sp-marcell-almeida.webp" width="400" height="400" alt="Foto de Marcell Almeida, Builder na Alun Future Studio" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Marcell Almeida</div>
+              <div class="coordinator-company">Alun Future Studio</div>
+              <div class="coordinator-title">Builder</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
         </div>
-        <div class="track-coordinators-grid">
-          <div class="track-coordinators-row">
-            <div class="coordinator-card">
-              <div class="coordinator-photo-wrap">
-                <span class="coordinator-badge">Coordenador</span>
-                <img src="assets/img/coordinators/Rafael_Justino.webp" width="400" height="400" alt="Rafael Justino" loading="lazy">
-              </div>
-              <hr class="coordinator-divider">
-              <div class="coordinator-info">
-                <span class="coordinator-role">Coordenador da Trilha</span>
-                <div class="coordinator-name">Rafael Justino</div>
-                <div class="coordinator-title">CPO · Serrabits</div>
-              </div>
-            </div>
-            <div class="coordinator-card">
-              <div class="coordinator-photo-wrap">
-                <span class="coordinator-badge">Coordenadora</span>
-                <img src="assets/img/coordinators/Fernanda_Faria.webp" width="400" height="400" alt="Fernanda Faria" loading="lazy">
-              </div>
-              <hr class="coordinator-divider">
-              <div class="coordinator-info">
-                <span class="coordinator-role">Coordenadora da Trilha</span>
-                <div class="coordinator-name">Fernanda Faria</div>
-                <div class="coordinator-title">Product Manager · Nubank</div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <button class="track-row-arrow track-row-arrow--next" type="button" aria-label="Ver mais pessoas da trilha Building &amp; Automation">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
       </div>
     </div>
 
+    <!-- TRILHA 3: MARKETING & DESIGN -->
+    <div class="track-lane">
+      <div class="track-lane-head">
+        <h3 class="track-lane-title">Marketing &amp; Design</h3>
+        <p class="track-lane-desc">Aquisição, retenção e monetização: tudo o que você precisa para criar experiências relevantes e impulsionar o crescimento de produtos e negócios.</p>
+      </div>
+      <div class="track-row-wrap is-start">
+        <button class="track-row-arrow track-row-arrow--prev" type="button" aria-label="Ver pessoas anteriores da trilha Marketing &amp; Design">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="track-row" role="list" aria-label="Coordenação e palestrantes da trilha Marketing &amp; Design">
+
+          <article class="coordinator-card" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/coordinators/Mariana_Tosi.webp" width="400" height="400" alt="Foto de Mariana Tosi, Marketing Manager na Insider One" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Coordenação</span>
+              <div class="coordinator-name">Mariana Tosi</div>
+              <div class="coordinator-company">Insider One</div>
+              <div class="coordinator-title">Marketing Manager</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/coordinators/Alex_Soares.webp" width="400" height="400" alt="Foto de Alex Soares, Design Lead na Totvs" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Coordenação</span>
+              <div class="coordinator-name">Alex Soares</div>
+              <div class="coordinator-company">Totvs</div>
+              <div class="coordinator-title">Design Lead</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--speaker" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/speakers/sp-rafael-sbarai.webp" width="400" height="400" alt="Foto de Rafael Sbarai, Director of Product Marketing e Business AI Strategy na LiveMode/CazéTV" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Rafael Sbarai</div>
+              <div class="coordinator-company">LiveMode/CazéTV</div>
+              <div class="coordinator-title">Director of Product Marketing &amp; Business AI Strategy</div>
+            </div>
+          </article>
+
+          <!-- sem empresa atual confirmada: card fica só com nome e cargo -->
+          <article class="coordinator-card coordinator-card--speaker" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/speakers/sp-beatriz-costa.webp" width="400" height="400" alt="Foto de Beatriz Costa, Product Marketing Director" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Beatriz Costa</div>
+              <div class="coordinator-title">Product Marketing Director</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+        </div>
+        <button class="track-row-arrow track-row-arrow--next" type="button" aria-label="Ver mais pessoas da trilha Marketing &amp; Design">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- TRILHA 4: LIDERANÇA & NEGÓCIOS -->
+    <div class="track-lane">
+      <div class="track-lane-head">
+        <h3 class="track-lane-title">Liderança &amp; Negócios</h3>
+        <p class="track-lane-desc">Liderança que inspira, estratégia que posiciona: aprenda a conectar pessoas, tecnologia e negócios para construir organizações mais inteligentes, competitivas e preparadas para o futuro.</p>
+      </div>
+      <div class="track-row-wrap is-start">
+        <button class="track-row-arrow track-row-arrow--prev" type="button" aria-label="Ver pessoas anteriores da trilha Liderança &amp; Negócios">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="track-row" role="list" aria-label="Coordenação e palestrantes da trilha Liderança &amp; Negócios">
+
+          <article class="coordinator-card" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/coordinators/Rafael_Justino.webp" width="400" height="400" alt="Foto de Rafael Justino, CPO na Serrabits" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Coordenação</span>
+              <div class="coordinator-name">Rafael Justino</div>
+              <div class="coordinator-company">Serrabits</div>
+              <div class="coordinator-title">CPO</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/coordinators/Fernanda_Faria.webp" width="400" height="400" alt="Foto de Fernanda Faria, Product Manager no Nubank" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Coordenação</span>
+              <div class="coordinator-name">Fernanda Faria</div>
+              <div class="coordinator-company">Nubank</div>
+              <div class="coordinator-title">Product Manager</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--speaker" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/speakers/sp-ana-mantovani.webp" width="400" height="400" alt="Foto de Ana Mantovani, Director of Software e Product Development no Mercado Livre" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Ana Mantovani</div>
+              <div class="coordinator-company">Mercado Livre</div>
+              <div class="coordinator-title">Director of Software &amp; Product Development</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--speaker" role="listitem">
+            <div class="coordinator-photo-wrap">
+              <img src="assets/img/speakers/sp-stephanie-fischer.webp" width="400" height="400" alt="Foto de Stephanie Fischer de S. Campos, Head de Produto e Engenharia no Grupo Boticário" loading="lazy">
+            </div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Stephanie Fischer de S. Campos</div>
+              <div class="coordinator-company">Grupo Boticário</div>
+              <div class="coordinator-title">Head de Produto e Engenharia (Ativação e Gen AI)</div>
+            </div>
+          </article>
+
+          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
+            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
+            <hr class="coordinator-divider">
+            <div class="coordinator-info">
+              <span class="coordinator-role">Palestrante</span>
+              <div class="coordinator-name">Em breve</div>
+            </div>
+          </article>
+
+        </div>
+        <button class="track-row-arrow track-row-arrow--next" type="button" aria-label="Ver mais pessoas da trilha Liderança &amp; Negócios">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- COORDENAÇÃO GERAL DE CONTEÚDO -->
+<section class="general-coord">
+  <div class="container">
+    <h2 class="section-title section-title--sm">Coordenação geral de conteúdo</h2>
+
+    <div class="gc-panel">
+      <div class="gc-photo">
+        <img src="assets/img/coordinators/priscila_lugao.webp" width="400" height="400" alt="Foto de Priscila Lugão, Coordenadora Geral de Conteúdo do Product Camp" loading="lazy">
+      </div>
+      <div class="gc-body">
+        <span class="gc-label">Coordenadora Geral de Conteúdo do PCamp</span>
+        <h3 class="gc-name">Priscila Lugão</h3>
+        <div class="gc-company">Med Review</div>
+        <div class="gc-title">Product Coordinator</div>
+        <p class="gc-desc">É ela quem costura as quatro trilhas em uma só experiência: da definição dos temas à curadoria dos palestrantes, garantindo conteúdo aplicável e conectado com o que o mercado de produto vive hoje.</p>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -3454,28 +3803,56 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </script>
 <script>
   // ─────────────────────────────────────────
-  // Sistema de abas das trilhas
+  // Trilhas: rolagem horizontal das fileiras (setas + degradês nas pontas)
   // ─────────────────────────────────────────
-  const tabBtns = document.querySelectorAll('.track-tab-btn');
-  const tabContents = document.querySelectorAll('.tracks-tab-content');
+  (function () {
+    const wraps = document.querySelectorAll('.tracks-section .track-row-wrap');
+    if (!wraps.length) return;
 
-  if (tabBtns.length > 0) {
-    tabBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        // Remove active de todos
-        tabBtns.forEach(b => b.classList.remove('active'));
-        tabContents.forEach(c => c.classList.remove('active'));
+    const refreshers = [];
 
-        // Ativa a selecionada
-        btn.classList.add('active');
-        const tabId = btn.getAttribute('data-tab');
-        const tabContent = document.getElementById(`tab-${tabId}`);
-        if (tabContent) {
-          tabContent.classList.add('active');
-        }
+    wraps.forEach(wrap => {
+      const row = wrap.querySelector('.track-row');
+      if (!row) return;
+
+      // is-start/is-end também cobrem o caso "não tem overflow":
+      // as duas classes ficam ativas e nenhuma seta aparece.
+      const update = () => {
+        const max = row.scrollWidth - row.clientWidth;
+        wrap.classList.toggle('is-start', row.scrollLeft <= 1);
+        wrap.classList.toggle('is-end', max <= 1 || row.scrollLeft >= max - 1);
+      };
+
+      row.addEventListener('scroll', update, { passive: true });
+
+      // O update() inicial roda durante o parse. Se a largura da fileira ainda
+      // mudar depois (fonte carregando, breakpoint entrando, placeholder
+      // aparecendo), o ResizeObserver recalcula — sem ele dá para o estado
+      // travar com uma seta visível apontando para lugar nenhum.
+      if (window.ResizeObserver) {
+        new ResizeObserver(update).observe(row);
+      }
+
+      wrap.querySelectorAll('.track-row-arrow').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const dir = btn.classList.contains('track-row-arrow--prev') ? -1 : 1;
+          const card = row.querySelector('.coordinator-card');
+          const gap = parseFloat(getComputedStyle(row).columnGap) || 12;
+          const step = card ? (card.offsetWidth + gap) * 2 : row.clientWidth * 0.8;
+          row.scrollBy({ left: dir * step, behavior: 'smooth' });
+        });
       });
+
+      refreshers.push(update);
+      update();
     });
-  }
+
+    let raf;
+    window.addEventListener('resize', () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => refreshers.forEach(fn => fn()));
+    }, { passive: true });
+  })();
 </script>
 
 <script>
