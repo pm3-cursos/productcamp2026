@@ -104,20 +104,17 @@ O bloco de texto do card tem **altura fixa** (`--track-info-h`), dimensionada pa
 **entre as 4 trilhas**, não só dentro de uma fileira. Nenhum cargo é truncado — cargo mais longo
 que isso pede aumentar a variável, não cortar o texto.
 
-### Cards "Em breve" (`.coordinator-card--soon`)
-A fileira tem largura **fixa de 1112px** no desktop (o `.container` trava em 1160px). Com 3–4
-pessoas confirmadas sobrava um vão à direita, então cada trilha é completada até **7 cards** com
-placeholders de silhueta e o nome "Em breve".
+### Card "Em breve" (`.coordinator-card--soon`)
+Cada trilha termina com **um** placeholder de silhueta com o nome "Em breve", sinalizando que a
+trilha ainda vai receber gente.
 
 - Silhueta desenhada em **CSS puro** (`.soon-avatar`, pseudo-elementos) — zero requisição, zero KB.
-- `aria-hidden="true"`: são decorativos, não entram na lista para leitor de tela.
-- Aparecem **só a partir de 1160px**. Abaixo disso somem — se ficassem, virariam overflow e o
-  usuário rolaria a fileira no celular só para encontrar "Em breve".
-- A conta: `7 × 148 + 6 × 12 = 1108`, contra 1112px disponíveis.
+- `aria-hidden="true"`: é decorativo, não entra na lista para leitor de tela.
+- Aparece **só a partir de 1160px**. No mobile a fileira já rola, e um card sem informação no fim
+  da rolagem só entrega frustração.
 
-> **Ao confirmar um palestrante, SUBSTITUA um card "Em breve"** pelo card real, em vez de
-> acrescentar. Assim o total continua 7 e a fileira segue fechada. Passando de 7 confirmados os
-> placeholders já acabaram, é só somar cards e a fileira passa a rolar de verdade.
+> **Ao confirmar um palestrante, cole o card real ANTES do "Em breve"** — ele fica sempre por
+> último na fileira.
 
 ### Coordenação das trilhas
 
@@ -163,9 +160,8 @@ das trilhas: ganhou dobra própria (`.general-coord`) logo abaixo do bloco de tr
    `assets/img/coordinators/` (coordenação)
 2. Abra `index.html` e localize a seção `.tracks-section`
 3. Encontre a `.track-row` da trilha desejada (elas estão comentadas: `TRILHA 1`, `TRILHA 2`…)
-4. Localize o **primeiro card "Em breve"** (`coordinator-card--soon`) da fileira e **substitua o
-   bloco inteiro** pelo card real. Se a trilha já não tiver mais nenhum "Em breve", aí é só colar
-   no fim da fileira (coordenadores primeiro, palestrantes depois):
+4. Cole o bloco **logo antes do card "Em breve"** (`coordinator-card--soon`), que fecha a fileira.
+   A ordem dentro da fileira é: coordenadores, palestrantes, "Em breve":
 
 ```html
 <article class="coordinator-card coordinator-card--speaker" role="listitem">

@@ -794,8 +794,6 @@ window.dataLayer = window.dataLayer || [];
      horizontal: é assim que palestrante novo entra, sem esticar a altura. */
   .tracks-section {
     background: var(--navy-mid);
-    /* 148px = a medida que faz 7 cards preencherem exatamente a fileira:
-       7 × 148 + 6 × 12 = 1108, contra os 1112px fixos do .container. */
     --track-card-w: 148px;
     --track-card-gap: 12px;
     --track-info-h: 180px;
@@ -1032,11 +1030,10 @@ window.dataLayer = window.dataLayer || [];
   }
 
   /* ── CARD "EM BREVE" ──
-     Só existe para fechar a fileira no desktop, onde ela tem largura fixa
-     (1112px) e sobrariam lacunas. É decorativo: aria-hidden, sem conteúdo
-     indexável. Fica OCULTO por padrão e só aparece a partir de 1160px —
-     abaixo disso a fileira é mais estreita e os placeholders virariam
-     overflow, obrigando a rolar para achar só "Em breve". */
+     Um por trilha, sempre no fim da fileira: sinaliza que ainda vem gente.
+     É decorativo — aria-hidden, sem conteúdo indexável. Fica OCULTO por
+     padrão e só aparece a partir de 1160px: no mobile a fileira já rola,
+     e um card sem informação no fim da rolagem só entrega frustração. */
   .coordinator-card--soon {
     display: none;
     background: transparent;
@@ -2698,14 +2695,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ║  Sem empresa confirmada? Omita a linha .coordinator-company —    ║
   ║  nunca use placeholder nem "ex-empresa".                         ║
   ║                                                                  ║
-  ║  CADA TRILHA TEM 7 CARDS: os reais + cards "Em breve"            ║
-  ║  (.coordinator-card--soon), que existem só para fechar a fileira ║
-  ║  no desktop e somem sozinhos abaixo de 1160px.                   ║
-  ║  Ao confirmar um palestrante, SUBSTITUA um card "Em breve" pelo  ║
-  ║  card real em vez de acrescentar — assim o total segue 7 e a     ║
-  ║  fileira continua sem sobra nem rolagem à toa.                   ║
-  ║  Passando de 7 confirmados, aí sim é só somar: os "Em breve"     ║
-  ║  já acabaram e a fileira passa a rolar de verdade.               ║
+  ║  Cada trilha termina com UM card "Em breve"                      ║
+  ║  (.coordinator-card--soon), que sinaliza que ainda vem gente e   ║
+  ║  some sozinho abaixo de 1160px. Cole o card novo ANTES dele —    ║
+  ║  o "Em breve" fica sempre por último.                            ║
   ╚══════════════════════════════════════════════════════════════════╝
 -->
 <section class="tracks-section" id="trilhas">
@@ -2767,35 +2760,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
           </article>
 
-          <!-- Fecham a fileira no desktop. Ao confirmar um palestrante novo,
-               troque UM destes blocos pelo card real (some sozinho no mobile). -->
-          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
-            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
-            <hr class="coordinator-divider">
-            <div class="coordinator-info">
-              <span class="coordinator-role">Palestrante</span>
-              <div class="coordinator-name">Em breve</div>
-            </div>
-          </article>
-
-          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
-            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
-            <hr class="coordinator-divider">
-            <div class="coordinator-info">
-              <span class="coordinator-role">Palestrante</span>
-              <div class="coordinator-name">Em breve</div>
-            </div>
-          </article>
-
-          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
-            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
-            <hr class="coordinator-divider">
-            <div class="coordinator-info">
-              <span class="coordinator-role">Palestrante</span>
-              <div class="coordinator-name">Em breve</div>
-            </div>
-          </article>
-
+          <!-- Sinaliza que a trilha ainda vai receber gente. Ao confirmar um
+               palestrante novo, ADICIONE o card real antes deste bloco — o
+               "Em breve" fica sempre por último. Some sozinho no mobile. -->
           <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
             <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
             <hr class="coordinator-divider">
@@ -2873,24 +2840,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <div class="coordinator-name">Marcell Almeida</div>
               <div class="coordinator-company">Alun Future Studio</div>
               <div class="coordinator-title">Builder</div>
-            </div>
-          </article>
-
-          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
-            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
-            <hr class="coordinator-divider">
-            <div class="coordinator-info">
-              <span class="coordinator-role">Palestrante</span>
-              <div class="coordinator-name">Em breve</div>
-            </div>
-          </article>
-
-          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
-            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
-            <hr class="coordinator-divider">
-            <div class="coordinator-info">
-              <span class="coordinator-role">Palestrante</span>
-              <div class="coordinator-name">Em breve</div>
             </div>
           </article>
 
@@ -2983,24 +2932,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
           </article>
 
-          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
-            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
-            <hr class="coordinator-divider">
-            <div class="coordinator-info">
-              <span class="coordinator-role">Palestrante</span>
-              <div class="coordinator-name">Em breve</div>
-            </div>
-          </article>
-
-          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
-            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
-            <hr class="coordinator-divider">
-            <div class="coordinator-info">
-              <span class="coordinator-role">Palestrante</span>
-              <div class="coordinator-name">Em breve</div>
-            </div>
-          </article>
-
         </div>
         <button class="track-row-arrow track-row-arrow--next" type="button" aria-label="Ver mais pessoas da trilha Marketing &amp; Design">
           <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
@@ -3069,24 +3000,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <div class="coordinator-name">Stephanie Fischer de S. Campos</div>
               <div class="coordinator-company">Grupo Boticário</div>
               <div class="coordinator-title">Head de Produto e Engenharia (Ativação e Gen AI)</div>
-            </div>
-          </article>
-
-          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
-            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
-            <hr class="coordinator-divider">
-            <div class="coordinator-info">
-              <span class="coordinator-role">Palestrante</span>
-              <div class="coordinator-name">Em breve</div>
-            </div>
-          </article>
-
-          <article class="coordinator-card coordinator-card--soon" aria-hidden="true">
-            <div class="coordinator-photo-wrap"><span class="soon-avatar"></span></div>
-            <hr class="coordinator-divider">
-            <div class="coordinator-info">
-              <span class="coordinator-role">Palestrante</span>
-              <div class="coordinator-name">Em breve</div>
             </div>
           </article>
 
