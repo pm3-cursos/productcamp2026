@@ -411,6 +411,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               const REGION    = "na1";
               const TARGET_ID = "hsFormSlot";
 
+              /* Espelha o campo oculto pm3_b2c_form_name_tracking configurado no
+                 formulário da HubSpot. Este form é V4 e renderiza em iframe, então
+                 o campo fica fora do alcance do document.querySelector do GTM —
+                 por isso o nome viaja aqui, dentro do mesmo push do evento.
+                 Se o valor mudar na HubSpot, atualizar aqui também. */
+              const FORM_NAME = "pm3_b2c_pcamp_26_sequencia_de_lives";
+
               const initForm = () => {
                 if (window.hbspt) {
                   window.hbspt.forms.create({
@@ -439,6 +446,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   window.dataLayer = window.dataLayer || [];
                   window.dataLayer.push({
                     event: "generate_lead",
+                    form_name: FORM_NAME,
                     hs_form_id: FORM_ID,
                     hs_portal_id: PORTAL_ID
                   });
