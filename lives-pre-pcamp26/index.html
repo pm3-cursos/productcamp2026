@@ -399,6 +399,18 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div id="inscricao" class="form-card">
         <h3>Inscreva-se gratuitamente</h3>
         <p class="desc">Apenas uma vez, para ter acesso às três lives + gravações.</p>
+        <!--
+          NÃO REMOVER. Não é campo de formulário — é o que alimenta o tracking.
+          A variável "form name tracking" do GTM faz
+            document.querySelector('input[name="pm3_b2c_form_name_tracking"]')
+          no documento da página. O formulário HubSpot é V4 e renderiza em iframe,
+          então o campo equivalente que existe lá dentro fica fora do alcance dela.
+          Este input espelha aquele valor no DOM da página, que é onde o GTM procura.
+
+          Precisa ficar FORA do #hsFormSlot: ao renderizar no target, o HubSpot
+          substitui todo o conteúdo daquela div.
+        -->
+        <input type="hidden" name="pm3_b2c_form_name_tracking" value="pm3_b2c_pcamp_26_sequencia_de_lives">
         <div class="hs-form-slot" id="hsFormSlot">
           <!-- Loader da HubSpot: NÃO adicionar defer/async. O inline abaixo chama
                hbspt.forms.create logo em seguida; deferir só o loader faria o
@@ -410,6 +422,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               const FORM_ID   = "8f00c872-0942-4003-a3ea-4cbe0e7822cb";
               const REGION    = "na1";
               const TARGET_ID = "hsFormSlot";
+
+              /* Lê o valor do MESMO input que a variável do GTM consulta, para os
+                 dois nunca divergirem: se um enxerga, o outro enxerga.
+                 O push de form_name é redundante hoje, já que a tag usa a variável
+                 de JavaScript — fica como dado do evento, caso o container migre
+                 para Data Layer depois. */
+              const FORM_NAME =
+                document.querySelector('input[name="pm3_b2c_form_name_tracking"]')?.value || "";
 
               const initForm = () => {
                 if (window.hbspt) {
@@ -439,6 +459,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                   window.dataLayer = window.dataLayer || [];
                   window.dataLayer.push({
                     event: "generate_lead",
+                    form_name: FORM_NAME,
                     hs_form_id: FORM_ID,
                     hs_portal_id: PORTAL_ID
                   });
