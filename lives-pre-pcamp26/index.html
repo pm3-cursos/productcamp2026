@@ -26,7 +26,30 @@ window.dataLayer = window.dataLayer || [];
 <!-- End Google Tag Manager -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="3 lives gratuitas com temas do maior evento de produto da América Latina. Uma única inscrição dá acesso às três lives + gravações. Comece a jornada rumo ao Product Camp 2026.">
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  ATUALIZAR A CADA LIVE                                           ║
+  ║  Esta página é DATADA: o topo fala da próxima live, não da       ║
+  ║  série em geral. Ao virar para a live seguinte, mexa em:         ║
+  ║                                                                  ║
+  ║   1. meta description        (logo abaixo)                       ║
+  ║   2. og:title / og:description                                   ║
+  ║   3. twitter:title / twitter:description                         ║
+  ║   4. <title>                                                     ║
+  ║   5. .hero-badge     — tag datada acima do H1                    ║
+  ║   6. .hero-title     — H1, com .accent na persona                ║
+  ║   7. seção #live1    — vira a live da vez                        ║
+  ║   8. seção #proximas — remove o card da live que já passou       ║
+  ║                                                                  ║
+  ║  A partir da 2ª live a OFERTA MUDA: passa a ser as lives         ║
+  ║  restantes + gravação das anteriores. Rever o texto da oferta    ║
+  ║  no hero, no CTA e na dobra #live1.                              ║
+  ║                                                                  ║
+  ║  NÃO mexer: canonical, og:url (a URL da página não muda) e o     ║
+  ║  JSON-LD dos 3 eventos, que já cobre a série inteira.            ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<meta name="description" content="26/08, 19h — Live User: use IA para ampliar repertório sem terceirizar o julgamento. Uma inscrição dá acesso às 3 lives gratuitas + gravações.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="PM3">
 <meta name="theme-color" content="#2B1E39">
@@ -34,18 +57,18 @@ window.dataLayer = window.dataLayer || [];
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Product Camp">
 <meta property="og:locale" content="pt_BR">
-<meta property="og:title" content="3 lives gratuitas rumo ao Product Camp 2026">
-<meta property="og:description" content="3 lives gratuitas com temas do maior evento de produto da América Latina. Uma única inscrição dá acesso às três lives + gravações.">
+<meta property="og:title" content="Live User · 26/08: IA como extensão do seu repertório">
+<meta property="og:description" content="Primeira das 3 lives gratuitas rumo ao Product Camp 2026. Uma inscrição dá acesso às três lives + gravações.">
 <meta property="og:image" content="https://www.productcamp.com.br/assets/img/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Product Camp 2026 — o maior evento de produto da América Latina, 08 e 09 de dezembro, São Paulo.">
 <meta property="og:url" content="https://www.productcamp.com.br/lives-pre-pcamp26/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="3 lives gratuitas rumo ao Product Camp 2026">
-<meta name="twitter:description" content="3 lives gratuitas com temas do maior evento de produto da América Latina. Uma inscrição, três lives + gravações.">
+<meta name="twitter:title" content="Live User · 26/08: IA como extensão do seu repertório">
+<meta name="twitter:description" content="Primeira das 3 lives gratuitas rumo ao Product Camp 2026. Uma inscrição, três lives + gravações.">
 <meta name="twitter:image" content="https://www.productcamp.com.br/assets/img/og-image.png">
-<title>3 lives gratuitas rumo ao Product Camp 2026</title>
+<title>Live User · 26/08: IA como extensão do seu repertório</title>
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -144,6 +167,8 @@ window.dataLayer = window.dataLayer || [];
   .hero{position:relative; overflow:hidden; padding-top:64px; background-image:url('/assets/img/bg/hero-bg.webp'); background-size:cover; background-position:center right; background-repeat:no-repeat;}
   .hero-bg{position:absolute; inset:0; background:linear-gradient(100deg, rgba(43,30,57,.97) 0%, rgba(43,30,57,.93) 42%, rgba(43,30,57,.86) 68%, rgba(43,30,57,.78) 100%); pointer-events:none;}
   .hero-inner{position:relative; z-index:1; max-width:1160px; margin:0 auto; padding:64px 24px 0; display:grid; grid-template-columns:1.2fr .95fr; gap:48px; align-items:start;}
+  /* tag do hero — reaproveita o visual de .live-badge, só acrescenta o respiro até o H1 */
+  .hero-badge{margin-bottom:20px;}
   .hero-title{font-family:var(--font-display); font-size:clamp(30px,4.2vw,50px); font-weight:600; line-height:1.1; letter-spacing:-.03em; margin-bottom:22px;}
   .hero-title .accent{color:var(--pink);}
   .hero-subtitle{font-size:clamp(15px,1.6vw,17px); color:var(--white-70); line-height:1.65; margin-bottom:14px; max-width:560px;}
@@ -185,8 +210,16 @@ window.dataLayer = window.dataLayer || [];
   .hs-form-slot .hs-error-msgs{color:var(--pink-light) !important; font-size:12px !important; list-style:none !important; margin-top:4px !important;}
   .hs-form-slot .hs-richtext, .hs-form-slot .legal-consent-container{color:var(--white-40) !important; font-size:11.5px !important; line-height:1.5 !important;}
   @media (max-width:960px){
-    .hero-inner{grid-template-columns:1fr;}
+    .hero-inner{grid-template-columns:1fr; gap:0;}
     .form-card{position:relative; top:0;}
+    /* Mobile: o wrapper deixa de gerar caixa para que tag, título e formulário virem
+       itens do mesmo grid e possam ser reordenados. Ordem no topo:
+       tag → título → formulário → parágrafo de abertura → restante (ordem do HTML). */
+    .hero-copy{display:contents;}
+    .hero-copy > .hero-badge{order:-3; justify-self:start;}
+    .hero-copy > .hero-title{order:-2;}
+    .hero-inner > .form-card{order:-1; margin-bottom:28px;}
+    .hero-copy > .btn-primary{justify-self:start;}
   }
   @media (max-width:640px){
     .hero-inner{padding:44px 20px 0;}
@@ -329,8 +362,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <section class="hero">
     <div class="hero-bg"></div>
     <div class="hero-inner">
-      <div>
-        <h1 class="hero-title">3 lives gratuitas com temas do <span class="accent">maior evento de Produto</span> da América Latina</h1>
+      <div class="hero-copy">
+        <span class="live-badge hero-badge">1ª de 3 lives gratuitas &middot; 26/08, 19h</span>
+        <h1 class="hero-title">Live <span class="accent">User</span>: IA como extensão do seu repertório</h1>
         <p class="hero-subtitle">O Product Camp acontece em dezembro, mas você pode antecipar seus aprendizados. Convidamos experts da área de Produto e os nossos coordenadores de trilhas para levantar discussões sob quatro perspectivas em que profissionais da nova era de produto devem atuar: usuário, construtor, pensador e líder.</p>
         <p class="hero-note"><strong>Inscreva-se gratuitamente e apenas uma vez</strong> para ter acesso às três lives + gravações.</p>
         <span class="hero-rule"></span>
@@ -488,7 +522,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <div class="up-num">2ª live</div>
               <div class="up-name">Builder</div>
             </div>
-            <span class="up-soon-badge">Em breve &middot; Setembro</span>
+            <span class="up-soon-badge">23/09 &middot; 19h00</span>
           </div>
           <div class="up-theme-label">Tema central</div>
           <p class="up-theme">Autonomia, prototipagem e execução mais rápida: encurtando a distância entre intenção e entrega com Inteligência Artificial.</p>
@@ -504,7 +538,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <div class="up-num">3ª live</div>
               <div class="up-name">Thinker &amp; Leader</div>
             </div>
-            <span class="up-soon-badge">Em breve &middot; Outubro</span>
+            <span class="up-soon-badge">21/10 &middot; 19h00</span>
           </div>
           <div class="up-theme-label">Tema central</div>
           <p class="up-theme">Dados de mercado, decisão orientada a impacto e liderança para um cenário de produto em completa transformação.</p>
