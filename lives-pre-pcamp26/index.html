@@ -399,14 +399,56 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div id="inscricao" class="form-card">
         <h3>Inscreva-se gratuitamente</h3>
         <p class="desc">Apenas uma vez, para ter acesso às três lives + gravações.</p>
-        <div class="hs-form-slot">
+        <div class="hs-form-slot" id="hsFormSlot">
+          <!-- Loader da HubSpot: NÃO adicionar defer/async. O inline abaixo chama
+               hbspt.forms.create logo em seguida; deferir só o loader faria o
+               inline rodar antes e quebrar o formulário ("hbspt is not defined"). -->
           <script charset="utf-8" type="text/javascript" src="//js.hsforms.net/forms/embed/v2.js"></script>
           <script>
-            hbspt.forms.create({
-              portalId: "21748317",
-              formId: "8f00c872-0942-4003-a3ea-4cbe0e7822cb",
-              region: "na1"
-            });
+            (() => {
+              const PORTAL_ID = "21748317";
+              const FORM_ID   = "8f00c872-0942-4003-a3ea-4cbe0e7822cb";
+              const REGION    = "na1";
+              const TARGET_ID = "hsFormSlot";
+
+              const initForm = () => {
+                if (window.hbspt) {
+                  window.hbspt.forms.create({
+                    portalId: PORTAL_ID,
+                    formId: FORM_ID,
+                    region: REGION,
+                    target: `#${TARGET_ID}`,
+                  });
+                }
+              };
+
+              initForm();
+
+              /* Envio do formulário via postMessage, e não pelo callback
+                 onFormSubmitted dentro do create(): o HubSpot V4 não dispara mais
+                 o callback direto, e o postMessage funciona nas duas versões.
+                 O filtro por event.data.id garante que só este formulário conta,
+                 caso outro form HubSpot entre na página depois. */
+              window.addEventListener("message", (event) => {
+                if (
+                  event.data &&
+                  event.data.type === "hsFormCallback" &&
+                  event.data.eventName === "onFormSubmitted" &&
+                  event.data.id === FORM_ID
+                ) {
+                  window.dataLayer = window.dataLayer || [];
+                  window.dataLayer.push({
+                    event: "hubspot_generate_lead",
+                    hs_form_id: FORM_ID,
+                    hs_portal_id: PORTAL_ID
+                  });
+
+                  setTimeout(() => {
+                    window.location.href = "/lives-pre-pcamp26";
+                  }, 600);
+                }
+              });
+            })();
           </script>
         </div>
       </div>
