@@ -292,6 +292,65 @@ window.dataLayer = window.dataLayer || [];
     display: inline-block;
   }
 
+  /* ── COUNTDOWN DE VIRADA DE LOTE ──
+     Marcação preenchida por assets/js/pcamp-countdown-lotes.js.
+     A fonte vem por herança do body (Inter Tight) — não sobrescrever.
+     :not([hidden]) é obrigatório: sem ele, o display:flex venceria o
+     display:none que o atributo hidden aplica, e o bloco vazio apareceria. */
+  #pcamp-countdown-lotes:not([hidden]) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: var(--pink-muted);
+    border: 1px solid rgba(223,12,120,0.3);
+    border-radius: 10px;
+    padding: 14px 22px;
+    margin-top: 24px;
+    color: var(--white);
+  }
+
+  .pcc-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--pink-light);
+  }
+
+  .pcc-units { display: flex; gap: 10px; }
+
+  .pcc-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 46px;
+  }
+
+  .pcc-value {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pcc-unit-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--pink-light);
+    margin-top: 4px;
+  }
+
+  @media (max-width: 480px) {
+    #pcamp-countdown-lotes:not([hidden]) {
+      flex-direction: column;
+      gap: 10px;
+      padding: 12px 16px;
+    }
+    .pcc-unit { min-width: 40px; }
+    .pcc-value { font-size: 18px; }
+  }
+
   .hero-title {
     font-family: var(--font-display);
     font-size: clamp(36px, 5vw, 60px);
@@ -2460,8 +2519,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </a>
         <a href="#ingressos26" class="btn-secondary">Compra em grupo</a>
       </div>
-      <!-- Countdown de virada de lote — autoposiciona aqui via currentScript; não usar defer/async -->
-      <script src="assets/js/pcamp-countdown-lotes.js"></script>
+      <!-- Countdown de virada de lote. O destino é este container: o script
+           localiza por id, então pode carregar com defer sem se perder.
+           Fica oculto até haver lote ativo dentro da janela de exibição. -->
+      <div id="pcamp-countdown-lotes" hidden></div>
+      <script defer src="assets/js/pcamp-countdown-lotes.js"></script>
     </div>
 
   </div>

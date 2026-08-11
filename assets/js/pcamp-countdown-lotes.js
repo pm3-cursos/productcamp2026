@@ -1,40 +1,28 @@
 /**
- * PCamp 2026 — Countdown de virada de lote (versão generalizada)
+ * PCamp 2026 — Countdown de virada de lote
  * ----------------------------------------------------------------
- * Diferença da v1: em vez de receber UMA data fixa, esse script tem o
- * calendário completo de lotes embutido (LOTES abaixo). A cada
- * carregamento de página ele descobre sozinho qual lote está ativo
- * HOJE e mostra o countdown até o fim dele. Quando um lote vira,
- * na próxima carga de página o widget já aponta pro lote seguinte
- * automaticamente — não precisa mexer no HTML/deploy a cada virada.
+ * Descobre sozinho qual lote está ativo agora pelo calendário embutido
+ * (LOTES abaixo) e mostra a contagem regressiva até o fim dele.
  *
- * Janela de exibição: o widget só aparece nos últimos N dias antes do
- * fim do lote ativo (ver VISIBLE_WINDOW_DAYS abaixo, padrão = 7). Fora
- * dessa janela, mesmo com um lote ativo, o widget não é renderizado —
- * gera mais urgência/FOMO em vez de ficar "diluído" o mês inteiro.
+ * Uso: o destino é o container #pcamp-countdown-lotes, que já existe no
+ * HTML com o atributo `hidden`. O script preenche e revela. Como ele
+ * localiza o container por id, PODE (e deve) ser carregado com defer —
+ * não depende de document.currentScript nem da posição da tag.
  *
- * Uso (só precisa dessa linha, no ponto onde o widget deve aparecer):
+ * Estilos vivem no bloco <style> do index.html, junto do resto do CSS
+ * do site, e usam os tokens do design system.
  *
- *   <script
- *     src="/assets/js/pcamp-countdown-lotes.js"
- *     data-cta-text="Garantir ingresso"
- *     data-cta-url="https://go.pm3.com.br/ingressos-pcamp26"></script>
- *
- * IMPORTANTE: este script se autoposiciona via document.currentScript,
- * então NÃO deve ser carregado com defer/async (nesses modos
- * currentScript é null e o widget se insere no lugar errado).
- *
- * Pra atualizar datas no futuro (ex: calendário mudar), edite só o
- * array LOTES abaixo — não precisa tocar no resto do código.
+ * Janela de exibição: só aparece nos últimos VISIBLE_WINDOW_DAYS dias
+ * antes do fim do lote ativo, para concentrar a urgência em vez de
+ * diluí-la o mês inteiro.
  *
  * Comportamento:
- *  - Descobre o lote cujo intervalo [start, end] contém o momento atual.
- *  - Se não houver lote ativo (ex: entre Last Minute e o evento, ou
- *    evento já passou), o widget não renderiza — sem "00:00:00" travado.
- *  - Se estiver com a página aberta no exato instante da virada, o
- *    widget se remove sozinho (não faz auto-switch em tempo real pro
- *    próximo lote sem reload, de propósito — evita mostrar preço novo
- *    antes da virada realmente valer no checkout).
+ *  - Sem lote ativo (gap entre fases, ou fora do período de vendas) →
+ *    permanece oculto, sem "00:00:00" travado.
+ *  - Na virada com a página aberta, se oculta sozinho. Não pula para o
+ *    lote seguinte sem reload, de propósito: evita anunciar preço novo
+ *    antes de a virada valer no checkout.
+ *  - Pausa o relógio quando a aba sai de foco.
  *  - Sem dependências externas.
  */
 (function () {
@@ -42,6 +30,13 @@
 
   // ---------------------------------------------------------------
   // ÚNICO PONTO QUE PRECISA SER EDITADO QUANDO O CALENDÁRIO MUDAR
+  //
+  // ATENÇÃO: o lote também aparece FIXO no index.html, em dois lugares
+  // que este arquivo não controla e que precisam mudar junto, no mesmo
+  // deploy, senão a página se contradiz (countdown anunciando um lote e
+  // os cards vendendo outro):
+  //   1. os badges <span class="lote-badge">LOTE N</span> dos ingressos
+  //   2. o JSON-LD de Event → offers ("Ingresso Lote N" e os preços)
   // ---------------------------------------------------------------
   var LOTES = [
     { id: "pre-venda",   label: "Pré-venda",   start: "2025-12-10T00:00:00-03:00", end: "2025-12-30T23:59:59-03:00" },
@@ -56,160 +51,104 @@
 
   // Quantos dias antes do fim do lote o widget passa a aparecer.
   var VISIBLE_WINDOW_DAYS = 7;
+  var LABEL_TEMPLATE = "{lote} termina em:";
   // ---------------------------------------------------------------
 
   var CONTAINER_ID = "pcamp-countdown-lotes";
-  var STYLE_ID = "pcamp-countdown-lotes-style";
-
-  function getCurrentScript() {
-    return document.currentScript || (function () {
-      var scripts = document.getElementsByTagName("script");
-      return scripts[scripts.length - 1];
-    })();
-  }
 
   function findActiveLote(now) {
     for (var i = 0; i < LOTES.length; i++) {
-      var start = new Date(LOTES[i].start);
-      var end = new Date(LOTES[i].end);
-      if (now >= start && now <= end) return LOTES[i];
+      if (now >= new Date(LOTES[i].start) && now <= new Date(LOTES[i].end)) return LOTES[i];
     }
     return null;
-  }
-
-  function injectStyles() {
-    if (document.getElementById(STYLE_ID)) return;
-    var css = [
-      "#" + CONTAINER_ID + "{",
-      "  --pcc-bg: rgba(223,12,120,0.14);",
-      "  --pcc-border: rgba(223,12,120,0.3);",
-      "  --pcc-text: #f5f5f3;",
-      "  --pcc-accent: #f02d8e;",
-      "  --pcc-muted: #f02d8e;",
-      "  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;",
-      "  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;",
-      "  gap: 16px; background: var(--pcc-bg); color: var(--pcc-text);",
-      "  border: 1px solid var(--pcc-border);",
-      "  padding: 14px 22px; border-radius: 10px;",
-      "  margin-top: 24px;",
-      "}",
-      "#" + CONTAINER_ID + " .pcc-label{ font-size: 14px; color: var(--pcc-muted); font-weight: 500; }",
-      "#" + CONTAINER_ID + " .pcc-units{ display: flex; gap: 10px; }",
-      "#" + CONTAINER_ID + " .pcc-unit{ display: flex; flex-direction: column; align-items: center; min-width: 46px; }",
-      "#" + CONTAINER_ID + " .pcc-value{ font-size: 22px; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }",
-      "#" + CONTAINER_ID + " .pcc-unit-label{ font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--pcc-muted); margin-top: 4px; }",
-      "#" + CONTAINER_ID + " .pcc-cta{",
-      "  background: var(--pcc-accent); color: #fff; text-decoration: none;",
-      "  font-size: 13px; font-weight: 600; padding: 8px 16px; border-radius: 999px;",
-      "  white-space: nowrap; transition: opacity 0.15s;",
-      "}",
-      "#" + CONTAINER_ID + " .pcc-cta:hover{ opacity: 0.85; }",
-      "@media (max-width: 480px){",
-      "  #" + CONTAINER_ID + "{ flex-direction: column; gap: 10px; padding: 12px 16px; }",
-      "  #" + CONTAINER_ID + " .pcc-unit{ min-width: 40px; }",
-      "  #" + CONTAINER_ID + " .pcc-value{ font-size: 18px; }",
-      "}"
-    ].join("\n");
-    var style = document.createElement("style");
-    style.id = STYLE_ID;
-    style.textContent = css;
-    document.head.appendChild(style);
   }
 
   function pad(n) {
     return String(n).padStart(2, "0");
   }
 
-  function buildMarkup(container, opts) {
+  function buildMarkup(container, label) {
     container.innerHTML =
-      '<span class="pcc-label">' + opts.label + "</span>" +
+      '<span class="pcc-label"></span>' +
       '<div class="pcc-units">' +
-      '<div class="pcc-unit"><span class="pcc-value" data-pcc="d">00</span><span class="pcc-unit-label">dias</span></div>' +
-      '<div class="pcc-unit"><span class="pcc-value" data-pcc="h">00</span><span class="pcc-unit-label">h</span></div>' +
-      '<div class="pcc-unit"><span class="pcc-value" data-pcc="m">00</span><span class="pcc-unit-label">min</span></div>' +
-      '<div class="pcc-unit"><span class="pcc-value" data-pcc="s">00</span><span class="pcc-unit-label">seg</span></div>' +
-      "</div>" +
-      (opts.ctaUrl ? '<a class="pcc-cta" href="' + opts.ctaUrl + '">' + opts.ctaText + "</a>" : "");
-  }
-
-  function removeWidget(container) {
-    if (container && container.parentNode) {
-      container.parentNode.removeChild(container);
-    }
-    var style = document.getElementById(STYLE_ID);
-    if (style && style.parentNode) style.parentNode.removeChild(style);
+        '<div class="pcc-unit"><span class="pcc-value" data-pcc="d">00</span><span class="pcc-unit-label">dias</span></div>' +
+        '<div class="pcc-unit"><span class="pcc-value" data-pcc="h">00</span><span class="pcc-unit-label">h</span></div>' +
+        '<div class="pcc-unit"><span class="pcc-value" data-pcc="m">00</span><span class="pcc-unit-label">min</span></div>' +
+        '<div class="pcc-unit"><span class="pcc-value" data-pcc="s">00</span><span class="pcc-unit-label">seg</span></div>' +
+      "</div>";
+    // textContent em vez de interpolar no HTML: o label vem do LOTES,
+    // mas não custa nada manter a inserção livre de marcação.
+    container.querySelector(".pcc-label").textContent = label;
   }
 
   function init() {
-    var script = getCurrentScript();
+    var container = document.getElementById(CONTAINER_ID);
+    if (!container) return;
 
-    var labelTemplate = (script && script.getAttribute("data-label-template")) || "{lote} termina em:";
-    var ctaText = (script && script.getAttribute("data-cta-text")) || "Garantir ingresso";
-    var ctaUrl = script && script.getAttribute("data-cta-url"); // opcional
-
-    var now = new Date();
-    var lote = findActiveLote(now);
-
-    // Sem lote ativo hoje (gap entre fases, ou fora do período de vendas) → não renderiza nada.
-    if (!lote) {
-      var existing = document.getElementById(CONTAINER_ID);
-      if (existing) removeWidget(existing);
-      return;
-    }
+    var lote = findActiveLote(new Date());
+    if (!lote) return;
 
     var targetDate = new Date(lote.end);
-
-    // Fora da janela de urgência (mais de N dias antes do fim do lote) → não renderiza.
     var windowStart = new Date(targetDate.getTime() - VISIBLE_WINDOW_DAYS * 86400000);
-    if (now < windowStart) {
-      var existingOutOfWindow = document.getElementById(CONTAINER_ID);
-      if (existingOutOfWindow) removeWidget(existingOutOfWindow);
-      return;
-    }
+    if (new Date() < windowStart) return;
 
-    var label = labelTemplate.replace("{lote}", lote.label);
+    buildMarkup(container, LABEL_TEMPLATE.replace("{lote}", lote.label));
 
-    injectStyles();
+    var out = {
+      d: container.querySelector('[data-pcc="d"]'),
+      h: container.querySelector('[data-pcc="h"]'),
+      m: container.querySelector('[data-pcc="m"]'),
+      s: container.querySelector('[data-pcc="s"]')
+    };
 
-    var container = document.getElementById(CONTAINER_ID);
-    if (!container) {
-      container = document.createElement("div");
-      container.id = CONTAINER_ID;
-      if (script && script.parentNode) {
-        script.parentNode.insertBefore(container, script.nextSibling);
-      } else {
-        document.body.appendChild(container);
-      }
-    }
-
-    buildMarkup(container, { label: label, ctaText: ctaText, ctaUrl: ctaUrl });
+    var timer = null;
 
     function tick() {
-      var nowTick = new Date();
-      var diff = targetDate - nowTick;
+      var diff = targetDate - new Date();
 
       if (diff <= 0) {
-        clearInterval(timer);
-        removeWidget(container);
+        stop();
+        container.hidden = true;
+        container.innerHTML = "";
         return;
       }
 
-      var totalSeconds = Math.floor(diff / 1000);
-      var days = Math.floor(totalSeconds / 86400);
-      var hours = Math.floor((totalSeconds % 86400) / 3600);
-      var minutes = Math.floor((totalSeconds % 3600) / 60);
-      var seconds = totalSeconds % 60;
-
-      container.querySelector('[data-pcc="d"]').textContent = pad(days);
-      container.querySelector('[data-pcc="h"]').textContent = pad(hours);
-      container.querySelector('[data-pcc="m"]').textContent = pad(minutes);
-      container.querySelector('[data-pcc="s"]').textContent = pad(seconds);
+      var total = Math.floor(diff / 1000);
+      out.d.textContent = pad(Math.floor(total / 86400));
+      out.h.textContent = pad(Math.floor((total % 86400) / 3600));
+      out.m.textContent = pad(Math.floor((total % 3600) / 60));
+      out.s.textContent = pad(total % 60);
     }
 
+    function start() {
+      if (timer === null) timer = setInterval(tick, 1000);
+    }
+
+    function stop() {
+      if (timer !== null) {
+        clearInterval(timer);
+        timer = null;
+      }
+    }
+
+    // Com a aba em segundo plano o relógio não precisa correr: ao voltar,
+    // um tick imediato recalcula a partir do horário real, sem acumular erro.
+    document.addEventListener("visibilitychange", function () {
+      if (document.hidden) {
+        stop();
+      } else {
+        tick();
+        start();
+      }
+    });
+
     tick();
-    var timer = setInterval(tick, 1000);
+    container.hidden = false;
+    start();
   }
 
+  // Carregado com defer, então o parse já terminou. O guard cobre o caso
+  // de alguém incluir o arquivo de outro jeito.
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
