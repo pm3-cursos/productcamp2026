@@ -4,10 +4,11 @@
  * Descobre sozinho qual lote está ativo agora pelo calendário embutido
  * (LOTES abaixo) e mostra a contagem regressiva até o fim dele.
  *
- * Uso: o destino é o container #pcamp-countdown-lotes, que já existe no
- * HTML com o atributo `hidden`. O script preenche e revela. Como ele
- * localiza o container por id, PODE (e deve) ser carregado com defer —
- * não depende de document.currentScript nem da posição da tag.
+ * Uso: o destino é qualquer elemento com o atributo data-pcamp-countdown,
+ * que já exista no HTML com `hidden`. O script preenche e revela. Havendo
+ * mais de um, todos compartilham o mesmo relógio. Como ele localiza os
+ * containers por atributo, PODE (e deve) ser carregado com defer — não
+ * depende de document.currentScript nem da posição da tag.
  *
  * Estilos vivem no bloco <style> do index.html, junto do resto do CSS
  * do site, e usam os tokens do design system.
@@ -54,7 +55,9 @@
   var LABEL_TEMPLATE = "{lote} termina em:";
   // ---------------------------------------------------------------
 
-  var CONTAINER_ID = "pcamp-countdown-lotes";
+  // Seletor por atributo, não por id: o widget pode aparecer em mais de um
+  // ponto da página, e todos ficam em sincronia com o mesmo relógio.
+  var CONTAINER_SELECTOR = "[data-pcamp-countdown]";
 
   function findActiveLote(now) {
     for (var i = 0; i < LOTES.length; i++) {
@@ -82,8 +85,8 @@
   }
 
   function init() {
-    var container = document.getElementById(CONTAINER_ID);
-    if (!container) return;
+    var containers = document.querySelectorAll(CONTAINER_SELECTOR);
+    if (!containers.length) return;
 
     var lote = findActiveLote(new Date());
     if (!lote) return;
@@ -92,14 +95,19 @@
     var windowStart = new Date(targetDate.getTime() - VISIBLE_WINDOW_DAYS * 86400000);
     if (new Date() < windowStart) return;
 
-    buildMarkup(container, LABEL_TEMPLATE.replace("{lote}", lote.label));
+    var label = LABEL_TEMPLATE.replace("{lote}", lote.label);
+    var views = [];
 
-    var out = {
-      d: container.querySelector('[data-pcc="d"]'),
-      h: container.querySelector('[data-pcc="h"]'),
-      m: container.querySelector('[data-pcc="m"]'),
-      s: container.querySelector('[data-pcc="s"]')
-    };
+    Array.prototype.forEach.call(containers, function (container) {
+      buildMarkup(container, label);
+      views.push({
+        el: container,
+        d: container.querySelector('[data-pcc="d"]'),
+        h: container.querySelector('[data-pcc="h"]'),
+        m: container.querySelector('[data-pcc="m"]'),
+        s: container.querySelector('[data-pcc="s"]')
+      });
+    });
 
     var timer = null;
 
@@ -108,16 +116,25 @@
 
       if (diff <= 0) {
         stop();
-        container.hidden = true;
-        container.innerHTML = "";
+        views.forEach(function (v) {
+          v.el.hidden = true;
+          v.el.innerHTML = "";
+        });
         return;
       }
 
       var total = Math.floor(diff / 1000);
-      out.d.textContent = pad(Math.floor(total / 86400));
-      out.h.textContent = pad(Math.floor((total % 86400) / 3600));
-      out.m.textContent = pad(Math.floor((total % 3600) / 60));
-      out.s.textContent = pad(total % 60);
+      var d = pad(Math.floor(total / 86400));
+      var h = pad(Math.floor((total % 86400) / 3600));
+      var m = pad(Math.floor((total % 3600) / 60));
+      var s = pad(total % 60);
+
+      views.forEach(function (v) {
+        v.d.textContent = d;
+        v.h.textContent = h;
+        v.m.textContent = m;
+        v.s.textContent = s;
+      });
     }
 
     function start() {
@@ -143,7 +160,7 @@
     });
 
     tick();
-    container.hidden = false;
+    views.forEach(function (v) { v.el.hidden = false; });
     start();
   }
 
