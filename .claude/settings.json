@@ -1,0 +1,13 @@
+{
+  "enabledPlugins": {
+    "pm3-brand-pcamp@pm3-claude-skills": true
+  },
+  "extraKnownMarketplaces": {
+    "pm3-claude-skills": {
+      "source": {
+        "source": "github",
+        "repo": "pm3-cursos/pm3-claude-skills"
+      }
+    }
+  }
+}
