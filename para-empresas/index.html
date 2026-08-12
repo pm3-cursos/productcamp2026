@@ -510,7 +510,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/totvs.webp" width="303" height="93" alt="TOTVS" loading="lazy" decoding="async"></div>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/ifood.png" width="600" height="323" alt="iFood" loading="lazy" decoding="async"></div>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/localiza.webp" width="525" height="214" alt="Localiza" loading="lazy" decoding="async"></div>
-        <div class="logo-cell"><img src="/assets/img/para-empresas/logos/bradesco.webp" width="2048" height="665" alt="Bradesco" loading="lazy" decoding="async"></div>
+        <div class="logo-cell"><img src="/assets/img/para-empresas/logos/bradesco.webp" width="600" height="195" alt="Bradesco" loading="lazy" decoding="async"></div>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/serasa.webp" width="512" height="232" alt="Serasa Experian" loading="lazy" decoding="async"></div>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/afya.avif" width="512" height="209" alt="Afya" loading="lazy" decoding="async"></div>
         <!-- Itaú fecha a grade de propósito: em 4 colunas ele cai exatamente sob a Localiza. -->
@@ -531,7 +531,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <article class="benefit-card">
           <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
           <h3>Desenvolvimento técnico e estratégico</h3>
-          <p>Mais de 60 palestras com trilhas como Building &amp; Automation, Liderança &amp; Negócios e Business &amp; Innovation. O time volta com frameworks e referências para aplicar no dia seguinte.</p>
+          <p>Mais de 60 palestras em 4 trilhas: Product Management, Building &amp; Automation, Liderança &amp; Negócios e Marketing &amp; Design. O time volta com frameworks e referências para aplicar no dia seguinte.</p>
         </article>
         <article class="benefit-card">
           <div class="benefit-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></div>
@@ -668,8 +668,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <section class="section-alt" id="faq">
     <div class="container">
       <div class="section-head fade-in">
-        <span class="section-label cyan">Dúvidas frequentes</span>
-        <h2 class="section-title">Dúvidas Frequentes</h2>
+        <span class="section-label cyan">Perguntas e respostas</span>
+        <h2 class="section-title">Dúvidas frequentes sobre compra corporativa</h2>
       </div>
       <div class="faq-list fade-in">
         <details class="faq-item">
@@ -756,6 +756,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     iframe.referrerPolicy = 'strict-origin-when-cross-origin';
     iframe.allowFullscreen = true;
     videoFrame.replaceChildren(iframe);
+    /* o botão que tinha o foco acabou de sair do DOM; sem isto o foco cai no
+       body e quem navega por teclado perde o lugar na página. */
+    iframe.focus();
   }, { once: true });
 </script>
 </body>
