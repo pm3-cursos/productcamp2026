@@ -235,7 +235,10 @@ window.dataLayer = window.dataLayer || [];
   .stat-label{font-size:13.5px; color:var(--white-70); line-height:1.5;}
 
   /* ══ LOGOS DE EMPRESAS ══ */
-  .logos-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:14px;}
+  /* 8 logos em 4 colunas = duas linhas cheias, sem célula órfã no fim.
+     Ao mexer na quantidade de logos, reveja também os breakpoints abaixo:
+     4 e 2 colunas dividem 8 sem sobra, 3 colunas não. */
+  .logos-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
   .logo-cell{background:var(--navy-card); border:1px solid var(--navy-border); border-radius:12px; height:88px; display:flex; align-items:center; justify-content:center; padding:18px 22px; transition:border-color .25s, background .25s, transform .25s;}
   .logo-cell:hover{border-color:rgba(24,206,244,.35); background:rgba(24,206,244,.05); transform:translateY(-2px);}
   /* logos vêm em branco sobre transparente; o filtro normaliza qualquer arquivo
@@ -326,7 +329,6 @@ window.dataLayer = window.dataLayer || [];
 
   /* ══ RESPONSIVO ══ */
   @media (max-width:1040px){
-    .logos-grid{grid-template-columns:repeat(3,1fr);}
     .benefits-grid{grid-template-columns:repeat(2,1fr);}
   }
   @media (max-width:960px){
@@ -508,11 +510,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/totvs.webp" width="303" height="93" alt="TOTVS" loading="lazy" decoding="async"></div>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/ifood.png" width="600" height="323" alt="iFood" loading="lazy" decoding="async"></div>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/localiza.webp" width="525" height="214" alt="Localiza" loading="lazy" decoding="async"></div>
-        <div class="logo-cell is-square"><img src="/assets/img/para-empresas/logos/itau.webp" width="512" height="512" alt="Itaú" loading="lazy" decoding="async"></div>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/bradesco.webp" width="2048" height="665" alt="Bradesco" loading="lazy" decoding="async"></div>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/serasa.webp" width="512" height="232" alt="Serasa Experian" loading="lazy" decoding="async"></div>
         <div class="logo-cell"><img src="/assets/img/para-empresas/logos/afya.avif" width="512" height="209" alt="Afya" loading="lazy" decoding="async"></div>
-        <div class="logo-cell"><img src="/assets/img/para-empresas/logos/replit.png" width="477" height="256" alt="Replit" loading="lazy" decoding="async"></div>
+        <!-- Itaú fecha a grade de propósito: em 4 colunas ele cai exatamente sob a Localiza. -->
+        <div class="logo-cell is-square"><img src="/assets/img/para-empresas/logos/itau.webp" width="512" height="512" alt="Itaú" loading="lazy" decoding="async"></div>
       </div>
     </div>
   </section>
