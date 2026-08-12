@@ -411,6 +411,18 @@ window.dataLayer = window.dataLayer || [];
     box-shadow: 0 8px 24px rgba(223,12,120,0.35);
   }
 
+  /* Variante ciano do botão primário. Texto em navy: branco sobre o ciano
+     claro fica com contraste baixo (1.9:1); navy dá 8.3:1. */
+  .btn-primary.btn-cyan {
+    background: var(--cyan);
+    color: var(--navy);
+  }
+
+  .btn-primary.btn-cyan:hover {
+    background: #4fdaf7;
+    box-shadow: 0 8px 24px rgba(24,206,244,0.35);
+  }
+
   .btn-secondary {
     display: inline-flex;
     align-items: center;
@@ -1816,6 +1828,12 @@ window.dataLayer = window.dataLayer || [];
     background: linear-gradient(160deg, rgba(223,12,120,0.12) 0%, rgba(223,12,120,0.04) 40%, var(--navy-card) 70%);
   }
 
+  /* Mesmo destaque do VIP, na cor ciano da paleta (Passaporte) */
+  .ticket-card.featured--cyan {
+    border-color: var(--cyan);
+    background: linear-gradient(160deg, rgba(24,206,244,0.12) 0%, rgba(24,206,244,0.04) 40%, var(--navy-card) 70%);
+  }
+
   .ticket-badge {
     display: inline-block;
     background: var(--pink);
@@ -2480,7 +2498,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <ul class="nav-links" id="navLinks">
       <li><a href="https://go.pm3.com.br/faq_pcamp_26" target="_blank">FAQ</a></li>
-      <li><a href="#speakers">Speakers</a></li>
+      <li><a href="#keynote">Speakers</a></li>
       <li><a href="https://share.hsforms.com/2LipTQvz1Ryy8_JWxtYAgTgcy53x" target="_blank">Patrocine</a></li>
       <li><a href="/pocket">Pocket</a></li>
       <li><a href="https://voices.pm3.com.br/" target="_blank">Call 4Paper</a></li>
@@ -2514,13 +2532,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </p>
       <span class="hero-rule"></span>
       <div class="hero-actions">
-        <a href="#ingressos26" class="btn-primary">
+        <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?&utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c%E2%80%8B&utm_term=home&utm_content=sympla" target="_blank" class="btn-primary">
           Garantir ingresso
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
-        <a href="#ingressos26" class="btn-secondary">Compra em grupo</a>
+        <a href="https://materias.pm3.com.br/product-camp-para-empresas?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2b&utm_term=home&utm_content=lp-b2b" target="_blank" class="btn-secondary">Compra em grupo</a>
       </div>
       <!-- Countdown de virada de lote. O destino é este container: o script
            localiza por id, então pode carregar com defer sem se perder.
@@ -3350,7 +3368,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="tickets-grid">
 
         <!-- PASSAPORTE -->
-        <div class="ticket-card">
+        <div class="ticket-card featured featured--cyan">
           <div class="ticket-badge">Passaporte</div>
           <span class="lote-badge">LOTE 2</span>
           <div class="ticket-name">Passaporte</div>
@@ -3366,7 +3384,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <li>Certificado de participação</li>
             <li>Gravações das palestras</li>
           </ul>
-          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-secondary btn-block">
+          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-primary btn-cyan btn-block">
             Garantir ingresso
           </a>
         </div>
@@ -3749,7 +3767,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div>
         <div class="footer-col-title">Evento</div>
         <ul class="footer-links">
-          <li><a href="#speakers">Palestrantes</a></li>
+          <li><a href="#keynote">Palestrantes</a></li>
           <li><a href="#ingressos26">Ingressos</a></li>
           <li><a href="https://go.pm3.com.br/faq_pcamp_26" target="_blank">FAQ</a></li>
           <li><a href="https://share.hsforms.com/2LipTQvz1Ryy8_JWxtYAgTgcy53x" target="_blank">Patrocine</a></li>
