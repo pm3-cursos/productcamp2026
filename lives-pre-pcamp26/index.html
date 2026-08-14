@@ -158,11 +158,10 @@ window.dataLayer = window.dataLayer || [];
   /* ── NAV ── */
   nav{position:fixed; top:0; left:0; right:0; z-index:100; background:rgba(43,30,57,0); backdrop-filter:blur(0px); border-bottom:1px solid transparent; transition:background .35s, backdrop-filter .35s, border-color .35s;}
   nav.scrolled{background:rgba(43,30,57,.96); backdrop-filter:blur(14px); border-bottom:1px solid var(--navy-border);}
-  .nav-inner{display:flex; align-items:center; justify-content:space-between; height:64px; max-width:1160px; margin:0 auto; padding:0 24px;}
+  /* Sem CTA ao lado da logo: flex-start mantém a logo ancorada à esquerda do container. */
+  .nav-inner{display:flex; align-items:center; justify-content:flex-start; height:64px; max-width:1160px; margin:0 auto; padding:0 24px;}
   .nav-logo{display:flex; align-items:center;}
   .logo-img--header{height:28px; width:auto;}
-  .nav-cta{background:var(--pink); color:#fff; border-radius:8px; padding:9px 18px; font-weight:600; font-size:13.5px; transition:background .2s, transform .15s; white-space:nowrap;}
-  .nav-cta:hover{background:var(--pink-light); transform:translateY(-1px);}
   /* ── HERO ── */
   .hero{position:relative; overflow:hidden; padding-top:64px; background-image:url('/assets/img/bg/hero-bg.webp'); background-size:cover; background-position:center right; background-repeat:no-repeat;}
   .hero-bg{position:absolute; inset:0; background:linear-gradient(100deg, rgba(43,30,57,.97) 0%, rgba(43,30,57,.93) 42%, rgba(43,30,57,.86) 68%, rgba(43,30,57,.78) 100%); pointer-events:none;}
@@ -174,12 +173,15 @@ window.dataLayer = window.dataLayer || [];
   .hero-subtitle{font-size:clamp(15px,1.6vw,17px); color:var(--white-70); line-height:1.65; margin-bottom:14px; max-width:560px;}
   .hero-note{font-size:15px; color:var(--white-70); margin-bottom:28px;}
   .hero-note strong{color:var(--white); font-weight:600;}
-  .hero-rule{width:48px; height:3px; background:linear-gradient(90deg,var(--pink),var(--cyan)); border-radius:2px; margin-bottom:28px; display:block;}
+  /* A régua fecha o bloco de texto; o respiro até a jornada fica todo em .journey-track
+     (margin-bottom:0 aqui evita depender de colapso de margem, que não ocorre no mobile
+     porque .hero-copy vira display:contents e os filhos passam a ser itens do grid). */
+  .hero-rule{width:48px; height:3px; background:linear-gradient(90deg,var(--pink),var(--cyan)); border-radius:2px; margin-bottom:0; display:block;}
   .btn-primary{display:inline-flex; align-items:center; gap:8px; background:var(--pink); color:#fff; font-family:var(--font-body); font-weight:600; font-size:15px; padding:14px 28px; border-radius:10px; transition:background .2s, transform .15s, box-shadow .2s; letter-spacing:.01em; white-space:nowrap;}
   .btn-primary:hover{background:var(--pink-light); transform:translateY(-2px); box-shadow:0 8px 24px rgba(223,12,120,.35);}
   .btn-primary svg{flex-shrink:0;}
   /* ── JOURNEY TRACK (hero) ── */
-  .journey-track{position:relative; display:flex; justify-content:space-between; gap:8px; margin-top:52px;}
+  .journey-track{position:relative; display:flex; justify-content:space-between; gap:8px; margin-top:40px;}
   .journey-track::before{content:''; position:absolute; top:22px; left:22px; right:22px; height:2px; background:linear-gradient(90deg, var(--pink) 0%, var(--pink) 70%, var(--cyan) 100%); z-index:0; border-radius:2px;}
   .journey-step{position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; flex:1 1 0; min-width:0; transition:transform .2s ease;}
   .journey-step:hover{transform:translateY(-3px);}
@@ -219,7 +221,6 @@ window.dataLayer = window.dataLayer || [];
     .hero-copy > .hero-badge{order:-3; justify-self:start;}
     .hero-copy > .hero-title{order:-2;}
     .hero-inner > .form-card{order:-1; margin-bottom:28px;}
-    .hero-copy > .btn-primary{justify-self:start;}
   }
   @media (max-width:640px){
     .hero-inner{padding:44px 20px 0;}
@@ -354,7 +355,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <a href="#" class="nav-logo" aria-label="Product Camp">
       <img src="/assets/img/brand/logo_escuro.svg" alt="productcamp" width="140" height="32" fetchpriority="high" class="logo-img--header">
     </a>
-    <a href="#inscricao" class="nav-cta">Garantir vaga</a>
   </div>
 </nav>
 <main>
@@ -368,10 +368,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <p class="hero-subtitle">O Product Camp acontece em dezembro, mas você pode antecipar seus aprendizados. Convidamos experts da área de Produto e os nossos coordenadores de trilhas para levantar discussões sob quatro perspectivas em que profissionais da nova era de produto devem atuar: usuário, construtor, pensador e líder.</p>
         <p class="hero-note"><strong>Inscreva-se gratuitamente e apenas uma vez</strong> para ter acesso às três lives + gravações.</p>
         <span class="hero-rule"></span>
-        <a href="#inscricao" class="btn-primary">
-          Quero minha vaga nas 3 lives
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
         <!-- jornada: 3 lives + destino final -->
         <div class="journey-track">
           <a class="journey-step" href="#live1">
