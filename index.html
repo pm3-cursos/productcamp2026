@@ -199,8 +199,8 @@ window.dataLayer = window.dataLayer || [];
     font-size: 14px;
     font-weight: 600;
     color: var(--white-70);
-    padding: 6px 14px;
-    border-radius: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
     transition: color 0.2s, background 0.2s;
   }
 
@@ -210,7 +210,7 @@ window.dataLayer = window.dataLayer || [];
     background: var(--pink) !important;
     color: white !important;
     border-radius: 8px !important;
-    padding: 8px 18px !important;
+    padding: 8px 16px !important;
     font-weight: 600 !important;
     font-size: 14px !important;
     transition: background 0.2s, transform 0.15s !important;
@@ -269,27 +269,42 @@ window.dataLayer = window.dataLayer || [];
     z-index: 1;
   }
 
+  /* Eyebrow em CIANO — issue #30, item 4 aplicado só aqui e no
+     .section-label. O guia manda ciano como acento em fundo escuro, mas
+     inverter o site inteiro ficou ruim; nos eyebrows funciona e ainda
+     devolve o rosa exclusivo ao CTA da dobra. */
   .hero-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: var(--pink-muted);
-    border: 1px solid rgba(223,12,120,0.3);
+    background: var(--cyan-muted);
+    border: 1px solid rgba(24,206,244,0.3);
     border-radius: 100px;
-    padding: 6px 14px;
-    font-size: 13px;
+    padding: 8px 24px;
+    font-size: 15px;
     font-weight: 600;
-    color: var(--pink-light);
+    color: var(--cyan);
     margin-bottom: 24px;
     letter-spacing: 0.02em;
   }
 
   .hero-eyebrow::before {
     content: '';
-    width: 6px; height: 6px;
-    background: var(--pink);
+    width: 8px; height: 8px;
+    background: var(--cyan);
     border-radius: 50%;
     display: inline-block;
+  }
+
+  /* Em tela estreita o texto completo quebra a pílula em duas linhas.
+     Troca pela versão curta. display:none tira do fluxo E da árvore de
+     acessibilidade, então o leitor de tela lê só a versão visível — não
+     as duas. */
+  .eyebrow-short { display: none; }
+
+  @media (max-width: 560px) {
+    .eyebrow-full { display: none; }
+    .eyebrow-short { display: inline; }
   }
 
   /* ── COUNTDOWN DE VIRADA DE LOTE ──
@@ -308,8 +323,8 @@ window.dataLayer = window.dataLayer || [];
     gap: 16px;
     background: var(--cyan-muted);
     border: 1px solid rgba(24,206,244,0.3);
-    border-radius: 10px;
-    padding: 14px 22px;
+    border-radius: 8px;
+    padding: 16px 24px;
     margin-top: 24px;
     color: var(--white);
   }
@@ -320,7 +335,7 @@ window.dataLayer = window.dataLayer || [];
     color: var(--cyan);
   }
 
-  .pcc-units { display: flex; gap: 10px; }
+  .pcc-units { display: flex; gap: 8px; }
 
   .pcc-unit {
     display: flex;
@@ -339,7 +354,7 @@ window.dataLayer = window.dataLayer || [];
   .pcc-unit-label {
     font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.08em;
     color: var(--cyan);
     margin-top: 4px;
   }
@@ -347,8 +362,8 @@ window.dataLayer = window.dataLayer || [];
   @media (max-width: 480px) {
     [data-pcamp-countdown]:not([hidden]) {
       flex-direction: column;
-      gap: 10px;
-      padding: 12px 16px;
+      gap: 8px;
+      padding: 16px 16px;
     }
     .pcc-unit { min-width: 40px; }
     .pcc-value { font-size: 18px; }
@@ -369,7 +384,7 @@ window.dataLayer = window.dataLayer || [];
     font-size: 17px;
     color: var(--white-70);
     line-height: 1.65;
-    margin-bottom: 36px;
+    margin-bottom: 40px;
     max-width: 560px;
   }
 
@@ -377,7 +392,7 @@ window.dataLayer = window.dataLayer || [];
 
   .hero-actions {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     flex-wrap: wrap;
   }
 
@@ -386,7 +401,7 @@ window.dataLayer = window.dataLayer || [];
     height: 3px;
     background: linear-gradient(90deg, var(--pink), var(--cyan));
     border-radius: 2px;
-    margin-bottom: 28px;
+    margin-bottom: 32px;
     display: block;
   }
 
@@ -399,8 +414,8 @@ window.dataLayer = window.dataLayer || [];
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 15px;
-    padding: 14px 28px;
-    border-radius: 10px;
+    padding: 16px 32px;
+    border-radius: 8px;
     transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
     letter-spacing: 0.01em;
   }
@@ -432,8 +447,8 @@ window.dataLayer = window.dataLayer || [];
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 15px;
-    padding: 14px 24px;
-    border-radius: 10px;
+    padding: 16px 24px;
+    border-radius: 8px;
     border: 1px solid rgba(255,255,255,0.18);
     transition: color 0.2s, border-color 0.2s, background 0.2s;
   }
@@ -469,7 +484,7 @@ window.dataLayer = window.dataLayer || [];
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 32px 16px 28px;
+    padding: 32px 16px 32px;
     position: relative;
     transition: background 0.25s;
   }
@@ -487,13 +502,13 @@ window.dataLayer = window.dataLayer || [];
   /* ícone acima do número */
   .stat-icon {
     width: 40px; height: 40px;
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--pink-muted);
     border: 1px solid rgba(223,12,120,0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   .stat-icon svg {
@@ -510,7 +525,7 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     color: var(--pink);
     line-height: 1;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     letter-spacing: -0.04em;
   }
 
@@ -537,16 +552,16 @@ window.dataLayer = window.dataLayer || [];
     gap: 8px;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--pink);
+    color: var(--cyan);
     margin-bottom: 16px;
   }
 
   .section-label::before {
     content: '';
     width: 20px; height: 2px;
-    background: var(--pink);
+    background: var(--cyan);
     display: inline-block;
   }
 
@@ -600,7 +615,7 @@ window.dataLayer = window.dataLayer || [];
 
   .about-title {
     font-size: clamp(32px, 4.5vw, 52px) !important;
-    margin-bottom: 20px !important;
+    margin-bottom: 24px !important;
   }
 
   .about-intro {
@@ -613,7 +628,7 @@ window.dataLayer = window.dataLayer || [];
   .pillars-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+    gap: 16px;
     margin-bottom: 48px;
   }
 
@@ -621,8 +636,8 @@ window.dataLayer = window.dataLayer || [];
     background: rgba(50,31,71,0.55);
     backdrop-filter: blur(8px);
     border: 1px solid rgba(223,12,120,0.2);
-    border-radius: 14px;
-    padding: 32px 28px;
+    border-radius: 16px;
+    padding: 32px 32px;
     transition: transform 0.3s ease, border-color 0.3s, background 0.3s;
     cursor: default;
   }
@@ -677,14 +692,14 @@ window.dataLayer = window.dataLayer || [];
     font-size: 16px;
     color: var(--white-70);
     text-align: center;
-    margin-bottom: 52px;
+    margin-bottom: 56px;
     line-height: 1.6;
   }
 
   .audience-marquee-wrap {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
     margin-bottom: 40px;
   }
 
@@ -695,7 +710,7 @@ window.dataLayer = window.dataLayer || [];
 
   .audience-marquee {
     display: flex;
-    gap: 12px;
+    gap: 16px;
     width: max-content;
     animation: marquee-left 28s linear infinite;
   }
@@ -722,8 +737,8 @@ window.dataLayer = window.dataLayer || [];
   .atag {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 24px;
+    gap: 8px;
+    padding: 16px 24px;
     border-radius: 100px;
     font-size: 15px;
     font-weight: 600;
@@ -777,7 +792,7 @@ window.dataLayer = window.dataLayer || [];
   /* ── QUOTE DESTAQUE ── */
   .quote-section {
     position: relative;
-    padding: 100px 0;
+    padding: 104px 0;
     overflow: hidden;
   }
 
@@ -821,7 +836,7 @@ window.dataLayer = window.dataLayer || [];
     font-size: 64px;
     line-height: 0.7;
     color: var(--pink);
-    margin-bottom: 20px;
+    margin-bottom: 24px;
     font-weight: 600;
     opacity: 0.6;
   }
@@ -845,14 +860,14 @@ window.dataLayer = window.dataLayer || [];
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin-top: 28px;
+    margin-top: 32px;
   }
 
   .tag {
     background: var(--white-10);
     border: 1px solid var(--navy-border);
     border-radius: 100px;
-    padding: 6px 16px;
+    padding: 8px 16px;
     font-size: 13px;
     font-weight: 600;
     color: var(--white-70);
@@ -869,7 +884,7 @@ window.dataLayer = window.dataLayer || [];
   .tracks-section {
     background: var(--navy-mid);
     --track-card-w: 148px;
-    --track-card-gap: 12px;
+    --track-card-gap: 16px;
     --track-info-h: 180px;
   }
 
@@ -880,7 +895,7 @@ window.dataLayer = window.dataLayer || [];
   .track-lane + .track-lane {
     border-top: 1px solid var(--navy-border);
     margin-top: 32px;
-    padding-top: 28px;
+    padding-top: 32px;
   }
 
   .track-lane-head { margin-bottom: 16px; }
@@ -894,7 +909,7 @@ window.dataLayer = window.dataLayer || [];
     letter-spacing: -0.01em;
     color: var(--white);
     border-left: 3px solid var(--pink);
-    padding-left: 13px;
+    padding-left: 16px;
   }
 
   .track-lane-desc {
@@ -1063,7 +1078,7 @@ window.dataLayer = window.dataLayer || [];
      só dentro de uma fileira (onde o flex já esticava), mas entre as 4
      trilhas. Nenhum cargo é truncado; sobra respiro nos cards curtos. */
   .coordinator-info {
-    padding: 14px 14px 16px;
+    padding: 16px 16px 16px;
     height: var(--track-info-h);
   }
 
@@ -1073,8 +1088,8 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     color: var(--pink);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 7px;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
     display: block;
   }
 
@@ -1085,7 +1100,7 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     color: var(--white);
     line-height: 1.25;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
   }
 
   /* empresa em linha própria e com mais destaque que o cargo */
@@ -1180,16 +1195,16 @@ window.dataLayer = window.dataLayer || [];
   @media (max-width: 768px) {
     .tracks-section {
       --track-card-w: 138px;
-      --track-card-gap: 10px;
+      --track-card-gap: 8px;
       --track-info-h: 172px;
     }
 
-    .track-lane + .track-lane { margin-top: 26px; padding-top: 24px; }
+    .track-lane + .track-lane { margin-top: 24px; padding-top: 24px; }
 
-    .track-lane-title { font-size: 17px; padding-left: 11px; }
-    .track-lane-desc { font-size: 12.5px; padding-left: 14px; }
+    .track-lane-title { font-size: 17px; padding-left: 8px; }
+    .track-lane-desc { font-size: 12.5px; padding-left: 16px; }
 
-    .coordinator-info { padding: 12px 12px 14px; }
+    .coordinator-info { padding: 16px 16px 16px; }
     .coordinator-name { font-size: 14px; }
     .coordinator-company { font-size: 12px; }
   }
@@ -1202,18 +1217,18 @@ window.dataLayer = window.dataLayer || [];
     padding-top: 8px;
   }
 
-  .general-coord .section-title { margin-bottom: 20px; }
+  .general-coord .section-title { margin-bottom: 24px; }
 
   .gc-panel {
     position: relative;
     display: grid;
     grid-template-columns: 168px 1fr;
-    gap: 28px;
+    gap: 32px;
     align-items: center;
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
-    border-radius: 20px;
-    padding: 24px 28px;
+    border-radius: 24px;
+    padding: 24px 32px;
     overflow: hidden;
     transition: border-color 0.25s;
   }
@@ -1250,7 +1265,7 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     color: var(--pink);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     margin-bottom: 8px;
   }
 
@@ -1260,7 +1275,7 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     line-height: 1.15;
     letter-spacing: -0.01em;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   /* mesma hierarquia dos cards das trilhas: empresa acima do cargo */
@@ -1275,7 +1290,7 @@ window.dataLayer = window.dataLayer || [];
     font-size: 13px;
     color: var(--white-70);
     line-height: 1.4;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   .gc-desc {
@@ -1288,8 +1303,8 @@ window.dataLayer = window.dataLayer || [];
   @media (max-width: 768px) {
     .gc-panel {
       grid-template-columns: 1fr;
-      gap: 18px;
-      padding: 22px 20px;
+      gap: 16px;
+      padding: 24px 24px;
     }
 
     .gc-photo { width: 120px; height: 120px; }
@@ -1313,7 +1328,7 @@ window.dataLayer = window.dataLayer || [];
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
     border-radius: 16px;
-    padding: 32px 28px;
+    padding: 32px 32px;
     text-align: center;
     position: relative;
     transition: border-color 0.25s, transform 0.25s;
@@ -1329,7 +1344,7 @@ window.dataLayer = window.dataLayer || [];
     display: inline-block;
     background: white;
     border-radius: 100px;
-    padding: 5px 16px;
+    padding: 8px 16px;
     font-size: 12px;
     font-weight: 600;
     color: #111;
@@ -1344,7 +1359,7 @@ window.dataLayer = window.dataLayer || [];
     height: 180px;
     border-radius: 50%;
     overflow: hidden;
-    margin: 0 auto 20px;
+    margin: 0 auto 24px;
     border: 1px solid var(--navy-border);
     background: var(--navy);
   }
@@ -1365,7 +1380,7 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     color: var(--white);
     line-height: 1.2;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
   .keynote-role {
@@ -1373,20 +1388,20 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     color: var(--pink);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 18px;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
   }
 
   /* selo de destaque */
   .keynote-seal {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     background: var(--pink-muted);
     border: 1px solid rgba(223,12,120,0.2);
     color: var(--pink-light);
     border-radius: 100px;
-    padding: 7px 16px;
+    padding: 8px 16px;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.02em;
@@ -1420,8 +1435,8 @@ window.dataLayer = window.dataLayer || [];
   .cred-card {
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
-    border-radius: 14px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 24px;
     transition: border-color 0.25s, transform 0.25s;
   }
 
@@ -1433,13 +1448,13 @@ window.dataLayer = window.dataLayer || [];
   /* chip de ícone — mesmo padrão do .stat-icon */
   .cred-icon {
     width: 40px; height: 40px;
-    border-radius: 10px;
+    border-radius: 8px;
     background: var(--pink-muted);
     border: 1px solid rgba(223,12,120,0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 14px;
+    margin-bottom: 16px;
   }
 
   .cred-icon svg {
@@ -1484,7 +1499,7 @@ window.dataLayer = window.dataLayer || [];
   .speakers-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 12px;
+    gap: 16px;
     margin-top: 48px;
   }
 
@@ -1492,7 +1507,7 @@ window.dataLayer = window.dataLayer || [];
   .speaker-card {
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
-    border-radius: 14px;
+    border-radius: 16px;
     overflow: hidden;
     transition: border-color 0.25s, transform 0.25s;
     position: relative;
@@ -1531,7 +1546,7 @@ window.dataLayer = window.dataLayer || [];
     transform: translateX(-50%);
     background: white;
     border-radius: 100px;
-    padding: 4px 14px;
+    padding: 4px 16px;
     font-size: 11px;
     font-weight: 600;
     color: #111;
@@ -1551,7 +1566,7 @@ window.dataLayer = window.dataLayer || [];
 
   /* rodapé info */
   .speaker-info {
-    padding: 14px 14px 16px;
+    padding: 16px 16px 16px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -1572,7 +1587,7 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     color: var(--pink);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     line-height: 1.3;
     text-align: right;
     flex-shrink: 0;
@@ -1631,11 +1646,11 @@ window.dataLayer = window.dataLayer || [];
     background: var(--pink-muted);
     border: 1px solid rgba(223,12,120,0.2);
     border-radius: 100px;
-    padding: 7px 16px;
+    padding: 8px 16px;
     font-size: 13px;
     font-weight: 600;
     color: var(--pink);
-    margin-bottom: 28px;
+    margin-bottom: 32px;
   }
 
   .venue-address svg { width: 14px; height: 14px; flex-shrink: 0; }
@@ -1646,7 +1661,7 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     line-height: 1.15;
     letter-spacing: -0.02em;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .venue-desc {
@@ -1659,13 +1674,13 @@ window.dataLayer = window.dataLayer || [];
   .venue-features {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
   }
 
   .venue-feature {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
     font-size: 14px;
     color: var(--white-70);
   }
@@ -1686,7 +1701,7 @@ window.dataLayer = window.dataLayer || [];
   }
 
   .venue-photo {
-    border-radius: 10px;
+    border-radius: 16px;
     overflow: hidden;
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
@@ -1767,7 +1782,7 @@ window.dataLayer = window.dataLayer || [];
 
   .tickets-hero-text .section-label {
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .tickets-hero-text h2 {
@@ -1785,7 +1800,7 @@ window.dataLayer = window.dataLayer || [];
   }
 
   .ticket-card {
-    padding: 24px 22px;
+    padding: 24px 24px;
   }
 
   .ticket-name {
@@ -1800,7 +1815,7 @@ window.dataLayer = window.dataLayer || [];
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 52px;
+    margin-bottom: 56px;
     flex-wrap: wrap;
     gap: 24px;
   }
@@ -1808,7 +1823,7 @@ window.dataLayer = window.dataLayer || [];
   .tickets-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 24px;
     max-width: 840px;
     margin: 0 auto;
   }
@@ -1817,7 +1832,7 @@ window.dataLayer = window.dataLayer || [];
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
     border-radius: 16px;
-    padding: 32px 28px;
+    padding: 32px 32px;
     position: relative;
     transition: border-color 0.25s, transform 0.25s;
     overflow: hidden;
@@ -1840,11 +1855,11 @@ window.dataLayer = window.dataLayer || [];
     color: white;
     font-size: 11px;
     font-weight: 600;
-    padding: 4px 12px;
+    padding: 4px 16px;
     border-radius: 100px;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
   }
 
   .ticket-name {
@@ -1873,14 +1888,14 @@ window.dataLayer = window.dataLayer || [];
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin-bottom: 28px;
+    gap: 8px;
+    margin-bottom: 32px;
   }
 
   .ticket-features li {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 8px;
     font-size: 14px;
     color: var(--white-70);
     line-height: 1.4;
@@ -1898,9 +1913,9 @@ window.dataLayer = window.dataLayer || [];
   /* ── GROUPS ── */
   .groups-banner {
     position: relative;
-    border-radius: 20px;
+    border-radius: 24px;
     overflow: hidden;
-    margin-top: 52px;
+    margin-top: 56px;
     min-height: 220px;
     display: flex;
     align-items: center;
@@ -1930,13 +1945,13 @@ window.dataLayer = window.dataLayer || [];
       rgba(43,30,57,0.30) 100%
     );
     border: 1px solid rgba(223,12,120,0.22);
-    border-radius: 20px;
+    border-radius: 24px;
   }
 
   .groups-content {
     position: relative;
     z-index: 1;
-    padding: 44px 52px;
+    padding: 48px 56px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1949,7 +1964,7 @@ window.dataLayer = window.dataLayer || [];
     font-family: var(--font-display);
     font-size: 26px;
     font-weight: 600;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     letter-spacing: -0.02em;
   }
 
@@ -1965,7 +1980,7 @@ window.dataLayer = window.dataLayer || [];
 
   .sponsors-intro {
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: 64px;
   }
 
   /* tier label em ciano como no original */
@@ -1974,7 +1989,7 @@ window.dataLayer = window.dataLayer || [];
   .sponsors-tier-label {
     font-size: 13px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--cyan);
     text-align: center;
@@ -1986,15 +2001,15 @@ window.dataLayer = window.dataLayer || [];
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 16px;
   }
 
   /* logo como card com imagem */
   .sponsor-logo {
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
-    border-radius: 12px;
-    padding: 20px 32px;
+    border-radius: 8px;
+    padding: 24px 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2028,7 +2043,7 @@ window.dataLayer = window.dataLayer || [];
   }
 
   /* realização — logo PM3 maior */
-  .sponsors-realizacao .sponsor-logo { height: 88px; padding: 20px 40px; }
+  .sponsors-realizacao .sponsor-logo { height: 88px; padding: 24px 40px; }
   .sponsors-realizacao .sponsor-logo img { height: 44px; max-width: 180px; }
 
   .sponsors-divider {
@@ -2040,7 +2055,7 @@ window.dataLayer = window.dataLayer || [];
 
   .sponsors-cta {
     text-align: center;
-    margin-top: 52px;
+    margin-top: 56px;
     padding-top: 40px;
     border-top: 1px solid var(--navy-border);
   }
@@ -2050,7 +2065,7 @@ window.dataLayer = window.dataLayer || [];
 
   .faq-list {
     max-width: 740px;
-    margin: 52px auto 0;
+    margin: 56px auto 0;
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -2059,7 +2074,7 @@ window.dataLayer = window.dataLayer || [];
   .faq-item {
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
-    border-radius: 10px;
+    border-radius: 16px;
     overflow: hidden;
   }
 
@@ -2068,7 +2083,7 @@ window.dataLayer = window.dataLayer || [];
     justify-content: space-between;
     align-items: center;
     gap: 16px;
-    padding: 20px 24px;
+    padding: 24px 24px;
     cursor: pointer;
     font-size: 15px;
     font-weight: 600;
@@ -2092,7 +2107,7 @@ window.dataLayer = window.dataLayer || [];
   details[open] .faq-chevron { transform: rotate(180deg); color: var(--pink); }
 
   .faq-answer {
-    padding: 0 24px 20px;
+    padding: 0 24px 24px;
     font-size: 14px;
     color: var(--white-70);
     line-height: 1.7;
@@ -2102,7 +2117,7 @@ window.dataLayer = window.dataLayer || [];
 
   .faq-more {
     text-align: center;
-    margin-top: 28px;
+    margin-top: 32px;
   }
 
   .faq-more a {
@@ -2111,23 +2126,23 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     transition: gap 0.2s;
   }
 
-  .faq-more a:hover { gap: 10px; }
+  .faq-more a:hover { gap: 8px; }
 
   /* ── FOOTER ── */
   footer {
     background: #1a1025;
     border-top: 1px solid var(--navy-border);
-    padding: 52px 0 32px;
+    padding: 56px 0 32px;
   }
 
   .footer-inner {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
-    gap: 52px;
+    gap: 56px;
     margin-bottom: 48px;
   }
 
@@ -2135,14 +2150,14 @@ window.dataLayer = window.dataLayer || [];
     font-size: 14px;
     color: var(--white-40);
     line-height: 1.7;
-    margin-top: 12px;
+    margin-top: 16px;
     max-width: 280px;
   }
 
   .footer-social {
     display: flex;
-    gap: 10px;
-    margin-top: 20px;
+    gap: 8px;
+    margin-top: 24px;
   }
 
   .social-link {
@@ -2173,7 +2188,7 @@ window.dataLayer = window.dataLayer || [];
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
   }
 
   .footer-links a {
@@ -2191,7 +2206,7 @@ window.dataLayer = window.dataLayer || [];
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 16px;
   }
 
   .footer-bottom p {
@@ -2241,8 +2256,8 @@ window.dataLayer = window.dataLayer || [];
     .venue-photos { grid-template-columns: 1fr 1fr; }
     .venue-photo:first-child { grid-column: span 2; aspect-ratio: 16/7; }
     .tickets-grid { grid-template-columns: 1fr; }
-    .groups-content { padding: 32px 28px; }
-    .groups-banner { padding: 32px 28px; }
+    .groups-content { padding: 32px 32px; }
+    .groups-banner { padding: 32px 32px; }
     .footer-inner { grid-template-columns: 1fr; gap: 32px; }
     .footer-bottom { flex-direction: column; text-align: center; }
   }
@@ -2258,8 +2273,8 @@ window.dataLayer = window.dataLayer || [];
     gap: 8px;
     font-size: 14px;
     color: var(--white-70);
-    margin-top: 20px;
-    padding: 10px 16px;
+    margin-top: 24px;
+    padding: 8px 16px;
     background: var(--white-10);
     border: 1px solid var(--navy-border);
     border-radius: 8px;
@@ -2281,7 +2296,7 @@ window.dataLayer = window.dataLayer || [];
   .hotel-card {
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
-    border-radius: 14px;
+    border-radius: 16px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -2296,11 +2311,11 @@ window.dataLayer = window.dataLayer || [];
   .hotel-card-top {
     background: linear-gradient(135deg, rgba(223,12,120,0.12) 0%, transparent 70%);
     border-bottom: 1px solid var(--navy-border);
-    padding: 20px 22px 16px;
+    padding: 24px 24px 16px;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 12px;
+    gap: 16px;
   }
 
   .hotel-name {
@@ -2316,7 +2331,7 @@ window.dataLayer = window.dataLayer || [];
     color: white;
     font-size: 12px;
     font-weight: 600;
-    padding: 4px 10px;
+    padding: 4px 8px;
     border-radius: 100px;
     white-space: nowrap;
     flex-shrink: 0;
@@ -2324,10 +2339,10 @@ window.dataLayer = window.dataLayer || [];
   }
 
   .hotel-card-body {
-    padding: 18px 22px;
+    padding: 16px 24px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
     flex: 1;
   }
 
@@ -2335,13 +2350,13 @@ window.dataLayer = window.dataLayer || [];
     background: rgba(24,206,244,0.07);
     border: 1px solid rgba(24,206,244,0.2);
     border-radius: 8px;
-    padding: 10px 14px;
+    padding: 8px 16px;
   }
 
   .hotel-code-label {
     font-size: 10px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--white-40);
     margin-bottom: 4px;
@@ -2360,7 +2375,7 @@ window.dataLayer = window.dataLayer || [];
     color: var(--white-70);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
 
   .hotel-period svg {
@@ -2372,7 +2387,7 @@ window.dataLayer = window.dataLayer || [];
   .hotel-contacts {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
   }
 
   .hotel-contact {
@@ -2396,13 +2411,13 @@ window.dataLayer = window.dataLayer || [];
   .hotel-links {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
   }
 
   .hotel-link {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     font-size: 13px;
     color: var(--pink-light);
     text-decoration: none;
@@ -2417,7 +2432,7 @@ window.dataLayer = window.dataLayer || [];
     line-height: 1.5;
     font-style: italic;
     border-top: 1px solid var(--navy-border);
-    padding-top: 12px;
+    padding-top: 16px;
     margin-top: 4px;
   }
 
@@ -2453,7 +2468,7 @@ window.dataLayer = window.dataLayer || [];
   .logo-img { width: auto; display: block; }
   .logo-img--header { height: 32px; }
   .logo-img--footer { height: 28px; }
-  .footer-logo-link { display: inline-block; margin-bottom: 12px; }
+  .footer-logo-link { display: inline-block; margin-bottom: 16px; }
   .is-centered { justify-content: center; }
   .text-center { text-align: center; }
   .section-subtitle--center { margin: 0 auto; }
@@ -2463,7 +2478,7 @@ window.dataLayer = window.dataLayer || [];
   .venue-img--low { object-position: center 20%; }
   .lote-badge {
     display: inline-block; background: var(--cyan); color: #111;
-    font-size: 11px; font-weight: 600; padding: 3px 10px;
+    font-size: 11px; font-weight: 600; padding: 3px 8px;
     border-radius: 100px; letter-spacing: 0.06em; margin-bottom: 8px;
   }
   .price-old { color: var(--white-40); font-weight: 400; }
@@ -2474,7 +2489,7 @@ window.dataLayer = window.dataLayer || [];
     font-size: 13px; font-weight: 600; color: var(--white-70);
     margin: 4px 0 8px; padding-left: 2px;
   }
-  .ticket-note { font-size: 12px; color: var(--white-40); margin-top: 10px; text-align: center; }
+  .ticket-note { font-size: 12px; color: var(--white-40); margin-top: 8px; text-align: center; }
   .muted-line { font-size: 12px; color: var(--white-40); margin-bottom: 4px; }
   @media (max-width: 560px) {
     section { padding: 64px 0; }
@@ -2522,7 +2537,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="hero-grid-overlay"></div>
   <div class="hero-inner container">
     <div class="hero-content">
-      <div class="hero-eyebrow">11ª edição &bull; 08 e 09 de dezembro de 2026 &bull; São Paulo, SP</div>
+      <div class="hero-eyebrow"><span class="eyebrow-full">11ª edição &bull; 08 e 09 de dezembro de 2026 &bull; São Paulo, SP</span><span class="eyebrow-short">11ª edição &bull; 08&ndash;09/dez &bull; São Paulo</span></div>
       <h1 class="hero-title">
         User. Builder.<br>
         Thinker. <span class="accent">Leader.</span>
@@ -2599,7 +2614,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="about-header">
       <div class="section-label">O maior da América Latina</div>
       <h2 class="section-title about-title">Você é usuário, construtor, pensador e líder.</h2>
-      <p class="about-intro">No PCamp, vamos partir de uma premissa simples: nós, profissionais de produto somos, ao mesmo tempo:</p>
+      <p class="about-intro">No Product Camp, vamos partir de uma premissa simples: nós, profissionais de produto somos, ao mesmo tempo:</p>
     </div>
 
     <div class="pillars-grid">
@@ -3117,7 +3132,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <img src="assets/img/coordinators/priscila_lugao.webp" width="400" height="400" alt="Foto de Priscila Lugão, Coordenadora Geral de Conteúdo do Product Camp" loading="lazy">
       </div>
       <div class="gc-body">
-        <span class="gc-label">Coordenadora Geral de Conteúdo do PCamp</span>
+        <span class="gc-label">Coordenadora Geral de Conteúdo do PCAMP</span>
         <h3 class="gc-name">Priscila Lugão</h3>
         <div class="gc-company">Med Review</div>
         <div class="gc-title">Product Coordinator</div>
@@ -3150,7 +3165,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <section class="speakers" id="speakers">
   <div class="container">
     <div class="section-label">Palestrantes</div>
-    <h2 class="section-title">Quem já esteve nos<br>palcos do PCamp</h2>
+    <h2 class="section-title">Quem já esteve nos<br>palcos do Product Camp</h2>
     <p class="section-subtitle">Referências globais e nacionais que ajudaram a elevar a barra do mercado de produtos digitais.</p>
 
     <div class="speakers-grid">
@@ -3277,7 +3292,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     </div>
 
-    <p class="speakers-cta">Os palestrantes do PCamp 2026 serão anunciados em breve. <strong>Fique de olho!</strong></p>
+    <p class="speakers-cta">Os palestrantes do Product Camp 2026 serão anunciados em breve. <strong>Fique de olho!</strong></p>
 
   </div>
 </section>
@@ -3301,7 +3316,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <h2 class="venue-headline">Um espaço feito para quem leva produto a sério</h2>
 
         <p class="venue-desc">
-          Mais do que auditórios e palcos — o PCamp oferece áreas de networking projetadas para conexões reais, experiências imersivas e dois dias de oportunidades que não cabem em nenhuma tela.
+          Mais do que auditórios e palcos — o Product Camp oferece áreas de networking projetadas para conexões reais, experiências imersivas e dois dias de oportunidades que não cabem em nenhuma tela.
         </p>
 
         <div class="venue-features">
@@ -3336,11 +3351,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <div class="venue-photo">
           <img src="assets/img/venue/venue-selfie.webp" width="1280" height="853" class="venue-img--top"
-               alt="Participantes tirando selfie no PCamp 2025" loading="lazy">
+               alt="Participantes tirando selfie no Product Camp 2025" loading="lazy">
         </div>
         <div class="venue-photo">
           <img src="assets/img/venue/venue-cagan.webp" width="943" height="1280" class="venue-img--low"
-               alt="Marty Cagan cumprimentando participante VIP no PCamp 2025" loading="lazy">
+               alt="Marty Cagan cumprimentando participante VIP no Product Camp 2025" loading="lazy">
         </div>
       </div>
 
@@ -3361,7 +3376,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="tickets-body">
     <div class="tickets-hero-text">
       <div class="section-label is-centered">Ingressos</div>
-      <h2>Garanta seu lugar no PCamp 2026</h2>
+      <h2>Garanta seu lugar no Product Camp 2026</h2>
     </div>
     <div class="container">
 
@@ -3430,7 +3445,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <div class="groups-title">Quer levar seu time para o Product Camp?</div>
             <p>Garanta <strong>descontos de 5% a 20%</strong> e mantenha sua equipe por dentro do que há de mais atual em produtos digitais no Brasil e no mundo.</p>
           </div>
-          <a href="https://materias.pm3.com.br/product-camp-para-empresas?utm_medium=pm3&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2b_e_b2c&utm_term=site&utm_content=leve-seu-time" target="_blank" class="btn-primary btn-nowrap">
+          <a href="/para-empresas/" class="btn-primary btn-nowrap">
             Levar meu time
           </a>
         </div>
@@ -3457,7 +3472,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="sponsors-intro">
       <div class="section-label is-centered">Parceiros</div>
       <h2 class="section-title">Empresas que acreditam<br>no poder da comunidade</h2>
-      <p class="section-subtitle section-subtitle--center">Patrocinadores e apoiadores que fazem parte do PCamp 2026.</p>
+      <p class="section-subtitle section-subtitle--center">Patrocinadores e apoiadores que fazem parte do Product Camp 2026.</p>
     </div>
 
     <!-- PATROCINADORES -->
@@ -3519,7 +3534,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="sponsors-cta">
       <a href="https://cy53x.share.hsforms.com/2LipTQvz1Ryy8_JWxtYAgTg" target="_blank" class="btn-secondary">
-        Seja uma empresa parceira do PCamp 2026
+        Seja uma empresa parceira do Product Camp 2026
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -3536,7 +3551,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="section-label">Hospedagem</div>
     <h2 class="section-title">Hotéis parceiros</h2>
     <p class="section-subtitle">
-      Quem participa do PCamp tem acesso a muito mais do que conteúdo e networking. Conte com condições especiais de hospedagem, com até 20% de desconto em hotéis parceiros.
+      Quem participa do Product Camp tem acesso a muito mais do que conteúdo e networking. Conte com condições especiais de hospedagem, com até 20% de desconto em hotéis parceiros.
     </p>
 
     <div class="hotels-address">
@@ -3722,7 +3737,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </svg>
         </summary>
         <div class="faq-answer">
-          Sim! Temos parceria com hotéis próximos ao Frei Caneca com condições especiais para participantes do PCamp 2026. Mais detalhes serão divulgados em breve.
+          Sim! Temos parceria com hotéis próximos ao Frei Caneca com condições especiais para participantes do Product Camp 2026. Mais detalhes serão divulgados em breve.
         </div>
       </details>
     </div>
