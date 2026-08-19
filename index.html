@@ -2036,7 +2036,7 @@ window.dataLayer = window.dataLayer || [];
 
   .sponsor-logo:hover img { opacity: 1; }
 
-  /* hipsters — ícone quadrado, limita largura */
+  /* logos quadradas (Itaú) — limita largura */
   .sponsor-logo.logo-square img {
     height: 44px;
     width: 44px;
@@ -2288,7 +2288,7 @@ window.dataLayer = window.dataLayer || [];
 
   .hotels-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-top: 48px;
   }
@@ -2436,7 +2436,11 @@ window.dataLayer = window.dataLayer || [];
     margin-top: 4px;
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 1100px) {
+    .hotels-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
     .hotels-grid { grid-template-columns: 1fr; }
   }
 
@@ -3510,9 +3514,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="https://www.casadocodigo.com.br/" target="_blank" class="sponsor-logo">
           <img src="assets/img/sponsors/casa_do_codigo.avif" width="512" height="237" alt="Casa do Código">
         </a>
-        <a href="https://www.hipsters.tech/" target="_blank" class="sponsor-logo logo-square">
-          <img src="assets/img/sponsors/hipsters.svg" alt="Hipsters.tech">
-        </a>
         <a href="https://www.alura.com.br/" target="_blank" class="sponsor-logo logo-alura">
           <img src="assets/img/sponsors/alura_.png" width="400" height="121" alt="Alura">
         </a>
@@ -3653,6 +3654,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <a href="https://www.hotelcarillon.com.br" target="_blank" class="hotel-link">Hotel Carillon Plaza →</a>
           </div>
           <div class="hotel-tip">Ao clicar no link, basta inserir o código no campo "código promocional" para garantir o desconto.</div>
+        </div>
+      </div>
+
+      <!-- HOTEL SAN GABRIEL -->
+      <div class="hotel-card">
+        <div class="hotel-card-top">
+          <div class="hotel-name">Hotel San Gabriel</div>
+          <div class="hotel-discount">5% desc.</div>
+        </div>
+        <div class="hotel-card-body">
+          <div class="hotel-code-wrap">
+            <div class="hotel-code-label">Código de desconto</div>
+            <div class="hotel-code">PRODUCTCAMP26</div>
+          </div>
+          <div class="hotel-period">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="3" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M5 1.5v2M11 1.5v2M2 7h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            </svg>
+            Válido de 07/12 a 10/12/2026
+          </div>
+          <div class="hotel-links">
+            <a href="https://sangabriel.com.br" target="_blank" class="hotel-link">
+              Fazer reserva →
+            </a>
+          </div>
+          <div class="hotel-tip">Apartamentos sujeitos à disponibilidade no momento da reserva.</div>
         </div>
       </div>
 
