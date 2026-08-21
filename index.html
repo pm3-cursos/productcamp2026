@@ -1153,18 +1153,14 @@ window.dataLayer = window.dataLayer || [];
      4 trilhas está no HTML; o JS só troca o atributo hidden. */
   .track-tabs-wrap { margin-top: 48px; }
 
-  /* a régua rola na horizontal no mobile em vez de quebrar em duas linhas —
-     mesma solução de barra escondida já usada no resto do site */
+  /* Régua horizontal com sublinhado na aba ativa. No mobile ela vira uma grade
+     2×2 de chips (ver @media 640px): as 4 trilhas precisam ficar TODAS visíveis
+     e clicáveis, e numa régua que rola as duas últimas ficavam fora da tela. */
   .track-tabs {
     display: flex;
     gap: 8px;
     border-bottom: 1px solid var(--navy-border);
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scrollbar-width: none;
   }
-
-  .track-tabs::-webkit-scrollbar { display: none; }
 
   .track-tab {
     flex: 0 0 auto;
@@ -1298,6 +1294,46 @@ window.dataLayer = window.dataLayer || [];
     .track-tabs-wrap { margin-top: 36px; }
   }
 
+  /* ── ABAS COMO CHIPS (até 900px) ──
+     A régua horizontal precisa de ~845px para caber as 4 trilhas. Abaixo disso
+     a última ("Liderança & Negócios") saía da tela e ainda dava rolagem
+     horizontal na página. Viram chips numa grade: as 4 trilhas ficam TODAS
+     visíveis e clicáveis, sem rolagem lateral e sem corte.
+     grid-auto-rows: 1fr iguala a altura dos chips quando um nome quebra em
+     duas linhas. */
+  @media (max-width: 900px) {
+    .track-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-rows: 1fr;
+      gap: 8px;
+      border-bottom: none;
+    }
+
+    .track-tab {
+      /* alvo de toque confortável: 48px de altura mínima */
+      min-height: 48px;
+      padding: 12px 10px;
+      text-align: center;
+      white-space: normal;
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 10px;
+      margin-bottom: 0;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+
+    /* sem sublinhado aqui: o chip inteiro vira o indicador */
+    .track-tab[aria-selected="true"] {
+      border-color: var(--pink);
+      background: var(--pink-muted);
+    }
+
+    .track-tab:focus-visible { outline-offset: -3px; border-radius: 10px; }
+
+    .track-panel { padding-top: 24px; }
+  }
+
   @media (max-width: 640px) {
     /* 2 colunas fixas: com auto-fill a grade cairia para 1 coluna e a dobra
        ficaria com 10 cards empilhados */
@@ -1315,10 +1351,32 @@ window.dataLayer = window.dataLayer || [];
     .track-card-name { font-size: 14px; }
     .track-card-role { font-size: 11.5px; }
 
-    .track-tab { font-size: 14px; padding: 12px 14px; }
-    .track-panel { padding-top: 22px; }
+    /* No celular os chips passam para 2×2: em 4 colunas eles ficariam com
+       ~80px e todo nome de trilha quebraria em três linhas. */
+    .track-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .track-tab { font-size: 13px; }
+
     .track-panel-desc { font-size: 14px; }
     .track-coords { grid-template-columns: 1fr; }
+
+    /* ── FOTO DA COORDENAÇÃO NO MOBILE ──
+       Mesmo tamanho e tratamento da foto da Priscila Lugão no .gc-panel
+       (120px, raio 12, borda) — pedido da PM3. Com a foto grande o card empilha,
+       igual ao painel da coordenação geral. Vale só para os cards de
+       coordenação: o card de palestrante segue o tamanho do mockup. */
+    .coord-mini {
+      flex-direction: column;
+      gap: 14px;
+      padding: 16px;
+    }
+
+    .coord-mini-photo {
+      flex: 0 0 auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      border: 1px solid var(--navy-border);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -3911,7 +3969,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       });
 
       if (opts && opts.focus) tabs[index].focus();
-      // mantém a aba escolhida à vista quando a régua rola no mobile
+      // garante a aba escolhida à vista (só rola se ela estiver fora da tela —
+      // no mobile as 4 cabem na grade 2×2, então normalmente não rola nada)
       if (opts && opts.reveal) tabs[index].scrollIntoView({ block: 'nearest', inline: 'nearest' });
     }
 

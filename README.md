@@ -115,8 +115,20 @@ gente e **em qual trilha**.
 ### Abas das trilhas (`.track-tabs-wrap`)
 Padrão de tabs do ARIA, em JS puro: `role="tablist"`/`role="tab"`/`role="tabpanel"`, `aria-selected`,
 `tabindex` roving e navegação por ←/→/Home/End. Os **4 painéis já vêm no HTML** — o JS só troca o
-atributo `hidden`, então sem JS o primeiro painel continua visível e nada some da página. No celular
-a régua de abas rola na horizontal e a aba escolhida se revela sozinha.
+atributo `hidden`, então sem JS o primeiro painel continua visível e nada some da página.
+
+**As 4 trilhas ficam sempre visíveis e clicáveis**, em qualquer largura:
+
+| Largura | Forma | Colunas |
+|---|---|---|
+| acima de 900px | régua com sublinhado na aba ativa | 4 em linha |
+| 641–900px | chips | 4 em linha |
+| até 640px | chips | 2×2 |
+
+A régua horizontal precisa de ~845px para caber as 4 trilhas — abaixo disso a última saía da tela e
+ainda dava rolagem horizontal na página, por isso a troca por chips. Cada chip tem **48px de altura
+mínima** (alvo de toque) e `grid-auto-rows: 1fr` iguala a altura quando um nome quebra em duas
+linhas. Verificado em 360, 375, 390, 414, 430, 560, 641, 700, 768, 834, 900, 901, 1024 e 1440px.
 
 ### Coordenação das trilhas
 
@@ -129,6 +141,10 @@ a régua de abas rola na horizontal e a aba escolhida se revela sozinha.
 
 Cada dupla vive no painel da sua aba, em cards `.coord-mini` (foto 56px + rótulo rosa + nome +
 `Empresa — Cargo`).
+
+**No celular (até 640px) a foto sobe para 120×120**, o mesmo tamanho e tratamento da foto da Priscila
+Lugão no `.gc-panel` — e o card empilha, igual ao painel da coordenação geral. Vale só para os cards
+de coordenação: o card de palestrante segue o tamanho do mockup.
 
 A **Coordenação Geral** (Priscila Lugão — Product Coordinator, Med Review) abre o bloco de
 coordenação (`.gc-panel`), logo acima das abas.
