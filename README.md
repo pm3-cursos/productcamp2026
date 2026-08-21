@@ -78,43 +78,57 @@ productcamp2026/
 ## 🆕 Seção de Trilhas (Redesign 2026)
 
 ### Estrutura
-As **4 trilhas ficam todas visíveis**, empilhadas na página. **Não** existe container de altura fixa
-nem barra de rolagem vertical interna — ninguém precisa rolar uma barra para achar as outras trilhas.
+A dobra tem **dois blocos**, na ordem do mockup do Claude Design:
 
-Cada trilha (`.track-lane`) tem 3 níveis empilhados:
-1. **Nome** (`.track-lane-title`) — com a barra rosa de destaque à esquerda;
-2. **Descrição** (`.track-lane-desc`) — logo abaixo do nome, alinhada pelo mesmo eixo;
-3. **Fileira de cards** (`.track-row`) — coordenadores da trilha primeiro, palestrantes depois.
+1. **Grade de palestrantes** (`.track-speakers`) — uma grade só, sem fileira que rola para o lado.
+   Cada card carrega o **nome da trilha**, então a pessoa aparece uma vez e a trilha continua
+   legível sem precisar de 4 fileiras separadas.
+2. **Coordenação** (`.general-coord`) — o painel da coordenação geral (`.gc-panel`) e, abaixo dele,
+   as **abas das 4 trilhas** (`.track-tabs-wrap`): cada aba abre a **descrição** da trilha e os
+   cards de quem **coordena**.
 
-Só a **fileira** rola, e na horizontal: **palestrante novo entra pelo lado, sem esticar a altura.**
+A grade é `auto-fill` com mínimo de 200px — não há largura fixa para manter. No container de
+1160px ela fecha **5 colunas**; no tablet, 3; no celular, 2.
 
-- **Desktop:** setas clicáveis nas pontas da fileira. Só aparecem quando há overflow e somem ao
-  chegar no início/fim (o JS aplica `is-start`/`is-end`).
-- **Mobile/touch:** sem setas — a fileira é arrastada com o dedo (swipe nativo). Os degradês nas
-  pontas continuam indicando que há mais gente para o lado.
+### Card de palestrante (`.track-card`)
+Composição vinda do mockup: **empresa no topo** (rótulo apagado, acima da foto) → foto → **trilha**
+(ciano) → **nome** → **cargo**.
 
-### Card (`.coordinator-card`)
-Sem badge sobre a foto (tampava o rosto). A distinção é pela **cor do rótulo na base**:
-**rosa = coordenação**, **ciano = palestrante** (`.coordinator-card--speaker`).
-Ordem das infos: rótulo → nome → **empresa** (destaque) → cargo (menor e apagado).
-Palestrante sem empresa: **omitir** a linha `.coordinator-company` — nunca usar placeholder.
+Palestrante sem empresa: deixe a `.track-card-company` **vazia** — nunca use placeholder. O bloco
+mantém a altura de uma linha (via `::after` com espaço de largura zero), então a foto fica alinhada
+com a dos cards vizinhos. `min-height` não resolveria: com `box-sizing: border-box` o padding
+comeria a altura mínima e o card sem empresa subiria uns 14px.
 
-O bloco de texto do card tem **altura fixa** (`--track-info-h`), dimensionada para o pior caso
-(nome em 2 linhas + empresa + cargo em 3 linhas). É o que mantém todos os cards do mesmo tamanho
-**entre as 4 trilhas**, não só dentro de uma fileira. Nenhum cargo é truncado — cargo mais longo
-que isso pede aumentar a variável, não cortar o texto.
-
-### Card "Em breve" (`.coordinator-card--soon`)
-Cada trilha termina com **um** placeholder de silhueta com o nome "Em breve", sinalizando que a
-trilha ainda vai receber gente.
+### Card "Em breve" (`.track-card--soon`)
+Um por trilha, **todos no fim da grade**, cada um com o rótulo da sua trilha: sinaliza que ainda vem
+gente e **em qual trilha**.
 
 - Silhueta desenhada em **CSS puro** (`.soon-avatar`, pseudo-elementos) — zero requisição, zero KB.
 - `aria-hidden="true"`: é decorativo, não entra na lista para leitor de tela.
-- Aparece **só a partir de 1160px**. No mobile a fileira já rola, e um card sem informação no fim
-  da rolagem só entrega frustração.
+- Aparece **só a partir de 1160px**. Abaixo disso a grade cai para 3 ou 2 colunas e os 4
+  placeholders viravam duas telas de rolagem sem informação nenhuma. Escondidos, os 6 palestrantes
+  fecham fileiras cheias em todo tamanho: **5×2** no desktop, **3×2** no tablet, **2×3** no celular.
 
-> **Ao confirmar um palestrante, cole o card real ANTES do "Em breve"** — ele fica sempre por
-> último na fileira.
+> **Ao confirmar um palestrante, cole o card real ANTES dos "Em breve"** — eles ficam sempre por
+> último na grade.
+
+### Abas das trilhas (`.track-tabs-wrap`)
+Padrão de tabs do ARIA, em JS puro: `role="tablist"`/`role="tab"`/`role="tabpanel"`, `aria-selected`,
+`tabindex` roving e navegação por ←/→/Home/End. Os **4 painéis já vêm no HTML** — o JS só troca o
+atributo `hidden`, então sem JS o primeiro painel continua visível e nada some da página.
+
+**As 4 trilhas ficam sempre visíveis e clicáveis**, em qualquer largura:
+
+| Largura | Forma | Colunas |
+|---|---|---|
+| acima de 900px | régua com sublinhado na aba ativa | 4 em linha |
+| 641–900px | chips | 4 em linha |
+| até 640px | chips | 2×2 |
+
+A régua horizontal precisa de ~845px para caber as 4 trilhas — abaixo disso a última saía da tela e
+ainda dava rolagem horizontal na página, por isso a troca por chips. Cada chip tem **48px de altura
+mínima** (alvo de toque) e `grid-auto-rows: 1fr` iguala a altura quando um nome quebra em duas
+linhas. Verificado em 360, 375, 390, 414, 430, 560, 641, 700, 768, 834, 900, 901, 1024 e 1440px.
 
 ### Coordenação das trilhas
 
@@ -125,13 +139,19 @@ trilha ainda vai receber gente.
 | **Marketing & Design** | Mariana Tosi — Insider One | Alex Soares — Totvs |
 | **Liderança & Negócios** | Rafael Justino — Serrabits | Fernanda Faria — Nubank |
 
-A **Coordenação Geral** (Priscila Lugão — Product Coordinator, Med Review) não aparece mais dentro
-das trilhas: ganhou dobra própria (`.general-coord`) logo abaixo do bloco de trilhas.
+Cada dupla vive no painel da sua aba, em cards `.coord-mini` (foto 56px + rótulo rosa + nome +
+`Empresa — Cargo`).
+
+**No celular (até 640px) a foto sobe para 120×120**, o mesmo tamanho e tratamento da foto da Priscila
+Lugão no `.gc-panel` — e o card empilha, igual ao painel da coordenação geral. Vale só para os cards
+de coordenação: o card de palestrante segue o tamanho do mockup.
+
+A **Coordenação Geral** (Priscila Lugão — Product Coordinator, Med Review) abre o bloco de
+coordenação (`.gc-panel`), logo acima das abas.
 
 ### Recursos técnicos
-- Layout responsivo — a fileira só encolhe a largura do card (`--track-card-w`)
-- Scroll nativo com `scroll-snap` — sem biblioteca de carrossel
-- `ResizeObserver` recalcula `is-start`/`is-end` quando a fileira muda de largura
+- Layout responsivo por `grid auto-fill` — sem largura de card fixa para manter
+- Abas em JS puro seguindo o padrão de tabs do ARIA (teclado incluído)
 - `prefers-reduced-motion` respeitado
 - Sem dependências externas
 
@@ -159,29 +179,45 @@ das trilhas: ganhou dobra própria (`.general-coord`) logo abaixo do bloco de tr
 1. Suba a foto **400×400 em `.webp`** em `assets/img/speakers/` (palestrante) ou
    `assets/img/coordinators/` (coordenação)
 2. Abra `index.html` e localize a seção `.tracks-section`
-3. Encontre a `.track-row` da trilha desejada (elas estão comentadas: `TRILHA 1`, `TRILHA 2`…)
-4. Cole o bloco **logo antes do card "Em breve"** (`coordinator-card--soon`), que fecha a fileira.
-   A ordem dentro da fileira é: coordenadores, palestrantes, "Em breve":
+3. Cole o bloco na `.track-speakers`, **logo antes do primeiro card "Em breve"**
+   (`.track-card--soon`) — eles fecham a grade:
 
 ```html
-<article class="coordinator-card coordinator-card--speaker" role="listitem">
-  <div class="coordinator-photo-wrap">
+<article class="track-card" role="listitem">
+  <span class="track-card-company">Empresa</span>
+  <div class="track-card-photo">
     <img src="assets/img/speakers/sp-nome.webp" width="400" height="400"
          alt="Foto de Nome Completo, Cargo na Empresa" loading="lazy">
   </div>
-  <hr class="coordinator-divider">
-  <div class="coordinator-info">
-    <span class="coordinator-role">Palestrante</span>
-    <div class="coordinator-name">Nome Completo</div>
-    <div class="coordinator-company">Empresa</div>
-    <div class="coordinator-title">Cargo</div>
+  <div class="track-card-info">
+    <span class="track-card-track">Nome da trilha</span>
+    <div class="track-card-name">Nome Completo</div>
+    <span class="track-card-role">Cargo</span>
   </div>
 </article>
 ```
 
-Para **coordenação**, remova o modificador `coordinator-card--speaker` (rótulo volta ao rosa) e
-troque o rótulo para `Coordenação`. **Sem empresa confirmada:** omita `.coordinator-company`.
-Não é preciso mexer em altura nem em nenhum CSS.
+**Sem empresa confirmada:** deixe a `.track-card-company` vazia (`<span class="track-card-company"></span>`)
+— a altura fica reservada e as fotos seguem alinhadas.
+
+Para **coordenação de trilha**, o card é outro: vai dentro do `.track-panel` da trilha, nas abas
+mais abaixo:
+
+```html
+<article class="coord-mini">
+  <div class="coord-mini-photo">
+    <img src="assets/img/coordinators/nome.webp" width="400" height="400"
+         alt="Foto de Nome Completo, Cargo na Empresa" loading="lazy">
+  </div>
+  <div class="coord-mini-info">
+    <span class="coord-mini-label">Coordenação</span>
+    <div class="coord-mini-name">Nome Completo</div>
+    <span class="coord-mini-role">Empresa — Cargo</span>
+  </div>
+</article>
+```
+
+Não é preciso mexer em altura nem em nenhum CSS — as duas grades são `auto-fill`.
 
 ### Adicionar um palestrante
 1. Copie o bloco abaixo e cole dentro de `.speakers-grid`:
