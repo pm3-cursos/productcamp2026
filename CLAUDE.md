@@ -96,6 +96,9 @@ O site é pensado **primeiro para mobile** — a maioria do tráfego de evento v
 ## Fluxo de trabalho
 
 - **Sempre criar branch** para qualquer mudança — nunca commitar direto na `main`.
+  **Exceção:** o dono do repositório pode pedir commit direto na `main` ou merge com
+  bypass de admin. Nesse caso, execute sem questionar o fluxo — a regra existe para os
+  demais colaboradores. O cuidado com o item abaixo (publicar em produção) continua valendo.
 - **Commit só quando o usuário pedir** explicitamente.
 - Lembrar: como o Pages publica a `main` automaticamente, **mergear na `main` = publicar em produção**. Tratar merges com esse cuidado.
 
