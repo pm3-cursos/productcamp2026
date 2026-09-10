@@ -2123,6 +2123,133 @@ window.dataLayer = window.dataLayer || [];
   .sponsors-realizacao .sponsor-logo { height: 88px; padding: 24px 40px; }
   .sponsors-realizacao .sponsor-logo img { height: 44px; max-width: 180px; }
 
+  /* ── COTAS DE PATROCÍNIO ──
+     Tudo dentro do mesmo bloco "Patrocinadores": cada cota é uma
+     linha. A hierarquia vem do tamanho do card + nº de colunas por
+     linha + espaçamento entre grupos (maior que o espaçamento entre
+     logos do mesmo grupo). O nº de colunas é controlado pelo
+     max-width do card contra a largura do .container (1112px úteis). */
+  .sponsors-cotas {
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+
+  .sponsors-cota-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--white-40);
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  .sponsors-cota-logos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* Content Partner — maior destaque: card maior, 2 por linha */
+  .cota--content-partner .sponsors-cota-logos { gap: 20px; }
+  .cota--content-partner .sponsor-logo {
+    flex: 1 1 300px;
+    max-width: 380px;
+    height: 148px;
+    padding: 28px 40px;
+    border-color: rgba(24,206,244,0.22);
+  }
+  .cota--content-partner .sponsor-logo img { height: 52px; max-width: 220px; }
+  .cota--content-partner .sponsor-logo.logo-square img { height: 76px; width: 76px; max-width: none; }
+
+  /* Diamond — card grande, 1–2 por linha */
+  .cota--diamond .sponsor-logo {
+    flex: 1 1 280px;
+    max-width: 370px;
+    height: 124px;
+    padding: 24px 36px;
+  }
+  .cota--diamond .sponsor-logo img { height: 44px; max-width: 200px; }
+
+  /* Gold — card médio, 3 por linha */
+  .cota--gold .sponsor-logo {
+    flex: 1 1 220px;
+    max-width: 300px;
+    height: 100px;
+  }
+  .cota--gold .sponsor-logo img { height: 34px; max-width: 170px; }
+
+  /* Silver — card compacto, até 4 por linha */
+  .cota--silver .sponsor-logo {
+    flex: 1 1 170px;
+    max-width: 210px;
+    height: 82px;
+    padding: 20px 24px;
+  }
+  .cota--silver .sponsor-logo img { height: 26px; max-width: 140px; }
+
+  /* Startup — menor destaque: card menor, até 5 por linha */
+  .cota--startup .sponsor-logo {
+    flex: 1 1 150px;
+    max-width: 185px;
+    height: 74px;
+    padding: 18px 22px;
+  }
+  .cota--startup .sponsor-logo img { height: 22px; max-width: 120px; }
+
+  /* wordmark de texto — usado quando ainda não há arquivo de logo */
+  .sponsor-wordmark {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    opacity: 0.85;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+  .sponsor-logo:hover .sponsor-wordmark { opacity: 1; }
+  .cota--gold .sponsor-wordmark { font-size: 21px; }
+
+  /* mobile — mantém a ordem da hierarquia, empilhando em 1–2 colunas */
+  @media (max-width: 640px) {
+    .sponsors-cotas { gap: 44px; }
+    .sponsors-cota-logos,
+    .cota--content-partner .sponsors-cota-logos { gap: 12px; }
+
+    /* Content Partner e Diamond: 1 por linha */
+    .cota--content-partner .sponsor-logo,
+    .cota--diamond .sponsor-logo {
+      flex: 1 1 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+    .cota--content-partner .sponsor-logo { height: 116px; padding: 24px 28px; }
+    .cota--content-partner .sponsor-logo img { height: 42px; max-width: 190px; }
+    .cota--content-partner .sponsor-logo.logo-square img { height: 60px; width: 60px; }
+    .cota--diamond .sponsor-logo { height: 104px; }
+    .cota--diamond .sponsor-logo img { height: 38px; max-width: 180px; }
+
+    /* Gold, Silver e Startup: 2 por linha */
+    .cota--gold .sponsor-logo,
+    .cota--silver .sponsor-logo,
+    .cota--startup .sponsor-logo {
+      flex: 0 1 calc(50% - 6px);
+      max-width: none;
+      min-width: 0;
+      padding: 18px 20px;
+    }
+    .cota--gold .sponsor-logo { height: 88px; }
+    .cota--gold .sponsor-logo img { height: 28px; max-width: 120px; }
+    .cota--gold .sponsor-wordmark { font-size: 17px; }
+    .cota--silver .sponsor-logo,
+    .cota--startup .sponsor-logo { height: 74px; }
+    .cota--silver .sponsor-logo img,
+    .cota--startup .sponsor-logo img { height: 22px; max-width: 110px; }
+  }
+
   .sponsors-divider {
     width: 1px;
     height: 32px;
@@ -3485,13 +3612,44 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!--
   ╔══════════════════════════════════════════════════════════════╗
   ║  COMO ADICIONAR UM NOVO PATROCINADOR                         ║
-  ║  Copie o bloco abaixo e cole dentro da .sponsors-logos       ║
-  ║  do tier correto (Patrocinadores, Apoio ou Realização).      ║
+  ║                                                              ║
+  ║  1. Coloque o logo em assets/img/sponsors/                   ║
+  ║  2. Cole o bloco abaixo dentro da .sponsors-cota-logos da    ║
+  ║     cota correta (ou do tier Apoio / Realização).            ║
   ║                                                              ║
   ║  <a href="URL" target="_blank" class="sponsor-logo">         ║
-  ║    <img src="logo-empresa.svg" alt="Empresa">                ║
+  ║    <img src="assets/img/sponsors/empresa.svg"                ║
+  ║         width="W" height="H" loading="lazy" alt="Empresa">   ║
   ║  </a>                                                        ║
   ╚══════════════════════════════════════════════════════════════╝
+
+  MODELO DE DADOS — fonte da verdade do bloco "Patrocinadores".
+  Shape: { nome: string, cota: Cota, logo: string }
+  Cota:  'content-partner' | 'diamond' | 'gold' | 'silver' | 'startup'
+
+  COTA_PRIORITY (ordem de renderização, menor = mais em cima;
+  NÃO é ordem alfabética nem de inserção):
+    content-partner: 1  → card maior,    2 por linha
+    diamond:         2  → card grande,   1-2 por linha
+    gold:            3  → card médio,    3 por linha
+    silver:          4  → card compacto, até 4 por linha
+    startup:         5  → card menor,    até 5 por linha
+
+  SPONSORS (já ordenado por COTA_PRIORITY — o HTML abaixo é a
+  renderização direta desta lista; ao inserir um patrocinador,
+  atualize a lista e o markup na mesma posição):
+    { nome: 'Minders',   cota: 'content-partner', logo: 'assets/img/sponsors/minders.svg'   }
+    { nome: 'Itaú',      cota: 'content-partner', logo: 'assets/img/sponsors/itau.svg'      }
+    { nome: 'Replit',    cota: 'diamond',         logo: 'assets/img/sponsors/replit.svg'    }
+    { nome: 'Mixpanel',  cota: 'gold',            logo: 'assets/img/sponsors/mixpanel_.svg' }
+    { nome: 'CleverTap', cota: 'gold',            logo: 'assets/img/sponsors/clevertap.avif'}
+    { nome: 'MoEngage',  cota: 'gold',            logo: null /* PENDENTE: arquivo entra em outra PR — hoje renderizado como wordmark de texto, na posição correta da cota */ }
+    { nome: 'Pendo',     cota: 'silver',          logo: 'assets/img/sponsors/pendo_.avif'   }
+    { nome: 'Grunn AI',  cota: 'startup',         logo: 'assets/img/sponsors/grunn.webp'    }
+
+  A hierarquia é 100% visual (tamanho de card + nº de colunas +
+  espaçamento entre grupos). O nome da cota aparece SÓ no
+  micro-label acima do grupo, nunca dentro do card do logo.
 -->
 <section class="sponsors-section">
   <div class="container">
@@ -3501,31 +3659,92 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p class="section-subtitle section-subtitle--center">Patrocinadores e apoiadores que fazem parte do Product Camp 2026.</p>
     </div>
 
-    <!-- PATROCINADORES -->
+    <!-- PATROCINADORES — um único bloco, agrupado por cota -->
     <div class="sponsors-tier">
       <div class="sponsors-tier-label">Patrocinadores</div>
-      <div class="sponsors-logos">
-        <a href="https://minders.io/pt-br/" target="_blank" class="sponsor-logo">
-          <img src="assets/img/sponsors/minders.svg" alt="Minders">
-        </a>
-        <a href="https://clevertap.com/pt/" target="_blank" class="sponsor-logo">
-          <img src="assets/img/sponsors/clevertap.avif" width="468" height="172" alt="CleverTap">
-        </a>
-        <a href="https://mixpanel.com/home/" target="_blank" class="sponsor-logo">
-          <img src="assets/img/sponsors/mixpanel_.svg" alt="Mixpanel">
-        </a>
-        <a href="https://www.pendo.io/" target="_blank" class="sponsor-logo">
-          <img src="assets/img/sponsors/pendo_.avif" width="250" height="50" alt="Pendo">
-        </a>
-        <a href="https://replit.com/" target="_blank" class="sponsor-logo">
-          <img src="assets/img/sponsors/replit.svg" width="512" height="145" alt="Replit">
-        </a>
-        <a href="https://grunn.ai/" target="_blank" class="sponsor-logo">
-          <img src="assets/img/sponsors/grunn.webp" width="512" height="102" loading="lazy" alt="grunn.ai">
-        </a>
-        <a href="https://www.itau.com.br/" target="_blank" class="sponsor-logo logo-square">
-          <img src="assets/img/sponsors/itau.svg" alt="Itaú">
-        </a>
+
+      <div class="sponsors-cotas">
+
+        <!-- 1. CONTENT PARTNER -->
+        <div class="sponsors-cota cota--content-partner">
+          <div class="sponsors-cota-label">Content Partner</div>
+          <div class="sponsors-cota-logos">
+            <a href="https://minders.io/pt-br/" target="_blank" class="sponsor-logo">
+              <img src="assets/img/sponsors/minders.svg" width="266" height="91" loading="lazy" alt="Minders">
+            </a>
+            <a href="https://www.itau.com.br/" target="_blank" class="sponsor-logo logo-square">
+              <img src="assets/img/sponsors/itau.svg" width="512" height="512" loading="lazy" alt="Itaú">
+            </a>
+          </div>
+        </div>
+
+        <!-- 2. DIAMOND -->
+        <div class="sponsors-cota cota--diamond">
+          <div class="sponsors-cota-label">Diamond</div>
+          <div class="sponsors-cota-logos">
+            <a href="https://replit.com/" target="_blank" class="sponsor-logo">
+              <img src="assets/img/sponsors/replit.svg" width="1122" height="319" loading="lazy" alt="Replit">
+            </a>
+          </div>
+        </div>
+
+        <!-- 3. GOLD -->
+        <div class="sponsors-cota cota--gold">
+          <div class="sponsors-cota-label">Gold</div>
+          <div class="sponsors-cota-logos">
+            <a href="https://mixpanel.com/home/" target="_blank" class="sponsor-logo">
+              <img src="assets/img/sponsors/mixpanel_.svg" width="270" height="91" loading="lazy" alt="Mixpanel">
+            </a>
+            <a href="https://clevertap.com/pt/" target="_blank" class="sponsor-logo">
+              <img src="assets/img/sponsors/clevertap.avif" width="468" height="172" loading="lazy" alt="CleverTap">
+            </a>
+            <!-- ═══ MoEngage — cota GOLD, 3ª posição do grupo ═══
+                 PENDENTE: o arquivo do logo entra em outra PR.
+                 A posição na hierarquia JÁ ESTÁ CORRETA — não mover
+                 este <a> de lugar; a cota é definida pelo grupo pai
+                 (.cota--gold), não pelo card.
+
+                 PARA TROCAR (PR do logo), em 2 passos:
+                 1. salve o arquivo em assets/img/sponsors/moengage.svg
+                    (ou .webp/.avif — mesma pasta dos outros)
+                 2. troque APENAS a linha do <span> abaixo por:
+                    <img src="assets/img/sponsors/moengage.svg"
+                         width="W" height="H" loading="lazy" alt="MoEngage">
+                    (W/H = dimensões intrínsecas do arquivo, para evitar CLS)
+
+                 Nenhuma mudança de CSS é necessária: .cota--gold já
+                 dimensiona o logo (34px de altura no desktop, 28px no
+                 mobile) e o object-fit: contain evita distorção.
+                 Se o logo sumir/ficar sólido: os logos desta seção são
+                 normalizados para branco via filter brightness(0) invert(1)
+                 — logos já monocromáticos brancos precisam de .logo-square
+                 ou de um ajuste pontual. -->
+            <a href="https://www.moengage.com/" target="_blank" class="sponsor-logo">
+              <span class="sponsor-wordmark">MoEngage</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- 4. SILVER -->
+        <div class="sponsors-cota cota--silver">
+          <div class="sponsors-cota-label">Silver</div>
+          <div class="sponsors-cota-logos">
+            <a href="https://www.pendo.io/" target="_blank" class="sponsor-logo">
+              <img src="assets/img/sponsors/pendo_.avif" width="250" height="50" loading="lazy" alt="Pendo">
+            </a>
+          </div>
+        </div>
+
+        <!-- 5. STARTUP -->
+        <div class="sponsors-cota cota--startup">
+          <div class="sponsors-cota-label">Startup</div>
+          <div class="sponsors-cota-logos">
+            <a href="https://grunn.ai/" target="_blank" class="sponsor-logo">
+              <img src="assets/img/sponsors/grunn.webp" width="512" height="102" loading="lazy" alt="Grunn AI">
+            </a>
+          </div>
+        </div>
+
       </div>
     </div>
 
