@@ -7,6 +7,19 @@ Site oficial do Product Camp Brasil 2026, o maior evento de produtos digitais da
 
 ---
 
+## 🎟️ Plataforma de Indicação
+
+Além do site, o repositório hospeda a **plataforma do programa de indicação**
+do evento, em `/indicacao/`: o participante indica amigos com um cupom e, ao
+somar 3 compras confirmadas, qualifica para o upgrade gratuito de Passaporte
+para VIP.
+
+- Telas em `indicacao/`, API em `functions/` (Cloudflare Pages Functions + D1).
+- Setup, operação, regras do programa e testes: **[`indicacao/LEIA-ME.md`](indicacao/LEIA-ME.md)**.
+- O site em si continua estático — nenhuma rota da landing page passa pela API.
+
+---
+
 ## 📁 Estrutura de arquivos
 
 ```

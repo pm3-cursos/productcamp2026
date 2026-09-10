@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /indicacao/
 
 Sitemap: https://www.productcamp.com.br/sitemap.xml

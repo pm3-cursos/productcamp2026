@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programa de Indicação | Product Camp 2026</title>
+<meta name="description" content="Acesso ao programa de indicação do Product Camp 2026: indique amigos e suba para o ingresso VIP.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.png" sizes="32x32">
+<link rel="icon" href="/favicon-16.png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/indicacao/intertight-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/indicacao/rubik-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/indicacao/app.css">
+</head>
+<body>
+<main class="login-stage">
+  <div class="login-card">
+    <div class="logo lg" aria-hidden="true">pcamp</div>
+    <h1>Programa de Indicação</h1>
+    <p class="ev">Product Camp 2026 · 8 e 9 de dezembro</p>
+
+    <!-- Formulário de acesso -->
+    <div id="etapa-form">
+      <p class="lead">Indique amigos, e quando 3 deles comprarem o ingresso, você sobe pro VIP sem pagar a diferença.</p>
+
+      <div id="aviso" class="aviso aviso-erro oculto" role="alert"></div>
+
+      <form id="form-acesso" novalidate>
+        <div class="field">
+          <label for="email">E-mail da sua compra</label>
+          <input type="email" id="email" name="email" placeholder="voce@email.com"
+                 autocomplete="email" inputmode="email" required>
+        </div>
+        <button type="submit" class="btn btn-pink" id="botao-acessar">Acessar minha página</button>
+      </form>
+
+      <p class="login-help">
+        Use o <b>mesmo e-mail que você usou para comprar seu ingresso</b>. Esse e-mail é também
+        o seu cupom de indicação. O acesso é liberado apenas para quem está na lista de
+        indicadores da organização.
+      </p>
+    </div>
+
+    <!-- Confirmação de envio do link mágico -->
+    <div id="etapa-enviado" class="enviado oculto">
+      <div class="big" aria-hidden="true">📬</div>
+      <h2>Link enviado</h2>
+      <p>
+        Mandamos um link de acesso para <span class="email-alvo" id="email-enviado"></span>.
+        Abra o e-mail e clique no botão para entrar. O link é de uso único e vale por
+        <span id="minutos">20</span> minutos.
+      </p>
+      <p id="link-dev-box" class="aviso aviso-ok oculto"></p>
+      <button type="button" class="link-btn" id="tentar-outro">Usar outro e-mail</button>
+    </div>
+  </div>
+</main>
+
+<footer class="foot">
+  Product Camp Brasil 2026 · <a href="/">voltar para o site do evento</a>
+</footer>
+
+<script type="module" src="/indicacao/js/acesso.js"></script>
+</body>
+</html>

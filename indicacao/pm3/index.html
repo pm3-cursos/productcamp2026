@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de Indicação | Product Camp 2026</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.png" sizes="32x32">
+<link rel="preload" href="/assets/fonts/indicacao/intertight-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/indicacao/rubik-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/indicacao/app.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="row">
+    <div class="brand">
+      <div class="logo sm" aria-hidden="true">pc</div>
+      <div class="txt">
+        <b id="topo-titulo">Painel de Indicação</b>
+        <span>Product Camp 2026 · uso interno</span>
+      </div>
+    </div>
+    <div class="userchip">
+      <span class="nome" id="topo-email">Equipe PM3</span>
+      <div class="avatar" aria-hidden="true">PM</div>
+      <button type="button" class="sair" data-sair>Sair</button>
+    </div>
+  </div>
+</header>
+
+<!-- ====================================================== painel -->
+<main class="pad" id="vista-painel">
+  <div class="adm-head">
+    <h1>Programa de indicação</h1>
+    <p>Acompanhe quem indica, as compras confirmadas e libere os upgrades VIP manualmente.</p>
+  </div>
+
+  <div id="aviso-painel" class="aviso aviso-erro oculto" role="alert"></div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="k-l">👥 Indicadores ativos</div>
+      <div class="k-n" id="kpi-ativos">—</div>
+      <div class="k-s">com ao menos 1 compra confirmada</div>
+    </div>
+    <div class="kpi">
+      <div class="k-l">✓ Compras confirmadas</div>
+      <div class="k-n" id="kpi-compras">—</div>
+      <div class="k-s">via planilha da Sympla</div>
+    </div>
+    <div class="kpi">
+      <div class="k-l">💰 Receita gerada</div>
+      <div class="k-n" id="kpi-receita">—</div>
+      <div class="k-s">já com 10% de desconto</div>
+    </div>
+    <div class="kpi accent">
+      <div class="k-l">🎟️ Upgrades VIP liberados</div>
+      <div class="k-n"><span id="kpi-vip">—</span> <span class="de">/ <span id="kpi-teto">50</span></span></div>
+      <div class="vipbar"><i id="kpi-vipbar"></i></div>
+      <div class="k-s" id="kpi-vagas">—</div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <label class="search">
+      <span aria-hidden="true">🔎</span>
+      <span class="so-leitor">Buscar indicador</span>
+      <input type="search" id="busca" placeholder="Buscar por nome, código ou e-mail…">
+    </label>
+    <div class="filters" id="filtros" role="group" aria-label="Filtrar indicadores">
+      <button type="button" class="on" data-filtro="todos">Todos</button>
+      <button type="button" data-filtro="qualificados">Qualificados</button>
+      <button type="button" data-filtro="progresso">Em progresso</button>
+      <button type="button" data-filtro="vip">VIP liberado</button>
+    </div>
+    <button type="button" class="btn btn-pink" id="abrir-import">⬆ Importar planilha</button>
+    <button type="button" class="btn btn-ghost" id="exportar">⬇ Exportar CSV</button>
+  </div>
+
+  <div class="adm-table">
+    <table>
+      <thead>
+        <tr>
+          <th class="col-expandir"><span class="so-leitor">Expandir</span></th>
+          <th>Indicador</th>
+          <th>Código</th>
+          <th>Cupom (e-mail)</th>
+          <th>Compras</th>
+          <th>Status</th>
+          <th>VIP liberado</th>
+          <th>Receita</th>
+        </tr>
+      </thead>
+      <tbody id="corpo-tabela">
+        <tr><td colspan="8" class="carregando">Carregando indicadores…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="adm-note" id="nota-painel">
+    A base é a <b>planilha extraída da Sympla</b>, importada aqui, sem conexão direta. A coluna
+    de cupom traz o <b>e-mail puro do indicador</b>, que a plataforma casa com a lista de cupons.
+    O <b>VIP é liberado manualmente</b> pela equipe, e a pessoa vê apenas o resultado. Quem já
+    tem ingresso VIP não entra na lista de cupons.
+  </p>
+</main>
+
+<!-- ====================================================== importação -->
+<main class="pad oculto" id="vista-import">
+  <div class="adm-head">
+    <h2>Importar planilha</h2>
+    <p>Suba o relatório de participantes da Sympla. A plataforma reconcilia tudo e mostra o resumo antes de gravar.</p>
+  </div>
+
+  <div class="tipo-import" id="tipo-import" role="group" aria-label="O que você vai importar">
+    <button type="button" class="on" data-tipo="compras">Compras (export da Sympla)</button>
+    <button type="button" data-tipo="indicadores">Lista de indicadores (cupons)</button>
+  </div>
+
+  <div id="aviso-import" class="aviso aviso-erro oculto" role="alert"></div>
+
+  <div class="drop" id="area-drop">
+    <div class="ic" aria-hidden="true">📄</div>
+    <h3 id="drop-titulo">Arraste o export da Sympla aqui</h3>
+    <p id="drop-sub">Formatos aceitos: .csv ou .xlsx · o mesmo relatório de participantes de sempre</p>
+    <button type="button" class="btn btn-pink" id="selecionar">Selecionar arquivo</button>
+    <input type="file" id="arquivo" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="so-leitor">
+    <p class="arquivo-nome oculto" id="arquivo-nome"></p>
+  </div>
+
+  <p class="imp-note" id="nota-import">
+    A plataforma lê a coluna <b>Cupom de Desconto</b> (que traz o e-mail do indicador), conta
+    apenas as compras com <b>pagamento aprovado</b>, e usa o <b>Nº ingresso</b> para não contar a
+    mesma compra duas vezes. As contagens e o ranking se atualizam nas duas telas.
+    <b>Nenhuma marcação manual de VIP é alterada.</b>
+  </p>
+
+  <div class="result oculto" id="resultado">
+    <div class="res-cards" id="resultado-cards"></div>
+    <p class="res-detalhes" id="resultado-detalhes"></p>
+    <div class="res-preview oculto" id="resultado-previa"></div>
+    <div class="res-preview oculto" id="resultado-orfaos"></div>
+    <div class="res-actions">
+      <button type="button" class="btn btn-pink" id="confirmar">Confirmar e atualizar painel</button>
+      <button type="button" class="btn btn-ghost" id="cancelar">Cancelar</button>
+    </div>
+  </div>
+
+  <div class="res-actions">
+    <button type="button" class="btn btn-ghost" id="voltar-painel">← Voltar ao painel</button>
+  </div>
+</main>
+
+<footer class="foot">Product Camp Brasil 2026 · painel interno do programa de indicação</footer>
+
+<script type="module" src="/indicacao/js/painel.js"></script>
+</body>
+</html>
