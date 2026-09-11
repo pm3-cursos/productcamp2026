@@ -49,7 +49,7 @@ window.dataLayer = window.dataLayer || [];
   ║  JSON-LD dos 3 eventos, que já cobre a série inteira.            ║
   ╚══════════════════════════════════════════════════════════════════╝
 -->
-<meta name="description" content="26/08, 19h — Live User: use IA para ampliar repertório sem terceirizar o julgamento. Uma inscrição dá acesso às 3 lives gratuitas + gravações.">
+<meta name="description" content="23/09, 19h — Live Builder: construa produtos para a era dos agentes, com case ao vivo de Vinicius Lana. Inscrição dá acesso às 3 lives grátis + gravações.">
 <meta name="robots" content="index, follow">
 <meta name="author" content="PM3">
 <meta name="theme-color" content="#2B1E39">
@@ -57,18 +57,18 @@ window.dataLayer = window.dataLayer || [];
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Product Camp">
 <meta property="og:locale" content="pt_BR">
-<meta property="og:title" content="Live User · 26/08: IA como extensão do seu repertório">
-<meta property="og:description" content="Primeira das 3 lives gratuitas rumo ao Product Camp 2026. Uma inscrição dá acesso às três lives + gravações.">
+<meta property="og:title" content="Live Builder · 23/09: Aprenda a construir produtos para a era dos agentes">
+<meta property="og:description" content="Segunda das 3 lives gratuitas rumo ao Product Camp 2026. Uma inscrição dá acesso às três lives + gravações.">
 <meta property="og:image" content="https://www.productcamp.com.br/assets/img/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Product Camp 2026 — o maior evento de produto da América Latina, 08 e 09 de dezembro, São Paulo.">
 <meta property="og:url" content="https://www.productcamp.com.br/lives-pre-pcamp26/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Live User · 26/08: IA como extensão do seu repertório">
-<meta name="twitter:description" content="Primeira das 3 lives gratuitas rumo ao Product Camp 2026. Uma inscrição, três lives + gravações.">
+<meta name="twitter:title" content="Live Builder · 23/09: Aprenda a construir produtos para a era dos agentes">
+<meta name="twitter:description" content="Segunda das 3 lives gratuitas rumo ao Product Camp 2026. Uma inscrição, três lives + gravações.">
 <meta name="twitter:image" content="https://www.productcamp.com.br/assets/img/og-image.png">
-<title>Live User · 26/08: IA como extensão do seu repertório</title>
+<title>Live Builder · 23/09: produtos na era dos agentes</title>
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -182,7 +182,8 @@ window.dataLayer = window.dataLayer || [];
   .btn-primary svg{flex-shrink:0;}
   /* ── JOURNEY TRACK (hero) ── */
   .journey-track{position:relative; display:flex; justify-content:space-between; gap:8px; margin-top:40px;}
-  .journey-track::before{content:''; position:absolute; top:22px; left:22px; right:22px; height:2px; background:linear-gradient(90deg, var(--pink) 0%, var(--pink) 70%, var(--cyan) 100%); z-index:0; border-radius:2px;}
+  /* O trecho já percorrido (até a 1ª live) fica apagado; a linha acende a partir da live da vez. */
+  .journey-track::before{content:''; position:absolute; top:22px; left:22px; right:22px; height:2px; background:linear-gradient(90deg, rgba(223,12,120,.3) 0%, rgba(223,12,120,.3) 18%, var(--pink) 32%, var(--pink) 70%, var(--cyan) 100%); z-index:0; border-radius:2px;}
   .journey-step{position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; flex:1 1 0; min-width:0; transition:transform .2s ease;}
   .journey-step:hover{transform:translateY(-3px);}
   .journey-dot{width:44px; height:44px; border-radius:50%; background:var(--pink); color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:600; font-size:16px; box-shadow:0 6px 16px rgba(223,12,120,.4); border:3px solid var(--navy); flex-shrink:0;}
@@ -191,6 +192,12 @@ window.dataLayer = window.dataLayer || [];
   .journey-persona{font-size:13px; font-weight:600; color:var(--white); letter-spacing:-.01em; line-height:1.3;}
   .journey-step.final .journey-persona{color:var(--cyan);}
   .journey-date{font-size:12.5px; font-weight:600; color:var(--white-70); letter-spacing:.01em;}
+  /* estado da jornada: a live que já passou perde destaque, a live da vez ganha */
+  .journey-step.past .journey-dot{background:var(--navy-mid); color:var(--white-40); box-shadow:0 0 0 1px var(--navy-border);}
+  .journey-step.past .journey-persona, .journey-step.past .journey-date{color:var(--white-40);}
+  .journey-step.next .journey-dot{transform:scale(1.12); box-shadow:0 0 0 4px rgba(223,12,120,.22), 0 8px 22px rgba(223,12,120,.55);}
+  .journey-step.next .journey-persona{color:var(--pink-light); font-size:14px;}
+  .journey-step.next .journey-date{color:var(--white);}
   /* form card in hero */
   .form-card{background:var(--navy-card); border:1px solid var(--navy-border); border-radius:16px; padding:30px 26px 24px; position:sticky; top:96px; box-shadow:0 30px 60px -25px rgba(0,0,0,.55);}
   .form-card h3{font-family:var(--font-display); font-size:1.35rem; font-weight:600; margin-bottom:8px; line-height:1.28; letter-spacing:-.01em;}
@@ -227,6 +234,7 @@ window.dataLayer = window.dataLayer || [];
     .journey-dot{width:36px; height:36px; font-size:14px;}
     .journey-track::before{top:18px; left:18px; right:18px;}
     .journey-persona{font-size:11.5px;}
+    .journey-step.next .journey-persona{font-size:12.5px;}
     .journey-date{font-size:11px;}
   }
   @media (max-width:420px){
@@ -263,29 +271,20 @@ window.dataLayer = window.dataLayer || [];
   .meta-icon svg{width:16px; height:16px; stroke:var(--pink); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round;}
   .meta-label{font-size:11px; color:var(--white-40); text-transform:uppercase; letter-spacing:.08em; display:block; margin-bottom:2px;}
   .meta-value{font-size:14px; font-weight:600; color:var(--white);}
-  /* hosts — foto média, tamanho consistente com os demais avatares */
-  .hosts-label, .agenda-label{font-size:12px; font-weight:600; color:var(--white-40); text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px;}
-  .hosts-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:36px;}
-  .host-card{display:flex; align-items:center; gap:16px; background:var(--navy-mid); border:1px solid var(--navy-border); border-radius:14px; padding:18px; transition:border-color .25s, transform .25s;}
-  .host-card:hover{border-color:rgba(223,12,120,.4); transform:translateY(-3px);}
-  .host-photo{width:88px; height:88px; border-radius:50%; object-fit:cover; object-position:top center; flex-shrink:0; background:var(--navy-card); border:2px solid rgba(223,12,120,.3);}
-  .host-name{font-size:15.5px; font-weight:600; margin-bottom:4px;}
-  .host-title{font-size:12.5px; color:var(--white-70); line-height:1.45;}
-  /* agenda — palestra de abertura + painel, avatares na mesma família visual dos hosts */
-  .agenda-stack{display:flex; flex-direction:column; gap:14px; margin-bottom:36px;}
-  .agenda-block{background:var(--navy-mid); border:1px solid var(--navy-border); border-radius:14px; padding:24px 26px;}
-  .agenda-kicker{display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--cyan); margin-bottom:14px;}
+  /* agenda — dois quadrantes lado a lado (case + host), mesmo tamanho: a grade estica
+     os blocos à mesma altura e o speaker cola no rodapé para os avatares se alinharem. */
+  .agenda-stack{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:36px;}
+  .agenda-block{display:flex; flex-direction:column; background:var(--navy-mid); border:1px solid var(--navy-border); border-radius:14px; padding:24px 26px;}
+  .agenda-kicker{display:inline-flex; align-self:flex-start; align-items:center; gap:8px; font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--cyan); margin-bottom:14px;}
   .agenda-title{font-size:16px; font-weight:600; line-height:1.4; margin-bottom:20px; max-width:60ch;}
-  .agenda-speaker{display:flex; align-items:center; gap:14px;}
+  .agenda-speaker{display:flex; align-items:center; gap:14px; margin-top:auto;}
   .agenda-avatar{width:88px; height:88px; border-radius:50%; object-fit:cover; object-position:top center; background:var(--pink-muted); border:2px solid rgba(223,12,120,.3); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:600; font-size:18px; color:var(--pink-light); flex-shrink:0;}
   .agenda-speaker-name{font-size:14.5px; font-weight:600; margin-bottom:2px;}
   .agenda-speaker-role{font-size:12.5px; color:var(--white-70);}
-  .panelists-row{display:flex; flex-wrap:wrap; gap:18px 24px;}
-  .panelist{display:flex; align-items:center; gap:14px; flex:1 1 240px;}
-  .panelist-name{font-size:13.5px; font-weight:600; margin-bottom:1px;}
-  .panelist-role{font-size:11.5px; color:var(--white-70); line-height:1.35;}
   /* ── UPCOMING LIVES (dobra 3) ── */
-  .upcoming-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:20px; margin-bottom:44px;}
+  /* Só resta uma live futura: o card vai até 640px (mesma largura do .section-title) em vez
+     de ocupar metade da grade de duas colunas; no mobile a media query abaixo o leva a 100%. */
+  .upcoming-grid{display:grid; grid-template-columns:minmax(0,640px); gap:20px; margin-bottom:44px;}
   .up-card{background:var(--navy-card); border:1px solid var(--navy-border); border-radius:16px; padding:30px 28px; position:relative;}
   .up-top{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px; gap:10px;}
   .up-soon-badge{display:inline-flex; align-items:center; gap:8px; background:var(--cyan-muted); border:1px solid rgba(24,206,244,.25); color:var(--cyan); font-size:11px; font-weight:600; padding:5px 12px; border-radius:100px; text-transform:uppercase; letter-spacing:.06em; white-space:nowrap;}
@@ -313,7 +312,7 @@ window.dataLayer = window.dataLayer || [];
   .final-cta-row p{font-family:var(--font-display); font-weight:600; font-size:clamp(19px,2.4vw,25px); line-height:1.45; letter-spacing:-.01em; max-width:44ch;}
   @media (max-width:760px){
     .live-card{padding:26px;}
-    .hosts-grid, .upcoming-grid{grid-template-columns:1fr;}
+    .agenda-stack, .upcoming-grid{grid-template-columns:1fr;}
     .stats-grid{grid-template-columns:repeat(2,1fr);}
     .stat-item:nth-child(3)::before{display:none;}
     .agenda-block{padding:20px;}
@@ -324,8 +323,6 @@ window.dataLayer = window.dataLayer || [];
     .stat-item{border-top:1px solid var(--navy-border); padding:22px 12px;}
     .stat-item:first-child{border-top:none;}
     .final-cta-row{padding:34px 22px;}
-    .host-card{flex-direction:column; text-align:center;}
-    .panelist{flex-direction:column; text-align:center;}
   }
   @media (max-width:560px){
     section{padding:56px 0;}
@@ -363,19 +360,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <div class="hero-bg"></div>
     <div class="hero-inner">
       <div class="hero-copy">
-        <span class="live-badge hero-badge">1ª de 3 lives gratuitas &middot; 26/08, 19h</span>
-        <h1 class="hero-title">Live <span class="accent">User</span>: IA como extensão do seu repertório</h1>
+        <span class="live-badge hero-badge">2ª de 3 lives gratuitas &middot; 23/09, 19h</span>
+        <h1 class="hero-title">Live <span class="accent">Builder</span>: Aprenda a construir produtos para a era dos agentes</h1>
         <p class="hero-subtitle">O Product Camp acontece em dezembro, mas você pode antecipar seus aprendizados. Convidamos experts da área de Produto e os nossos coordenadores de trilhas para levantar discussões sob quatro perspectivas em que profissionais da nova era de produto devem atuar: usuário, construtor, pensador e líder.</p>
         <p class="hero-note"><strong>Inscreva-se gratuitamente e apenas uma vez</strong> para ter acesso às três lives + gravações.</p>
         <span class="hero-rule"></span>
-        <!-- jornada: 3 lives + destino final -->
+        <!-- jornada: 3 lives + destino final.
+             .past = live que já aconteceu (apagada); .next = a live da vez (em destaque).
+             Ao virar a live, mova as duas classes um passo à frente. -->
         <div class="journey-track">
-          <a class="journey-step" href="#live1">
+          <a class="journey-step past" href="#inscricao">
             <span class="journey-dot">1</span>
             <span class="journey-persona">User</span>
             <span class="journey-date">26/08 &middot; 19h00</span>
           </a>
-          <a class="journey-step" href="#proximas">
+          <a class="journey-step next" href="#live1">
             <span class="journey-dot">2</span>
             <span class="journey-persona">Builder</span>
             <span class="journey-date">23/09 &middot; 19h00</span>
@@ -475,20 +474,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <section class="fade-in" id="live1">
     <div class="container">
       <div class="section-head">
-        <span class="section-label">Agosto</span>
+        <span class="section-label">Setembro</span>
         <h2 class="section-title">O primeiro passo: uma inscrição, três&nbsp;lives.</h2>
       </div>
       <div class="live-card">
         <div class="live-top">
-          <span class="live-badge">1ª live &middot; User &middot; Agosto</span>
-          <span class="live-date-badge">26/08/2026 &middot; 19h00</span>
+          <span class="live-badge">2ª live &middot; Builder &middot; Setembro</span>
+          <span class="live-date-badge">23/09/2026 &middot; 19h00</span>
         </div>
-        <h3 class="live-headline">IA como extensão do seu repertório</h3>
-        <p class="live-desc">Tudo começa por onde a IA mais mudou o dia a dia de produto: o jeito de aprender, comparar e experimentar. Nessa primeira live, a conversa é sobre usar tecnologia para ampliar repertório, afiar o senso crítico e testar mais rápido — sem terceirizar o julgamento para a máquina.</p>
+        <h3 class="live-headline">Aprenda a construir produtos para a era dos agentes</h3>
+        <p class="live-desc">A IA já não é mais promessa: é ferramenta de trabalho. Nesta Live Builder, Vinicius Lana mostra na prática como sair da ideia e chegar a um produto funcionando com prototipagem rápida, validação real e a velocidade que só a IA entrega hoje. Um case ao vivo e direto ao ponto: como um builder de verdade usa IA para reduzir barreiras e construir mais rápido.</p>
         <div class="meta-row">
           <div class="meta-item">
             <span class="meta-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span>
-            <span><span class="meta-label">Data</span><span class="meta-value">26/08/2026</span></span>
+            <span><span class="meta-label">Data</span><span class="meta-value">23/09/2026</span></span>
           </div>
           <div class="meta-item">
             <span class="meta-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
@@ -496,68 +495,34 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
           <div class="meta-item">
             <span class="meta-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V6a2 2 0 0 1 2-2h9l5 5v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg></span>
-            <span><span class="meta-label">Trilhas em cena</span><span class="meta-value">Marketing &amp; Design + Product Management</span></span>
-          </div>
-        </div>
-        <div class="hosts-label">Hosts da live</div>
-        <div class="hosts-grid">
-          <div class="host-card">
-            <img class="host-photo" src="/assets/img/coordinators/Alex_Soares.webp" alt="Alex Soares" width="88" height="88" loading="lazy">
-            <div>
-              <div class="host-name">Alex Soares</div>
-              <div class="host-title">Design Lead na TOTVS — Coordenador da trilha de Marketing &amp; Design no Product Camp 2026.</div>
-            </div>
-          </div>
-          <div class="host-card">
-            <img class="host-photo" src="/assets/img/coordinators/eduardo_borges.webp" alt="Eduardo Borges" width="88" height="88" loading="lazy">
-            <div>
-              <div class="host-name">Eduardo Borges</div>
-              <div class="host-title">Staff Product Manager na Monuv — Coordenador da trilha de Product Management no Product Camp 2026.</div>
-            </div>
+            <span><span class="meta-label">Trilhas em cena</span><span class="meta-value">Building &amp; Automation</span></span>
           </div>
         </div>
         <div class="agenda-stack">
           <div class="agenda-block">
-            <span class="agenda-kicker">Palestra de abertura</span>
-            <p class="agenda-title">"Product Sense na prática: como transformar sinais do usuário em experiências melhores"</p>
+            <span class="agenda-kicker">Case mão na massa</span>
+            <p class="agenda-title">"Aprenda a construir produtos para a era dos agentes"</p>
             <div class="agenda-speaker">
-              <img class="agenda-avatar" src="/assets/img/lives-pcamp/juliana-georg.webp" alt="Juliana Georg" width="88" height="88" loading="lazy">
+              <img class="agenda-avatar" src="/assets/img/lives-pcamp/vinicius-lana.webp" alt="Vinicius Lana" width="88" height="88" loading="lazy">
               <div>
-                <div class="agenda-speaker-name">Juliana Georg</div>
-                <div class="agenda-speaker-role">Product Manager na Hering</div>
+                <div class="agenda-speaker-name">Vinicius Lana</div>
+                <div class="agenda-speaker-role">Founder na AI Coders Academy</div>
               </div>
             </div>
           </div>
           <div class="agenda-block">
-            <span class="agenda-kicker">Painel com Q&amp;A</span>
-            <p class="agenda-title">"Curiosidade, repertório e experimentação: o que forma um bom profissional de Produto?"</p>
-            <div class="panelists-row">
-              <div class="panelist">
-                <img class="agenda-avatar" src="/assets/img/lives-pcamp/felipe-bede.webp" alt="Felipe Bedê" width="88" height="88" loading="lazy">
-                <div>
-                  <div class="panelist-name">Felipe Bedê</div>
-                  <div class="panelist-role">AI/ML Principal PM &middot; Afya</div>
-                </div>
-              </div>
-              <div class="panelist">
-                <img class="agenda-avatar" src="/assets/img/lives-pcamp/carol-orlando.webp" alt="Carol Orlando" width="88" height="88" loading="lazy">
-                <div>
-                  <div class="panelist-name">Carol Orlando</div>
-                  <div class="panelist-role">Product Marketing Lead &middot; Frota 162</div>
-                </div>
-              </div>
-              <div class="panelist">
-                <img class="agenda-avatar" src="/assets/img/lives-pcamp/giuliana-xavier.webp" alt="Giuliana Xavier" width="88" height="88" loading="lazy">
-                <div>
-                  <div class="panelist-name">Giuliana Xavier</div>
-                  <div class="panelist-role">Design Manager &middot; iFood</div>
-                </div>
+            <span class="agenda-kicker">Host da live</span>
+            <div class="agenda-speaker">
+              <img class="agenda-avatar" src="/assets/img/coordinators/Talita_Paoletti.webp" alt="Talita Paoletti" width="88" height="88" loading="lazy">
+              <div>
+                <div class="agenda-speaker-name">Talita Paoletti</div>
+                <div class="agenda-speaker-role">Group Product Manager no Grupo Boticário — Coordenadora da trilha de Building &amp; Automation no Product Camp 2026.</div>
               </div>
             </div>
           </div>
         </div>
         <a href="#inscricao" class="btn-primary">
-          Garanta sua presença na Live 1
+          Garanta sua presença na Live 2
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </a>
       </div>
@@ -567,30 +532,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <span class="stem"></span>
     <span class="node"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></span>
   </div>
-  <!-- ============ DOBRA 3 — LIVES 2 E 3 (H2) ============ -->
+  <!-- ============ DOBRA 3 — LIVE 3 (H2) ============ -->
   <section class="fade-in section-alt" id="proximas">
     <div class="container">
       <div class="section-head">
-        <span class="section-label cyan">Setembro &amp; Outubro</span>
-        <h2 class="section-title">Sua jornada continua em setembro e outubro.</h2>
+        <span class="section-label cyan">Outubro</span>
+        <h2 class="section-title">Sua jornada continua em outubro.</h2>
       </div>
       <div class="upcoming-grid">
-        <div class="up-card">
-          <div class="up-top">
-            <div>
-              <div class="up-num">2ª live</div>
-              <div class="up-name">Builder</div>
-            </div>
-            <span class="up-soon-badge">23/09 &middot; 19h00</span>
-          </div>
-          <div class="up-theme-label">Tema central</div>
-          <p class="up-theme">Autonomia, prototipagem e execução mais rápida: encurtando a distância entre intenção e entrega com Inteligência Artificial.</p>
-          <div class="up-rows">
-            <div><span>Data</span><span>23/09/2026</span></div>
-            <div><span>Horário</span><span>19h00</span></div>
-            <div><span>Trilha em cena</span><span>Building &amp; Automation</span></div>
-          </div>
-        </div>
         <div class="up-card">
           <div class="up-top">
             <div>
