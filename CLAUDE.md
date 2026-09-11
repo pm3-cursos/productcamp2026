@@ -4,14 +4,17 @@ Guia para qualquer assistente de IA que trabalhe neste repositório. Leia antes 
 
 ## O que é este projeto
 
-Landing page do **Product Camp Brasil 2026** — o maior evento de produto da América Latina (08 e 09 de dezembro de 2026, São Paulo, SP).
+Landing page do **Product Camp Brasil 2026** — o maior evento de produto da América Latina (08 e 09 de dezembro de 2026, São Paulo, SP) — e a **plataforma de indicação** do evento, em `/indicacao/`.
 
-- **Site estático**, sem build, sem framework, sem backend.
-- Todo o conteúdo vive em **`index.html`** (página única). CSS em blocos `<style>` internos.
+- **Site estático**, sem build, sem framework. O site em si não tem backend; a única parte com servidor é a plataforma de indicação (ver a seção própria abaixo).
+- Todo o conteúdo do site vive em **`index.html`** (página única). CSS em blocos `<style>` internos.
 - **Estrutura de arquivos:**
   - `assets/fonts/` — fontes Inter Tight (WOFF2, subset Latin ~1025 glifos para performance). Backup das fontes completas em `assets/fonts/_full/` — restaurar de lá se precisar de algum glifo fora do Latin. Ao adicionar conteúdo com caracteres especiais incomuns, verifique se o subset os cobre.
   - `assets/img/` — imagens, organizadas em subpastas: `bg/`, `speakers/`, `coordinators/`, `venue/`, `sponsors/`, `brand/`. `og-image.png` fica em `assets/img/`. `assets/img/legacy/` guarda imagens órfãs (não referenciadas) arquivadas.
-  - **Raiz:** `index.html`, favicons (`favicon.png`, `favicon-16.png`, `apple-touch-icon.png` — ficam na raiz por convenção), `robots.txt`, `sitemap.xml`, `llms.txt`, `CLAUDE.md`, `README.md`.
+  - `indicacao/` — telas da plataforma de indicação (HTML/CSS/JS estáticos) + `schema.sql` + `LEIA-ME.md`.
+  - `functions/` — a API da plataforma de indicação (Cloudflare Pages Functions). **Nenhuma rota do site passa por aqui.**
+  - `tests/` — testes da plataforma de indicação: `run.mjs` (unitários, sem dependências) e `e2e.mjs` (contra o servidor local).
+  - **Raiz:** `index.html`, favicons (`favicon.png`, `favicon-16.png`, `apple-touch-icon.png` — ficam na raiz por convenção), `robots.txt`, `sitemap.xml`, `llms.txt`, `.gitignore`, `CLAUDE.md`, `README.md`.
   - Ao adicionar uma imagem nova, coloque-a na subpasta correta de `assets/img/` (nunca na raiz) e referencie com o caminho relativo completo.
 - **Hospedagem:** Cloudflare Pages, conectado ao Git. **Todo push na `main` republica o site automaticamente.**
 - **Domínio:** `https://www.productcamp.com.br` (apex `productcamp.com.br` redireciona 301 → www).
@@ -137,6 +140,41 @@ hero e o logo em produção).
      não dá erro de build — só quebra silenciosamente em produção.
 
 **5. Um PR = uma mudança coerente.** Facilita revisão e reverter se algo quebrar.
+
+## Plataforma de indicação (`/indicacao/`)
+
+Programa de indicação (member-get-member) do evento, no mesmo projeto do Pages.
+Documentação completa — setup no Cloudflare, operação, regras e testes — em
+**`indicacao/LEIA-ME.md`**. Leia esse arquivo antes de mexer em qualquer coisa
+dentro de `indicacao/`, `functions/` ou `tests/`.
+
+O que não pode ser esquecido ao tocar nessa parte:
+
+- **Não crie `wrangler.toml` na raiz.** O Pages passaria a ler a configuração
+  do arquivo e a ignorar o painel da Cloudflare, o que pode quebrar o deploy do
+  site. Bindings e variáveis ficam no painel; para rodar local, use as flags do
+  `wrangler pages dev` e o `.dev.vars`.
+- **Nenhuma Function na raiz.** `functions/` só tem arquivos dentro de `api/` e
+  de `indicacao/`. Um `functions/_middleware.js` na raiz passaria a interceptar
+  **todas** as requisições, inclusive as da landing page, e cobraria latência de
+  uma página que hoje é 100% estática.
+- **A allowlist de admin é código**, em `functions/_lib/config.js`. Mudar quem é
+  admin é mudar código, revisado por PR — não existe tela para isso.
+- **Import de planilha nunca altera marcação manual de VIP.** O resumo de
+  conciliação prova isso comparando o estado antes e depois de gravar; o número
+  "marcações de VIP alteradas" tem que ser sempre 0.
+- **Regra de negócio mora em `functions/_lib/reconciliacao.js`**, em JavaScript
+  puro e coberta por teste. Não duplique essas regras em SQL — o dia em que as
+  duas implementações discordarem, alguém perde um prêmio.
+- **O visual é o design system do site, não um à parte.** `indicacao/app.css`
+  abre com o mesmo bloco `:root` de `index.html`, copiado valor a valor, e
+  reaproveita os componentes das páginas atuais (`nav`, `footer`,
+  `.btn-primary`, `.btn-secondary`, `.section-label`, `.container`, cards em
+  `--navy-card`). As fontes são as mesmas do site — `InterTight` 400 e 600, de
+  `assets/fonts/` — e não há nenhuma fonte exclusiva da plataforma. Ao mexer
+  nos tokens do site, atualize esse bloco junto; a única cor fora do design
+  system é o verde do WhatsApp, e está comentada no arquivo.
+- Rode `node tests/run.mjs` antes de abrir PR.
 
 ## Não mexer
 

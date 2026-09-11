@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minhas indicações | Product Camp 2026</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="/favicon.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="/assets/fonts/INTERTIGHT-SEMIBOLD.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/INTERTIGHT-REGULAR.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/indicacao/app.css">
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Product Camp — página inicial">
+      <img src="/assets/img/brand/logo_escuro.svg" alt="Product Camp" width="140" height="28" fetchpriority="high" class="logo-img--header">
+    </a>
+    <span class="nav-contexto">Indique &amp; suba pro VIP</span>
+    <div class="nav-usuario">
+      <span class="nome">Olá, <span id="topo-nome">…</span></span>
+      <span class="avatar" id="topo-avatar" aria-hidden="true">··</span>
+      <button type="button" class="sair" data-sair>Sair</button>
+    </div>
+  </div>
+</nav>
+
+<main class="container pad">
+  <p class="carregando" id="carregando">Carregando suas indicações…</p>
+
+  <div id="aviso-erro" class="aviso aviso-erro oculto" role="alert"></div>
+
+  <div id="conteudo" class="oculto">
+    <section class="hero" aria-labelledby="titulo-progresso">
+      <p class="section-label">Seu progresso</p>
+      <h1 id="titulo-progresso">…</h1>
+      <p class="sub" id="subtitulo">
+        Chame gente que ainda não tem ingresso. Cada pessoa que comprar com o seu cupom entra
+        na sua lista, e ao chegar em 3 compras você garante o upgrade VIP.
+      </p>
+
+      <p id="banner-vip" class="banner oculto" role="status">
+        <b>Upgrade garantido!</b> Sua vaga no VIP foi assegurada. Você receberá o acesso à nova
+        modalidade de ingresso dentro de 7 dias úteis.
+      </p>
+      <p id="nota-cupom-ativo" class="keepnote oculto">
+        Você conquistou o VIP, mas o seu cupom continua ativo e você ainda pode compartilhá-lo
+        com amigos que desejam um desconto a mais no ingresso! Nos vemos em breve!
+      </p>
+
+      <div class="prog" id="barra-progresso" role="img" aria-label="Progresso das indicações"></div>
+      <p class="prog-cap">
+        <b id="contador">0 de 3</b> compras confirmadas
+        <span class="pill">🎟️ entre os 50 primeiros = VIP</span>
+      </p>
+
+      <div class="coupon">
+        <p class="lbl">Seu cupom de indicação</p>
+        <div class="coupon-row">
+          <code id="cupom">…</code>
+          <button type="button" class="btn-secondary btn-compacto" id="botao-copiar">
+            <span data-rotulo>Copiar</span>
+          </button>
+          <a class="btn-wa btn-compacto" id="wa-compartilhar" target="_blank" rel="noopener" href="#">
+            Compartilhar no WhatsApp &rarr;
+          </a>
+        </div>
+        <p class="hint">
+          Seu cupom é o seu e-mail de acesso. Quem você indica aplica ele no checkout da Sympla
+          e ganha <b>10% off</b>. Vale só a indicação que virar compra, então quanto mais gente
+          você chamar, maior a chance de fechar as 3.
+        </p>
+      </div>
+    </section>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="n" id="stat-confirmadas">0</div>
+        <div class="l">Compras confirmadas</div>
+      </div>
+      <div class="stat">
+        <div class="n" id="stat-faltam">3</div>
+        <div class="l">Faltam pro VIP</div>
+      </div>
+      <div class="stat">
+        <div class="n" id="stat-posicao">—</div>
+        <div class="l">Sua posição no ranking</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <section class="card" aria-labelledby="titulo-indicacoes">
+        <div class="card-h">
+          <h2 id="titulo-indicacoes">Minhas indicações</h2>
+          <span class="sm">aparecem aqui quando compram</span>
+        </div>
+        <div id="lista-indicacoes"></div>
+        <div class="rodape-card">
+          <a class="btn-wa btn-compacto" id="wa-convidar" target="_blank" rel="noopener" href="#">
+            Convidar mais alguém &rarr;
+          </a>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="titulo-ranking">
+        <div class="card-h">
+          <h2 id="titulo-ranking">Ranking</h2>
+          <span class="sm">você x líderes</span>
+        </div>
+        <div id="lista-ranking"></div>
+      </section>
+    </div>
+
+    <section class="rules" aria-labelledby="titulo-regras">
+      <h2 class="section-label" id="titulo-regras">Regras do programa</h2>
+      <ul>
+        <li>Só podem ser indicadas <b>pessoas que ainda não compraram ingresso</b> do PCamp.</li>
+        <li>Vale apenas a indicação que <b>virar compra</b>. A pessoa entra na sua lista quando compra usando o seu cupom.</li>
+        <li>O upgrade VIP é liberado quando <b>3 indicações suas comprarem</b> o ingresso. Indicar sem comprar não conta.</li>
+        <li>O prêmio vale para os <b>50 primeiros</b> que baterem 3 compras confirmadas.</li>
+        <li>Quem já tem ingresso VIP não participa como indicador.</li>
+      </ul>
+    </section>
+  </div>
+</main>
+
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <a href="/" aria-label="Product Camp — página inicial">
+        <img src="/assets/img/brand/logo_escuro.svg" alt="Product Camp" width="140" height="26" class="footer-logo" loading="lazy">
+      </a>
+      <p class="footer-copy">&copy; 2018 &ndash; 2026 PM3 - Todos os direitos reservados</p>
+    </div>
+    <ul class="footer-links">
+      <li><a href="/">Site do evento</a></li>
+      <li><a href="/#ingressos">Ingressos</a></li>
+      <li><a href="https://go.pm3.com.br/faq_pcamp_26" target="_blank" rel="noopener">Dúvidas frequentes</a></li>
+    </ul>
+  </div>
+</footer>
+
+<script type="module" src="/indicacao/js/indicador.js"></script>
+</body>
+</html>

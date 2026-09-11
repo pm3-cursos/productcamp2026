@@ -1,0 +1,8 @@
+# Estado local do Wrangler (D1 local, cache) — nunca vai para o repo
+.wrangler/
+
+# Variáveis locais de desenvolvimento (segredos)
+.dev.vars
+
+# Dependências locais eventuais (o site em si não tem build)
+node_modules/
