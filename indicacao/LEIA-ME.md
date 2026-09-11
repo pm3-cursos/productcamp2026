@@ -18,6 +18,7 @@ Roda no mesmo projeto do Cloudflare Pages do site, sem build:
 | Onde | O quê |
 | --- | --- |
 | `indicacao/` | As telas (HTML/CSS/JS estáticos, sem framework) |
+| `indicacao/app.css` | Tokens e componentes — os mesmos do design system do site |
 | `functions/api/` | A API (Cloudflare Pages Functions) |
 | `functions/_lib/` | Regras de negócio, leitura de planilha, sessão, e-mail |
 | `functions/indicacao/*/[_middleware.js]` | Portões de acesso das páginas logadas |
@@ -36,6 +37,29 @@ Rotas:
 O site do evento (`/`, `/pocket`, `/para-empresas/`, `/lives-pre-pcamp26/`)
 continua 100% estático: nenhuma Function intercepta essas rotas, então o
 tempo de carregamento da landing page não muda.
+
+---
+
+## Identidade visual
+
+As telas usam o **design system do site**, não um tema próprio:
+
+- O bloco `:root` de `indicacao/app.css` é o mesmo de `index.html`, copiado
+  valor a valor (`--navy`, `--navy-card`, `--navy-border`, `--pink`, `--cyan`,
+  `--white-70`, `--white-40`, …). Um teste de token não pega isso — se mexer
+  nos tokens do site, atualize os dois.
+- Tipografia: `InterTight` nos pesos 400 e 600, servida de `assets/fonts/`, a
+  mesma da home. A plataforma não carrega nenhuma fonte extra.
+- Componentes reaproveitados das páginas atuais: `nav` + `.nav-inner` +
+  `.nav-logo` com o logo de `assets/img/brand/logo_escuro.svg`, `footer` +
+  `.footer-inner`, `.btn-primary`, `.btn-secondary`, `.section-label` (com a
+  barrinha ciano), `.container`, e os cards em `--navy-card` com raio 16px.
+- Acento: ciano em rótulos e eyebrows, rosa em números e ações — a mesma
+  divisão do site. O gradiente rosa→ciano da `.hero-rule` aparece na barra de
+  progresso e nos marcadores das regras.
+- **Única cor fora do design system:** o verde do WhatsApp (`--wa`), porque é
+  a marca do canal de compartilhamento e o site não tem equivalente. Está
+  comentada no CSS.
 
 ---
 

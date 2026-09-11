@@ -7,37 +7,34 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preload" href="/assets/fonts/indicacao/intertight-var-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/indicacao/rubik-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/INTERTIGHT-SEMIBOLD.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/INTERTIGHT-REGULAR.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/indicacao/app.css">
 </head>
 <body>
 
-<header class="topbar">
-  <div class="row">
-    <div class="brand">
-      <div class="logo sm" aria-hidden="true">pc</div>
-      <div class="txt">
-        <b>Indique &amp; suba pro VIP</b>
-        <span>Product Camp 2026</span>
-      </div>
-    </div>
-    <div class="userchip">
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Product Camp — página inicial">
+      <img src="/assets/img/brand/logo_escuro.svg" alt="Product Camp" width="140" height="28" fetchpriority="high" class="logo-img--header">
+    </a>
+    <span class="nav-contexto">Indique &amp; suba pro VIP</span>
+    <div class="nav-usuario">
       <span class="nome">Olá, <span id="topo-nome">…</span></span>
-      <div class="avatar" id="topo-avatar" aria-hidden="true">··</div>
+      <span class="avatar" id="topo-avatar" aria-hidden="true">··</span>
       <button type="button" class="sair" data-sair>Sair</button>
     </div>
   </div>
-</header>
+</nav>
 
-<main class="pad">
+<main class="container pad">
   <p class="carregando" id="carregando">Carregando suas indicações…</p>
 
   <div id="aviso-erro" class="aviso aviso-erro oculto" role="alert"></div>
 
   <div id="conteudo" class="oculto">
     <section class="hero" aria-labelledby="titulo-progresso">
-      <p class="eyebrow">Seu progresso</p>
+      <p class="section-label">Seu progresso</p>
       <h1 id="titulo-progresso">…</h1>
       <p class="sub" id="subtitulo">
         Chame gente que ainda não tem ingresso. Cada pessoa que comprar com o seu cupom entra
@@ -56,7 +53,6 @@
       <div class="prog" id="barra-progresso" role="img" aria-label="Progresso das indicações"></div>
       <p class="prog-cap">
         <b id="contador">0 de 3</b> compras confirmadas
-        &nbsp;·&nbsp;
         <span class="pill">🎟️ entre os 50 primeiros = VIP</span>
       </p>
 
@@ -64,11 +60,11 @@
         <p class="lbl">Seu cupom de indicação</p>
         <div class="coupon-row">
           <code id="cupom">…</code>
-          <button type="button" class="btn btn-ghost" id="botao-copiar">
+          <button type="button" class="btn-secondary btn-compacto" id="botao-copiar">
             <span data-rotulo>Copiar</span>
           </button>
-          <a class="btn btn-wa" id="wa-compartilhar" target="_blank" rel="noopener" href="#">
-            ↗ Compartilhar no WhatsApp
+          <a class="btn-wa btn-compacto" id="wa-compartilhar" target="_blank" rel="noopener" href="#">
+            Compartilhar no WhatsApp &rarr;
           </a>
         </div>
         <p class="hint">
@@ -81,7 +77,7 @@
 
     <div class="stats">
       <div class="stat">
-        <div class="n c" id="stat-confirmadas">0</div>
+        <div class="n" id="stat-confirmadas">0</div>
         <div class="l">Compras confirmadas</div>
       </div>
       <div class="stat">
@@ -102,8 +98,8 @@
         </div>
         <div id="lista-indicacoes"></div>
         <div class="rodape-card">
-          <a class="btn btn-wa" id="wa-convidar" target="_blank" rel="noopener" href="#">
-            ↗ Convidar mais alguém
+          <a class="btn-wa btn-compacto" id="wa-convidar" target="_blank" rel="noopener" href="#">
+            Convidar mais alguém &rarr;
           </a>
         </div>
       </section>
@@ -118,7 +114,7 @@
     </div>
 
     <section class="rules" aria-labelledby="titulo-regras">
-      <h2 id="titulo-regras">Regras do programa</h2>
+      <h2 class="section-label" id="titulo-regras">Regras do programa</h2>
       <ul>
         <li>Só podem ser indicadas <b>pessoas que ainda não compraram ingresso</b> do PCamp.</li>
         <li>Vale apenas a indicação que <b>virar compra</b>. A pessoa entra na sua lista quando compra usando o seu cupom.</li>
@@ -130,8 +126,20 @@
   </div>
 </main>
 
-<footer class="foot">
-  Product Camp Brasil 2026 · <a href="/">site do evento</a>
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <a href="/" aria-label="Product Camp — página inicial">
+        <img src="/assets/img/brand/logo_escuro.svg" alt="Product Camp" width="140" height="26" class="footer-logo" loading="lazy">
+      </a>
+      <p class="footer-copy">&copy; 2018 &ndash; 2026 PM3 - Todos os direitos reservados</p>
+    </div>
+    <ul class="footer-links">
+      <li><a href="/">Site do evento</a></li>
+      <li><a href="/#ingressos">Ingressos</a></li>
+      <li><a href="https://go.pm3.com.br/faq_pcamp_26" target="_blank" rel="noopener">Dúvidas frequentes</a></li>
+    </ul>
+  </div>
 </footer>
 
 <script type="module" src="/indicacao/js/indicador.js"></script>

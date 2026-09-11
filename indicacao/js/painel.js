@@ -282,7 +282,8 @@ $('#exportar').addEventListener('click', () => {
 function mostrarVista(qual) {
   $('#vista-painel').classList.toggle('oculto', qual !== 'painel');
   $('#vista-import').classList.toggle('oculto', qual !== 'import');
-  $('#topo-titulo').textContent = qual === 'import' ? 'Importar planilha' : 'Painel de Indicação';
+  $('#topo-titulo').textContent =
+    qual === 'import' ? 'Importar planilha · uso interno' : 'Painel de Indicação · uso interno';
   window.scrollTo(0, 0);
 }
 

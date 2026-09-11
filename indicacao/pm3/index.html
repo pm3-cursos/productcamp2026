@@ -6,32 +6,30 @@
 <title>Painel de Indicação | Product Camp 2026</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="/favicon.png" sizes="32x32">
-<link rel="preload" href="/assets/fonts/indicacao/intertight-var-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/indicacao/rubik-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/INTERTIGHT-SEMIBOLD.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/INTERTIGHT-REGULAR.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/indicacao/app.css">
 </head>
 <body>
 
-<header class="topbar">
-  <div class="row">
-    <div class="brand">
-      <div class="logo sm" aria-hidden="true">pc</div>
-      <div class="txt">
-        <b id="topo-titulo">Painel de Indicação</b>
-        <span>Product Camp 2026 · uso interno</span>
-      </div>
-    </div>
-    <div class="userchip">
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Product Camp — página inicial">
+      <img src="/assets/img/brand/logo_escuro.svg" alt="Product Camp" width="140" height="28" fetchpriority="high" class="logo-img--header">
+    </a>
+    <span class="nav-contexto" id="topo-titulo">Painel de Indicação · uso interno</span>
+    <div class="nav-usuario">
       <span class="nome" id="topo-email">Equipe PM3</span>
-      <div class="avatar" aria-hidden="true">PM</div>
+      <span class="avatar" aria-hidden="true">PM</span>
       <button type="button" class="sair" data-sair>Sair</button>
     </div>
   </div>
-</header>
+</nav>
 
 <!-- ====================================================== painel -->
-<main class="pad" id="vista-painel">
+<main class="container pad" id="vista-painel">
   <div class="adm-head">
+    <p class="section-label">Uso interno</p>
     <h1>Programa de indicação</h1>
     <p>Acompanhe quem indica, as compras confirmadas e libere os upgrades VIP manualmente.</p>
   </div>
@@ -40,22 +38,22 @@
 
   <div class="kpis">
     <div class="kpi">
-      <div class="k-l">👥 Indicadores ativos</div>
+      <div class="k-l">Indicadores ativos</div>
       <div class="k-n" id="kpi-ativos">—</div>
       <div class="k-s">com ao menos 1 compra confirmada</div>
     </div>
     <div class="kpi">
-      <div class="k-l">✓ Compras confirmadas</div>
+      <div class="k-l">Compras confirmadas</div>
       <div class="k-n" id="kpi-compras">—</div>
       <div class="k-s">via planilha da Sympla</div>
     </div>
     <div class="kpi">
-      <div class="k-l">💰 Receita gerada</div>
+      <div class="k-l">Receita gerada</div>
       <div class="k-n" id="kpi-receita">—</div>
       <div class="k-s">já com 10% de desconto</div>
     </div>
     <div class="kpi accent">
-      <div class="k-l">🎟️ Upgrades VIP liberados</div>
+      <div class="k-l">Upgrades VIP liberados</div>
       <div class="k-n"><span id="kpi-vip">—</span> <span class="de">/ <span id="kpi-teto">50</span></span></div>
       <div class="vipbar"><i id="kpi-vipbar"></i></div>
       <div class="k-s" id="kpi-vagas">—</div>
@@ -74,8 +72,8 @@
       <button type="button" data-filtro="progresso">Em progresso</button>
       <button type="button" data-filtro="vip">VIP liberado</button>
     </div>
-    <button type="button" class="btn btn-pink" id="abrir-import">⬆ Importar planilha</button>
-    <button type="button" class="btn btn-ghost" id="exportar">⬇ Exportar CSV</button>
+    <button type="button" class="btn-primary btn-compacto" id="abrir-import">Importar planilha</button>
+    <button type="button" class="btn-secondary btn-compacto" id="exportar">Exportar CSV</button>
   </div>
 
   <div class="adm-table">
@@ -107,8 +105,9 @@
 </main>
 
 <!-- ====================================================== importação -->
-<main class="pad oculto" id="vista-import">
+<main class="container pad oculto" id="vista-import">
   <div class="adm-head">
+    <p class="section-label">Conciliação</p>
     <h2>Importar planilha</h2>
     <p>Suba o relatório de participantes da Sympla. A plataforma reconcilia tudo e mostra o resumo antes de gravar.</p>
   </div>
@@ -124,7 +123,7 @@
     <div class="ic" aria-hidden="true">📄</div>
     <h3 id="drop-titulo">Arraste o export da Sympla aqui</h3>
     <p id="drop-sub">Formatos aceitos: .csv ou .xlsx · o mesmo relatório de participantes de sempre</p>
-    <button type="button" class="btn btn-pink" id="selecionar">Selecionar arquivo</button>
+    <button type="button" class="btn-primary" id="selecionar">Selecionar arquivo</button>
     <input type="file" id="arquivo" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="so-leitor">
     <p class="arquivo-nome oculto" id="arquivo-nome"></p>
   </div>
@@ -142,17 +141,30 @@
     <div class="res-preview oculto" id="resultado-previa"></div>
     <div class="res-preview oculto" id="resultado-orfaos"></div>
     <div class="res-actions">
-      <button type="button" class="btn btn-pink" id="confirmar">Confirmar e atualizar painel</button>
-      <button type="button" class="btn btn-ghost" id="cancelar">Cancelar</button>
+      <button type="button" class="btn-primary" id="confirmar">Confirmar e atualizar painel</button>
+      <button type="button" class="btn-secondary" id="cancelar">Cancelar</button>
     </div>
   </div>
 
   <div class="res-actions">
-    <button type="button" class="btn btn-ghost" id="voltar-painel">← Voltar ao painel</button>
+    <button type="button" class="btn-secondary" id="voltar-painel">&larr; Voltar ao painel</button>
   </div>
 </main>
 
-<footer class="foot">Product Camp Brasil 2026 · painel interno do programa de indicação</footer>
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <a href="/" aria-label="Product Camp — página inicial">
+        <img src="/assets/img/brand/logo_escuro.svg" alt="Product Camp" width="140" height="26" class="footer-logo" loading="lazy">
+      </a>
+      <p class="footer-copy">Painel interno do programa de indicação · Product Camp 2026</p>
+    </div>
+    <ul class="footer-links">
+      <li><a href="/">Site do evento</a></li>
+      <li><a href="/indicacao/">Tela de acesso</a></li>
+    </ul>
+  </div>
+</footer>
 
 <script type="module" src="/indicacao/js/painel.js"></script>
 </body>

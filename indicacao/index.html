@@ -9,16 +9,26 @@
 <link rel="icon" href="/favicon.png" sizes="32x32">
 <link rel="icon" href="/favicon-16.png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link rel="preload" href="/assets/fonts/indicacao/intertight-var-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/indicacao/rubik-var-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/INTERTIGHT-SEMIBOLD.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/INTERTIGHT-REGULAR.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/indicacao/app.css">
 </head>
 <body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="Product Camp — página inicial">
+      <img src="/assets/img/brand/logo_escuro.svg" alt="Product Camp" width="140" height="28" fetchpriority="high" class="logo-img--header">
+    </a>
+    <span class="nav-contexto">Programa de Indicação</span>
+  </div>
+</nav>
+
 <main class="login-stage">
   <div class="login-card">
-    <div class="logo lg" aria-hidden="true">pcamp</div>
+    <span class="hero-rule"></span>
     <h1>Programa de Indicação</h1>
-    <p class="ev">Product Camp 2026 · 8 e 9 de dezembro</p>
+    <p class="ev">08 e 09 de dezembro de 2026 · São Paulo, SP</p>
 
     <!-- Formulário de acesso -->
     <div id="etapa-form">
@@ -32,7 +42,7 @@
           <input type="email" id="email" name="email" placeholder="voce@email.com"
                  autocomplete="email" inputmode="email" required>
         </div>
-        <button type="submit" class="btn btn-pink" id="botao-acessar">Acessar minha página</button>
+        <button type="submit" class="btn-primary btn-block" id="botao-acessar">Acessar minha página</button>
       </form>
 
       <p class="login-help">
@@ -57,8 +67,20 @@
   </div>
 </main>
 
-<footer class="foot">
-  Product Camp Brasil 2026 · <a href="/">voltar para o site do evento</a>
+<footer>
+  <div class="container footer-inner">
+    <div>
+      <a href="/" aria-label="Product Camp — página inicial">
+        <img src="/assets/img/brand/logo_escuro.svg" alt="Product Camp" width="140" height="26" class="footer-logo" loading="lazy">
+      </a>
+      <p class="footer-copy">&copy; 2018 &ndash; 2026 PM3 - Todos os direitos reservados</p>
+    </div>
+    <ul class="footer-links">
+      <li><a href="/">Site do evento</a></li>
+      <li><a href="/#ingressos">Ingressos</a></li>
+      <li><a href="https://go.pm3.com.br/faq_pcamp_26" target="_blank" rel="noopener">Dúvidas frequentes</a></li>
+    </ul>
+  </div>
 </footer>
 
 <script type="module" src="/indicacao/js/acesso.js"></script>

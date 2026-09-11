@@ -10,7 +10,6 @@ Landing page do **Product Camp Brasil 2026** — o maior evento de produto da Am
 - Todo o conteúdo do site vive em **`index.html`** (página única). CSS em blocos `<style>` internos.
 - **Estrutura de arquivos:**
   - `assets/fonts/` — fontes Inter Tight (WOFF2, subset Latin ~1025 glifos para performance). Backup das fontes completas em `assets/fonts/_full/` — restaurar de lá se precisar de algum glifo fora do Latin. Ao adicionar conteúdo com caracteres especiais incomuns, verifique se o subset os cobre.
-  - `assets/fonts/indicacao/` — fontes usadas **só** pela plataforma de indicação (Inter Tight e Rubik variáveis, subset latin). Não são carregadas por nenhuma página do site.
   - `assets/img/` — imagens, organizadas em subpastas: `bg/`, `speakers/`, `coordinators/`, `venue/`, `sponsors/`, `brand/`. `og-image.png` fica em `assets/img/`. `assets/img/legacy/` guarda imagens órfãs (não referenciadas) arquivadas.
   - `indicacao/` — telas da plataforma de indicação (HTML/CSS/JS estáticos) + `schema.sql` + `LEIA-ME.md`.
   - `functions/` — a API da plataforma de indicação (Cloudflare Pages Functions). **Nenhuma rota do site passa por aqui.**
@@ -167,6 +166,14 @@ O que não pode ser esquecido ao tocar nessa parte:
 - **Regra de negócio mora em `functions/_lib/reconciliacao.js`**, em JavaScript
   puro e coberta por teste. Não duplique essas regras em SQL — o dia em que as
   duas implementações discordarem, alguém perde um prêmio.
+- **O visual é o design system do site, não um à parte.** `indicacao/app.css`
+  abre com o mesmo bloco `:root` de `index.html`, copiado valor a valor, e
+  reaproveita os componentes das páginas atuais (`nav`, `footer`,
+  `.btn-primary`, `.btn-secondary`, `.section-label`, `.container`, cards em
+  `--navy-card`). As fontes são as mesmas do site — `InterTight` 400 e 600, de
+  `assets/fonts/` — e não há nenhuma fonte exclusiva da plataforma. Ao mexer
+  nos tokens do site, atualize esse bloco junto; a única cor fora do design
+  system é o verde do WhatsApp, e está comentada no arquivo.
 - Rode `node tests/run.mjs` antes de abrir PR.
 
 ## Não mexer
