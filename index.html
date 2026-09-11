@@ -2200,19 +2200,6 @@ window.dataLayer = window.dataLayer || [];
   }
   .cota--startup .sponsor-logo img { height: 22px; max-width: 120px; }
 
-  /* wordmark de texto — usado quando ainda não há arquivo de logo */
-  .sponsor-wordmark {
-    font-family: var(--font-display);
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--white);
-    opacity: 0.85;
-    white-space: nowrap;
-    transition: opacity 0.2s;
-  }
-  .sponsor-logo:hover .sponsor-wordmark { opacity: 1; }
-  .cota--gold .sponsor-wordmark { font-size: 21px; }
-
   /* mobile — mantém a ordem da hierarquia, empilhando em 1–2 colunas */
   @media (max-width: 640px) {
     .sponsors-cotas { gap: 44px; }
@@ -2243,7 +2230,6 @@ window.dataLayer = window.dataLayer || [];
     }
     .cota--gold .sponsor-logo { height: 88px; }
     .cota--gold .sponsor-logo img { height: 28px; max-width: 120px; }
-    .cota--gold .sponsor-wordmark { font-size: 17px; }
     .cota--silver .sponsor-logo,
     .cota--startup .sponsor-logo { height: 74px; }
     .cota--silver .sponsor-logo img,
@@ -3643,7 +3629,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     { nome: 'Replit',    cota: 'diamond',         logo: 'assets/img/sponsors/replit.svg'    }
     { nome: 'Mixpanel',  cota: 'gold',            logo: 'assets/img/sponsors/mixpanel_.svg' }
     { nome: 'CleverTap', cota: 'gold',            logo: 'assets/img/sponsors/clevertap.avif'}
-    { nome: 'MoEngage',  cota: 'gold',            logo: null /* PENDENTE: arquivo entra em outra PR — hoje renderizado como wordmark de texto, na posição correta da cota */ }
+    { nome: 'MoEngage',  cota: 'gold',            logo: 'assets/img/sponsors/moengage.svg' }
     { nome: 'Pendo',     cota: 'silver',          logo: 'assets/img/sponsors/pendo_.avif'   }
     { nome: 'grunn.ai',  cota: 'startup',         logo: 'assets/img/sponsors/grunn.webp'    }
 
@@ -3698,29 +3684,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <a href="https://clevertap.com/pt/" target="_blank" class="sponsor-logo">
               <img src="assets/img/sponsors/clevertap.avif" width="468" height="172" loading="lazy" alt="CleverTap">
             </a>
-            <!-- ═══ MoEngage — cota GOLD, 3ª posição do grupo ═══
-                 PENDENTE: o arquivo do logo entra em outra PR.
-                 A posição na hierarquia JÁ ESTÁ CORRETA — não mover
-                 este <a> de lugar; a cota é definida pelo grupo pai
-                 (.cota--gold), não pelo card.
-
-                 PARA TROCAR (PR do logo), em 2 passos:
-                 1. salve o arquivo em assets/img/sponsors/moengage.svg
-                    (ou .webp/.avif — mesma pasta dos outros)
-                 2. troque APENAS a linha do <span> abaixo por:
-                    <img src="assets/img/sponsors/moengage.svg"
-                         width="W" height="H" loading="lazy" alt="MoEngage">
-                    (W/H = dimensões intrínsecas do arquivo, para evitar CLS)
-
-                 Nenhuma mudança de CSS é necessária: .cota--gold já
-                 dimensiona o logo (34px de altura no desktop, 28px no
-                 mobile) e o object-fit: contain evita distorção.
-                 Se o logo sumir/ficar sólido: os logos desta seção são
-                 normalizados para branco via filter brightness(0) invert(1)
-                 — logos já monocromáticos brancos precisam de .logo-square
-                 ou de um ajuste pontual. -->
+            <!-- MoEngage — cota GOLD. A cota vem do grupo pai (.cota--gold),
+                 não do card: não mover este <a> de lugar. -->
             <a href="https://www.moengage.com/" target="_blank" class="sponsor-logo">
-              <span class="sponsor-wordmark">MoEngage</span>
+              <img src="assets/img/sponsors/moengage.svg" width="160" height="25" loading="lazy" alt="MoEngage">
             </a>
           </div>
         </div>
