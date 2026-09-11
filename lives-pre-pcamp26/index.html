@@ -271,20 +271,13 @@ window.dataLayer = window.dataLayer || [];
   .meta-icon svg{width:16px; height:16px; stroke:var(--pink); fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round;}
   .meta-label{font-size:11px; color:var(--white-40); text-transform:uppercase; letter-spacing:.08em; display:block; margin-bottom:2px;}
   .meta-value{font-size:14px; font-weight:600; color:var(--white);}
-  /* hosts — foto média, tamanho consistente com os demais avatares */
-  .hosts-label, .agenda-label{font-size:12px; font-weight:600; color:var(--white-40); text-transform:uppercase; letter-spacing:.08em; margin-bottom:14px;}
-  .hosts-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px; margin-bottom:36px;}
-  .host-card{display:flex; align-items:center; gap:16px; background:var(--navy-mid); border:1px solid var(--navy-border); border-radius:14px; padding:18px; transition:border-color .25s, transform .25s;}
-  .host-card:hover{border-color:rgba(223,12,120,.4); transform:translateY(-3px);}
-  .host-photo{width:88px; height:88px; border-radius:50%; object-fit:cover; object-position:top center; flex-shrink:0; background:var(--navy-card); border:2px solid rgba(223,12,120,.3);}
-  .host-name{font-size:15.5px; font-weight:600; margin-bottom:4px;}
-  .host-title{font-size:12.5px; color:var(--white-70); line-height:1.45;}
-  /* agenda — palestra de abertura + painel, avatares na mesma família visual dos hosts */
-  .agenda-stack{display:flex; flex-direction:column; gap:14px; margin-bottom:36px;}
-  .agenda-block{background:var(--navy-mid); border:1px solid var(--navy-border); border-radius:14px; padding:24px 26px;}
-  .agenda-kicker{display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--cyan); margin-bottom:14px;}
+  /* agenda — dois quadrantes lado a lado (case + host), mesmo tamanho: a grade estica
+     os blocos à mesma altura e o speaker cola no rodapé para os avatares se alinharem. */
+  .agenda-stack{display:grid; grid-template-columns:repeat(2,1fr); gap:14px; margin-bottom:36px;}
+  .agenda-block{display:flex; flex-direction:column; background:var(--navy-mid); border:1px solid var(--navy-border); border-radius:14px; padding:24px 26px;}
+  .agenda-kicker{display:inline-flex; align-self:flex-start; align-items:center; gap:8px; font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--cyan); margin-bottom:14px;}
   .agenda-title{font-size:16px; font-weight:600; line-height:1.4; margin-bottom:20px; max-width:60ch;}
-  .agenda-speaker{display:flex; align-items:center; gap:14px;}
+  .agenda-speaker{display:flex; align-items:center; gap:14px; margin-top:auto;}
   .agenda-avatar{width:88px; height:88px; border-radius:50%; object-fit:cover; object-position:top center; background:var(--pink-muted); border:2px solid rgba(223,12,120,.3); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:600; font-size:18px; color:var(--pink-light); flex-shrink:0;}
   .agenda-speaker-name{font-size:14.5px; font-weight:600; margin-bottom:2px;}
   .agenda-speaker-role{font-size:12.5px; color:var(--white-70);}
@@ -323,7 +316,7 @@ window.dataLayer = window.dataLayer || [];
   .final-cta-row p{font-family:var(--font-display); font-weight:600; font-size:clamp(19px,2.4vw,25px); line-height:1.45; letter-spacing:-.01em; max-width:44ch;}
   @media (max-width:760px){
     .live-card{padding:26px;}
-    .hosts-grid, .upcoming-grid{grid-template-columns:1fr;}
+    .agenda-stack, .upcoming-grid{grid-template-columns:1fr;}
     .stats-grid{grid-template-columns:repeat(2,1fr);}
     .stat-item:nth-child(3)::before{display:none;}
     .agenda-block{padding:20px;}
@@ -334,7 +327,6 @@ window.dataLayer = window.dataLayer || [];
     .stat-item{border-top:1px solid var(--navy-border); padding:22px 12px;}
     .stat-item:first-child{border-top:none;}
     .final-cta-row{padding:34px 22px;}
-    .host-card{flex-direction:column; text-align:center;}
     .panelist{flex-direction:column; text-align:center;}
   }
   @media (max-width:560px){
@@ -511,16 +503,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span><span class="meta-label">Trilhas em cena</span><span class="meta-value">Building &amp; Automation</span></span>
           </div>
         </div>
-        <div class="hosts-label">Hosts da live</div>
-        <div class="hosts-grid">
-          <div class="host-card">
-            <img class="host-photo" src="/assets/img/coordinators/Talita_Paoletti.webp" alt="Talita Paoletti" width="88" height="88" loading="lazy">
-            <div>
-              <div class="host-name">Talita Paoletti</div>
-              <div class="host-title">Group Product Manager no Grupo Boticário — Coordenadora da trilha de Building &amp; Automation no Product Camp 2026.</div>
-            </div>
-          </div>
-        </div>
         <div class="agenda-stack">
           <div class="agenda-block">
             <span class="agenda-kicker">Case mão na massa</span>
@@ -530,6 +512,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <div>
                 <div class="agenda-speaker-name">Vinicius Lana</div>
                 <div class="agenda-speaker-role">Founder na AI Coders Academy</div>
+              </div>
+            </div>
+          </div>
+          <div class="agenda-block">
+            <span class="agenda-kicker">Host da live</span>
+            <div class="agenda-speaker">
+              <img class="agenda-avatar" src="/assets/img/coordinators/Talita_Paoletti.webp" alt="Talita Paoletti" width="88" height="88" loading="lazy">
+              <div>
+                <div class="agenda-speaker-name">Talita Paoletti</div>
+                <div class="agenda-speaker-role">Group Product Manager no Grupo Boticário — Coordenadora da trilha de Building &amp; Automation no Product Camp 2026.</div>
               </div>
             </div>
           </div>
