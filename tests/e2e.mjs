@@ -36,7 +36,7 @@ function checa(nome, condicao, extra = '') {
 }
 
 const env = { SESSION_SECRET: SEGREDO };
-const cookieAdmin = `pc_ind_sessao=${encodeURIComponent(await criarSessao(env, { email: 'jaqueline.santos@pm3.com.br', papel: 'admin' }))}`;
+const cookieAdmin = `pc_ind_sessao=${encodeURIComponent(await criarSessao(env, { email: 'eventos@pm3.com.br', papel: 'admin' }))}`;
 
 async function req(caminho, opcoes = {}) {
   const r = await fetch(BASE + caminho, { redirect: 'manual', ...opcoes });
@@ -129,7 +129,7 @@ checa('VIP negado para quem não qualificou', r.status === 409 && r.dados.erro =
 
 r = await req('/api/admin/vip', { method: 'POST', headers: { Cookie: cookieAdmin, 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'marina.castro@email.com', liberado: true }) });
 checa('VIP liberado para quem qualificou', r.status === 200 && r.dados.vip_liberado === true, JSON.stringify(r.dados));
-checa('registra quem liberou', r.dados.liberado_por === 'jaqueline.santos@pm3.com.br', String(r.dados.liberado_por));
+checa('registra quem liberou', r.dados.liberado_por === 'eventos@pm3.com.br', String(r.dados.liberado_por));
 
 console.log('\n== 6. import não mexe na marcação manual ==');
 r = await req('/api/admin/importar', { method: 'POST', headers: { Cookie: cookieAdmin }, body: form(fixture, 'compras', 'aplicar') });
@@ -137,7 +137,7 @@ checa('reimport após liberação: 0 VIP alterados', r.dados.resumo.vip_alterado
 const painel3 = await req('/api/admin/painel', { headers: { Cookie: cookieAdmin } });
 const marina3 = painel3.dados.indicadores.find((i) => i.email === 'marina.castro@email.com');
 checa('VIP de Marina continua liberado', marina3.vip_liberado === true);
-checa('liberado_por preservado', marina3.liberado_por === 'jaqueline.santos@pm3.com.br');
+checa('liberado_por preservado', marina3.liberado_por === 'eventos@pm3.com.br');
 
 console.log('\n== 7. login por link mágico do indicador ==');
 r = await req('/api/auth/solicitar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'MARINA.CASTRO@email.com' }) });
@@ -187,7 +187,7 @@ checa('admin abre o painel', r.status === 200);
 console.log('\n== 10. CSRF e forja de cookie ==');
 r = await req('/api/admin/vip', { method: 'POST', headers: { Cookie: cookieAdmin, 'Content-Type': 'application/json', Origin: 'https://site-malicioso.com' }, body: JSON.stringify({ email: 'marina.castro@email.com', liberado: false }) });
 checa('origem externa é bloqueada', r.status === 403 && r.dados.erro === 'origem_invalida', JSON.stringify(r.dados));
-const forjado = 'pc_ind_sessao=' + encodeURIComponent(Buffer.from(JSON.stringify({ e: 'jaqueline.santos@pm3.com.br', p: 'admin', x: 9999999999 })).toString('base64url') + '.assinaturafalsa');
+const forjado = 'pc_ind_sessao=' + encodeURIComponent(Buffer.from(JSON.stringify({ e: 'eventos@pm3.com.br', p: 'admin', x: 9999999999 })).toString('base64url') + '.assinaturafalsa');
 r = await req('/api/admin/painel', { headers: { Cookie: forjado } });
 checa('cookie forjado não abre o painel', r.status === 403, String(r.status));
 

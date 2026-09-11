@@ -209,8 +209,7 @@ para ele.
 Dois perfis, decididos pelo e-mail:
 
 - **Time PM3 (admin)** — allowlist fixa no código, em
-  `functions/_lib/config.js`: `jaqueline.santos@pm3.com.br`,
-  `luiza.pagani@pm3.com.br`, `larissa.chinaglia@pm3.com.br`. Mudar essa lista é
+  `functions/_lib/config.js`: `eventos@pm3.com.br`. Mudar essa lista é
   mudar código, revisado por PR.
 - **Indicador** — qualquer e-mail ativo na tabela `indicadores`.
 
