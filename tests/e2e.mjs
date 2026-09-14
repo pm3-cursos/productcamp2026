@@ -1,32 +1,47 @@
 // Teste de ponta a ponta da plataforma de indicação, contra um servidor local.
 //
-// Precisa de duas coisas antes:
+// Precisa de três coisas antes, a partir da raiz do repo:
 //
-//   1. npx wrangler pages dev . --d1 DB --compatibility-date=2025-09-01
-//      com um .dev.vars contendo SESSION_SECRET, MAIL_PROVIDER=console e
-//      MOSTRAR_LINK=1
-//   2. npx wrangler d1 execute DB --local --file=indicacao/schema.sql
+//   1. um .dev.vars (ignorado pelo git) com:
+//        SESSION_SECRET=um-segredo-local-de-32-caracteres-ou-mais
+//        MAIL_PROVIDER=console
+//        MOSTRAR_LINK=1
+//
+//   2. o schema no D1 local:
+//        npx wrangler d1 execute DB --local --config tests/wrangler.e2e.toml \
+//          --persist-to .wrangler/state --file=indicacao/schema.sql
+//
+//   3. o servidor local, apontando para o mesmo banco:
+//        npx wrangler pages dev . --d1 DB=local-e2e --persist-to .wrangler/state \
+//          --compatibility-date=2026-06-23 --ip 127.0.0.1 --port 8788
+//
+//      A data é a mesma de produção. Se o Wrangler em cache recusar a data,
+//      use npx wrangler@latest.
 //
 // Depois:  node tests/e2e.mjs
 //
 // O teste espera um banco vazio. Para rodar de novo, zere as tabelas:
 //
-//   npx wrangler d1 execute DB --local --command \
+//   npx wrangler d1 execute DB --local --config tests/wrangler.e2e.toml \
+//     --persist-to .wrangler/state --command \
 //     "DELETE FROM compras; DELETE FROM premios; DELETE FROM indicadores; \
 //      DELETE FROM imports; DELETE FROM magic_links; DELETE FROM vip_log;"
+//
+// Por que o tests/wrangler.e2e.toml: o `d1 execute --local` não aceita o banco
+// só por flag. E ele não pode virar um wrangler.toml na raiz — ver o arquivo.
 //
 // A sessão de admin é forjada localmente com o mesmo SESSION_SECRET do
 // servidor — é assim que o teste entra no painel sem abrir um e-mail.
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = process.env.BASE_URL || 'http://127.0.0.1:8788';
 const SEGREDO = process.env.SESSION_SECRET || 'um-segredo-local-de-32-caracteres-ou-mais';
 
-const { criarSessao } = await import(path.join(raiz, 'functions/_lib/session.js'));
+const { criarSessao } = await import(pathToFileURL(path.join(raiz, 'functions/_lib/session.js')).href);
 
 let ok = 0;
 const erros = [];
