@@ -274,8 +274,9 @@ Para publicar um regulamento novo: suba o PDF em `assets/docs/`, troque o
 cada pessoa leu.
 
 > A tabela precisa existir antes do deploy desta funcionalidade: rode o
-> `schema.sql` de novo (Production e Preview). Sem ela a emissão de link falha
-> e ninguém consegue entrar.
+> `schema.sql` de novo em Production (o Preview não tem banco — ver "Ligar o
+> banco ao projeto do Pages"). Sem ela a emissão de link falha e ninguém
+> consegue entrar.
 
 Detalhes que valem saber:
 
