@@ -1,0 +1,17 @@
+# Configuração do Wrangler usada SÓ pelo teste e2e local.
+#
+# Fica em tests/ e com este nome de propósito: o Cloudflare Pages lê um
+# wrangler.toml na RAIZ do projeto, e ali ele passaria a valer em produção,
+# podendo sobrescrever o binding do D1 configurado no painel. Aqui ele é
+# invisível para o deploy.
+#
+# Existe porque `wrangler d1 execute --local` não aceita o banco só por flag:
+# precisa de um arquivo declarando o binding. O database_id é fictício e
+# local; tem que bater com o --d1 DB=local-e2e do `wrangler pages dev`.
+name = "productcamp2026-e2e"
+compatibility_date = "2026-06-23"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "DB"
+database_id = "local-e2e"

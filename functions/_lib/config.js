@@ -4,11 +4,7 @@
  * Allowlist fixa do time PM3. Só estes e-mails acessam o painel interno.
  * Qualquer mudança aqui é uma mudança de código, revisada por PR.
  */
-export const ADMINS = [
-  'jaqueline.santos@pm3.com.br',
-  'luiza.pagani@pm3.com.br',
-  'larissa.chinaglia@pm3.com.br',
-];
+export const ADMINS = ['eventos@pm3.com.br'];
 
 /** Compras confirmadas necessárias para qualificar ao upgrade VIP. */
 export const META_COMPRAS = 3;
