@@ -65,6 +65,22 @@ As telas usam o **design system do site**, não um tema próprio:
 
 ## Setup no Cloudflare (uma vez)
 
+> **Estado em produção (14/09/2026):** tudo abaixo já está configurado —
+> banco `pcamp-indicacao` com o schema aplicado, binding `DB`, as variáveis e os
+> dois secrets, só no ambiente Production. Esta seção serve para recriar o
+> ambiente ou conferir o que existe.
+
+> ⚠️ **Confira a conta antes de rodar qualquer comando do Wrangler.** O projeto
+> `productcamp2026` fica na conta da Cloudflare `7023d597cae5b2533647b58f8c05b290`
+> (login `contato@productcamp.com.br`). O Wrangler usa a conta do login ativo:
+> se ele estiver numa conta pessoal, o `d1 create` cria o banco lá, e esse banco
+> não tem como ser ligado ao site. Rode `npx wrangler whoami` e, se o login
+> enxergar mais de uma conta, fixe a certa:
+>
+> ```bash
+> export CLOUDFLARE_ACCOUNT_ID=7023d597cae5b2533647b58f8c05b290
+> ```
+
 ### 1. Criar o banco D1
 
 ```bash
@@ -83,7 +99,11 @@ No painel da Cloudflare, no projeto do Pages do site:
 - Variable name: `DB`  ← o nome tem que ser exatamente esse
 - D1 database: `pcamp-indicacao`
 
-Faça isso para **Production** e para **Preview**.
+Faça isso **só em Production**. O Preview (o site temporário que a Cloudflare
+sobe para cada PR) fica **sem banco, de propósito**: ligado ao mesmo banco,
+qualquer teste feito numa preview — subir planilha, liberar VIP — iria direto
+para os dados reais. Se um dia for preciso testar a plataforma em preview, crie
+um banco separado (`pcamp-indicacao-preview`) em vez de reaproveitar este.
 
 > Não existe `wrangler.toml` neste repositório de propósito: a configuração de
 > hospedagem vive no painel da Cloudflare (ver `CLAUDE.md`). Adicionar um
@@ -92,13 +112,13 @@ Faça isso para **Production** e para **Preview**.
 
 ### 3. Variáveis de ambiente
 
-**Settings → Variables and Secrets**, em Production e Preview:
+**Settings → Variables and Secrets**, em Production:
 
 | Variável | Tipo | Valor |
 | --- | --- | --- |
 | `SESSION_SECRET` | Secret | String aleatória de 32+ caracteres. Trocar invalida todas as sessões abertas. |
 | `MAIL_PROVIDER` | Texto | `resend` ou `sendgrid` |
-| `MAIL_FROM` | Texto | `Product Camp 2026 <indicacao@productcamp.com.br>` |
+| `MAIL_FROM` | Texto | `Product Camp 2026 <eventos@pm3.com.br>` |
 | `RESEND_API_KEY` | Secret | Se `MAIL_PROVIDER=resend` |
 | `SENDGRID_API_KEY` | Secret | Se `MAIL_PROVIDER=sendgrid` |
 
@@ -109,7 +129,19 @@ openssl rand -base64 32
 ```
 
 O domínio do remetente precisa estar verificado no provedor de e-mail, senão
-os links mágicos caem em spam ou nem saem.
+os links mágicos caem em spam ou nem saem. Hoje o remetente é o **`pm3.com.br`**,
+que é o domínio verificado na conta da PM3 no Resend — o `productcamp.com.br`
+não está configurado lá. A `RESEND_API_KEY` precisa ser **dessa mesma conta**.
+
+Duas regras que decorrem disso:
+
+- **O `MAIL_FROM` tem que terminar exatamente em `@pm3.com.br`.** O DMARC do
+  domínio é estrito (`adkim=s`, `p=quarantine`): um remetente em subdomínio,
+  como `@mail.pm3.com.br`, vai para a quarentena.
+- **Atenção ao limite diário do plano do Resend.** Cada pedido de acesso é um
+  e-mail. Um convite em massa para o programa pode gerar mais pedidos num dia
+  do que o plano permite, e aí o login para até o limite renovar. Confira o
+  plano antes de divulgar.
 
 ### 4. Carregar a lista de indicadores
 
@@ -209,8 +241,7 @@ para ele.
 Dois perfis, decididos pelo e-mail:
 
 - **Time PM3 (admin)** — allowlist fixa no código, em
-  `functions/_lib/config.js`: `jaqueline.santos@pm3.com.br`,
-  `luiza.pagani@pm3.com.br`, `larissa.chinaglia@pm3.com.br`. Mudar essa lista é
+  `functions/_lib/config.js`: `eventos@pm3.com.br`. Mudar essa lista é
   mudar código, revisado por PR.
 - **Indicador** — qualquer e-mail ativo na tabela `indicadores`.
 
@@ -245,12 +276,26 @@ MAIL_PROVIDER=console
 MOSTRAR_LINK=1
 EOF
 
-# 2. Sobe o site + as Functions com um D1 local
-npx wrangler pages dev . --d1 DB --compatibility-date=2025-09-01
+# 2. Cria as tabelas no D1 local
+npx wrangler d1 execute DB --local --config tests/wrangler.e2e.toml \
+  --persist-to .wrangler/state --file=indicacao/schema.sql
 
-# 3. Em outro terminal, cria as tabelas no D1 local
-npx wrangler d1 execute DB --local --file=indicacao/schema.sql
+# 3. Sobe o site + as Functions apontando para o mesmo banco
+npx wrangler pages dev . --d1 DB=local-e2e --persist-to .wrangler/state \
+  --compatibility-date=2026-06-23 --ip 127.0.0.1 --port 8788
 ```
+
+O `d1 execute --local` não aceita o banco só por flag: precisa de um arquivo de
+configuração. Ele fica em `tests/wrangler.e2e.toml`, e não num `wrangler.toml`
+na raiz, pelo motivo explicado acima. O `--persist-to` e o `DB=local-e2e` fazem
+os dois comandos enxergarem o mesmo banco — sem eles, o servidor sobe com um D1
+vazio e as tabelas criadas no passo 2 ficam num banco que ninguém lê.
+
+O `--compatibility-date` é o mesmo do projeto em produção (`2026-06-23`), para
+o teste validar o runtime real. Se ele mudar no painel, mude aqui, no
+`tests/wrangler.e2e.toml` e no topo do `tests/e2e.mjs`. Um Wrangler antigo em
+cache não sobe com essa data (erro *"newest date supported … is"*): nesse caso,
+rode com `npx wrangler@latest`.
 
 Com `MAIL_PROVIDER=console` nenhum e-mail é enviado: o link mágico é impresso
 no terminal e, com `MOSTRAR_LINK=1`, aparece também na própria tela de acesso.

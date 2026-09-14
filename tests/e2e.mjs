@@ -1,32 +1,47 @@
 // Teste de ponta a ponta da plataforma de indicação, contra um servidor local.
 //
-// Precisa de duas coisas antes:
+// Precisa de três coisas antes, a partir da raiz do repo:
 //
-//   1. npx wrangler pages dev . --d1 DB --compatibility-date=2025-09-01
-//      com um .dev.vars contendo SESSION_SECRET, MAIL_PROVIDER=console e
-//      MOSTRAR_LINK=1
-//   2. npx wrangler d1 execute DB --local --file=indicacao/schema.sql
+//   1. um .dev.vars (ignorado pelo git) com:
+//        SESSION_SECRET=um-segredo-local-de-32-caracteres-ou-mais
+//        MAIL_PROVIDER=console
+//        MOSTRAR_LINK=1
+//
+//   2. o schema no D1 local:
+//        npx wrangler d1 execute DB --local --config tests/wrangler.e2e.toml \
+//          --persist-to .wrangler/state --file=indicacao/schema.sql
+//
+//   3. o servidor local, apontando para o mesmo banco:
+//        npx wrangler pages dev . --d1 DB=local-e2e --persist-to .wrangler/state \
+//          --compatibility-date=2026-06-23 --ip 127.0.0.1 --port 8788
+//
+//      A data é a mesma de produção. Se o Wrangler em cache recusar a data,
+//      use npx wrangler@latest.
 //
 // Depois:  node tests/e2e.mjs
 //
 // O teste espera um banco vazio. Para rodar de novo, zere as tabelas:
 //
-//   npx wrangler d1 execute DB --local --command \
+//   npx wrangler d1 execute DB --local --config tests/wrangler.e2e.toml \
+//     --persist-to .wrangler/state --command \
 //     "DELETE FROM compras; DELETE FROM premios; DELETE FROM indicadores; \
 //      DELETE FROM imports; DELETE FROM magic_links; DELETE FROM vip_log;"
+//
+// Por que o tests/wrangler.e2e.toml: o `d1 execute --local` não aceita o banco
+// só por flag. E ele não pode virar um wrangler.toml na raiz — ver o arquivo.
 //
 // A sessão de admin é forjada localmente com o mesmo SESSION_SECRET do
 // servidor — é assim que o teste entra no painel sem abrir um e-mail.
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = process.env.BASE_URL || 'http://127.0.0.1:8788';
 const SEGREDO = process.env.SESSION_SECRET || 'um-segredo-local-de-32-caracteres-ou-mais';
 
-const { criarSessao } = await import(path.join(raiz, 'functions/_lib/session.js'));
+const { criarSessao } = await import(pathToFileURL(path.join(raiz, 'functions/_lib/session.js')).href);
 
 let ok = 0;
 const erros = [];
@@ -36,7 +51,7 @@ function checa(nome, condicao, extra = '') {
 }
 
 const env = { SESSION_SECRET: SEGREDO };
-const cookieAdmin = `pc_ind_sessao=${encodeURIComponent(await criarSessao(env, { email: 'jaqueline.santos@pm3.com.br', papel: 'admin' }))}`;
+const cookieAdmin = `pc_ind_sessao=${encodeURIComponent(await criarSessao(env, { email: 'eventos@pm3.com.br', papel: 'admin' }))}`;
 
 async function req(caminho, opcoes = {}) {
   const r = await fetch(BASE + caminho, { redirect: 'manual', ...opcoes });
@@ -129,7 +144,7 @@ checa('VIP negado para quem não qualificou', r.status === 409 && r.dados.erro =
 
 r = await req('/api/admin/vip', { method: 'POST', headers: { Cookie: cookieAdmin, 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'marina.castro@email.com', liberado: true }) });
 checa('VIP liberado para quem qualificou', r.status === 200 && r.dados.vip_liberado === true, JSON.stringify(r.dados));
-checa('registra quem liberou', r.dados.liberado_por === 'jaqueline.santos@pm3.com.br', String(r.dados.liberado_por));
+checa('registra quem liberou', r.dados.liberado_por === 'eventos@pm3.com.br', String(r.dados.liberado_por));
 
 console.log('\n== 6. import não mexe na marcação manual ==');
 r = await req('/api/admin/importar', { method: 'POST', headers: { Cookie: cookieAdmin }, body: form(fixture, 'compras', 'aplicar') });
@@ -137,7 +152,7 @@ checa('reimport após liberação: 0 VIP alterados', r.dados.resumo.vip_alterado
 const painel3 = await req('/api/admin/painel', { headers: { Cookie: cookieAdmin } });
 const marina3 = painel3.dados.indicadores.find((i) => i.email === 'marina.castro@email.com');
 checa('VIP de Marina continua liberado', marina3.vip_liberado === true);
-checa('liberado_por preservado', marina3.liberado_por === 'jaqueline.santos@pm3.com.br');
+checa('liberado_por preservado', marina3.liberado_por === 'eventos@pm3.com.br');
 
 console.log('\n== 7. login por link mágico do indicador ==');
 r = await req('/api/auth/solicitar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'MARINA.CASTRO@email.com' }) });
@@ -187,7 +202,7 @@ checa('admin abre o painel', r.status === 200);
 console.log('\n== 10. CSRF e forja de cookie ==');
 r = await req('/api/admin/vip', { method: 'POST', headers: { Cookie: cookieAdmin, 'Content-Type': 'application/json', Origin: 'https://site-malicioso.com' }, body: JSON.stringify({ email: 'marina.castro@email.com', liberado: false }) });
 checa('origem externa é bloqueada', r.status === 403 && r.dados.erro === 'origem_invalida', JSON.stringify(r.dados));
-const forjado = 'pc_ind_sessao=' + encodeURIComponent(Buffer.from(JSON.stringify({ e: 'jaqueline.santos@pm3.com.br', p: 'admin', x: 9999999999 })).toString('base64url') + '.assinaturafalsa');
+const forjado = 'pc_ind_sessao=' + encodeURIComponent(Buffer.from(JSON.stringify({ e: 'eventos@pm3.com.br', p: 'admin', x: 9999999999 })).toString('base64url') + '.assinaturafalsa');
 r = await req('/api/admin/painel', { headers: { Cookie: forjado } });
 checa('cookie forjado não abre o painel', r.status === 403, String(r.status));
 

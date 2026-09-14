@@ -2,10 +2,10 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const lib = (nome) => import(path.join(raiz, 'functions/_lib', nome));
+const lib = (nome) => import(pathToFileURL(path.join(raiz, 'functions/_lib', nome)).href);
 
 const { chaveTexto, normalizarEmail, pagamentoAprovado, parseValorBR, parseDataSympla, nomeAbreviado, iniciais, primeiroNome, formatarBRL, formatarBRLCompacto } = await lib('util.js');
 const { parseDelimitado, detectarSeparador, gerarCSV } = await lib('csv.js');
@@ -329,15 +329,11 @@ await teste('lerIndicadores reconhece um export da Sympla e deriva a lista', () 
 });
 
 // ---------------------------------------------------------------- acesso
-await teste('allowlist de admin tem exatamente os três e-mails do time', () => {
-  assert.deepEqual(ADMINS, [
-    'jaqueline.santos@pm3.com.br',
-    'luiza.pagani@pm3.com.br',
-    'larissa.chinaglia@pm3.com.br',
-  ]);
-  assert.equal(ehAdmin('JAQUELINE.SANTOS@pm3.com.br'), true);
+await teste('allowlist de admin tem exatamente o e-mail do time de eventos', () => {
+  assert.deepEqual(ADMINS, ['eventos@pm3.com.br']);
+  assert.equal(ehAdmin('EVENTOS@pm3.com.br'), true);
   assert.equal(ehAdmin('ana.souza@email.com'), false);
-  assert.equal(ehAdmin('jaqueline.santos@pm3.com.br.evil.com'), false);
+  assert.equal(ehAdmin('eventos@pm3.com.br.evil.com'), false);
   assert.equal(ehAdmin(''), false);
 });
 
@@ -361,7 +357,7 @@ await teste('sessão adulterada é rejeitada', async () => {
 
 await teste('cookie forjado por quem sabe o e-mail do admin não vira sessão', async () => {
   const payload = Buffer.from(
-    JSON.stringify({ e: 'jaqueline.santos@pm3.com.br', p: 'admin', x: 9999999999 })
+    JSON.stringify({ e: 'eventos@pm3.com.br', p: 'admin', x: 9999999999 })
   ).toString('base64url');
   assert.equal(await lerSessao(requestCom(`${payload}.assinaturafalsa`), env), null);
   assert.equal(await lerSessao(requestCom(payload), env), null);
