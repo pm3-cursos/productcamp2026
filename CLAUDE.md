@@ -11,6 +11,7 @@ Landing page do **Product Camp Brasil 2026** — o maior evento de produto da Am
 - **Estrutura de arquivos:**
   - `assets/fonts/` — fontes Inter Tight (WOFF2, subset Latin ~1025 glifos para performance). Backup das fontes completas em `assets/fonts/_full/` — restaurar de lá se precisar de algum glifo fora do Latin. Ao adicionar conteúdo com caracteres especiais incomuns, verifique se o subset os cobre.
   - `assets/img/` — imagens, organizadas em subpastas: `bg/`, `speakers/`, `coordinators/`, `venue/`, `sponsors/`, `brand/`. `og-image.png` fica em `assets/img/`. `assets/img/legacy/` guarda imagens órfãs (não referenciadas) arquivadas.
+  - `assets/docs/` — documentos públicos servidos pelo site (hoje, o PDF do Regulamento do Programa de Indicação, linkado na tela de acesso de `/indicacao/`).
   - `indicacao/` — telas da plataforma de indicação (HTML/CSS/JS estáticos) + `schema.sql` + `LEIA-ME.md`.
   - `functions/` — a API da plataforma de indicação (Cloudflare Pages Functions). **Nenhuma rota do site passa por aqui.**
   - `tests/` — testes da plataforma de indicação: `run.mjs` (unitários, sem dependências) e `e2e.mjs` (contra o servidor local).

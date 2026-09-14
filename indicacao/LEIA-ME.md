@@ -88,7 +88,8 @@ npx wrangler d1 create pcamp-indicacao
 npx wrangler d1 execute pcamp-indicacao --remote --file=indicacao/schema.sql
 ```
 
-O `schema.sql` é idempotente — pode rodar de novo sem perder dados.
+O `schema.sql` é idempotente — pode rodar de novo sem perder dados. Rode-o de
+novo sempre que ele mudar no repositório (tabela nova, índice novo).
 
 ### 2. Ligar o banco ao projeto do Pages
 
@@ -248,6 +249,34 @@ Dois perfis, decididos pelo e-mail:
 E-mail digitado **não autentica**. A pessoa informa o e-mail, recebe um link de
 uso único válido por 20 minutos e só entra ao clicar. A sessão vive num cookie
 `HttpOnly; Secure; SameSite=Lax` assinado com HMAC-SHA256, válido por 12 horas.
+
+### Aceite do Regulamento
+
+A tela de acesso tem a caixa **"Declaro que li e concordo com o Regulamento do
+Programa de Indicação"**, sempre desmarcada ao abrir. O botão **Acessar minha
+página** só habilita com ela marcada, e o link do texto abre o PDF de
+`assets/docs/` em nova aba.
+
+O servidor recusa o pedido de link sem o aceite (`aceite_obrigatorio`) e, ao
+emitir o link, grava uma linha na tabela `aceites_regulamento` com o e-mail, a
+data/hora (UTC), a versão vigente (`REGULAMENTO_VERSAO`, em
+`functions/_lib/config.js`), o caminho do PDF, o IP e o user-agent. É um
+registro só de inclusão — a prova de consentimento. Para consultar:
+
+```bash
+npx wrangler d1 execute pcamp-indicacao --remote \
+  --command "SELECT email, versao, aceito_em FROM aceites_regulamento ORDER BY id DESC LIMIT 50"
+```
+
+Para publicar um regulamento novo: suba o PDF em `assets/docs/`, troque o
+`href` do link em `indicacao/index.html` e atualize `REGULAMENTO_VERSAO` e
+`REGULAMENTO_URL`. Os aceites antigos continuam apontando para a versão que
+cada pessoa leu.
+
+> A tabela precisa existir antes do deploy desta funcionalidade: rode o
+> `schema.sql` de novo em Production (o Preview não tem banco — ver "Ligar o
+> banco ao projeto do Pages"). Sem ela a emissão de link falha e ninguém
+> consegue entrar.
 
 Detalhes que valem saber:
 

@@ -36,13 +36,22 @@
 
       <div id="aviso" class="aviso aviso-erro oculto" role="alert"></div>
 
-      <form id="form-acesso" novalidate>
+      <form id="form-acesso" novalidate autocomplete="off">
         <div class="field">
           <label for="email">E-mail da sua compra</label>
           <input type="email" id="email" name="email" placeholder="voce@email.com"
                  autocomplete="email" inputmode="email" required>
         </div>
-        <button type="submit" class="btn-primary btn-block" id="botao-acessar">Acessar minha página</button>
+
+        <!-- Aceite do Regulamento: sempre desmarcado ao abrir, e o botão só
+             habilita depois de marcar. O aceite é gravado no servidor. -->
+        <label class="aceite" for="aceite-regulamento">
+          <input type="checkbox" id="aceite-regulamento" name="aceite_regulamento" value="1" required>
+          <span>Declaro que li e concordo com o
+            <a href="/assets/docs/Regulamento-Programa-Indicacao-PCamp26.pdf" target="_blank" rel="noopener">Regulamento do Programa de Indicação</a></span>
+        </label>
+
+        <button type="submit" class="btn-primary btn-block" id="botao-acessar" disabled>Acessar minha página</button>
       </form>
 
       <p class="login-help">

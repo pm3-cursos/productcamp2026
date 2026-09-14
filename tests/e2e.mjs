@@ -156,12 +156,17 @@ checa('liberado_por preservado', marina3.liberado_por === 'eventos@pm3.com.br');
 
 console.log('\n== 7. login por link mágico do indicador ==');
 r = await req('/api/auth/solicitar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'MARINA.CASTRO@email.com' }) });
+checa('sem aceite do regulamento não emite link', r.status === 400 && r.dados.erro === 'aceite_obrigatorio', JSON.stringify(r.dados));
+r = await req('/api/auth/solicitar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'MARINA.CASTRO@email.com', aceite_regulamento: 'sim' }) });
+checa('aceite precisa ser booleano true', r.status === 400 && r.dados.erro === 'aceite_obrigatorio', JSON.stringify(r.dados));
+
+r = await req('/api/auth/solicitar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'MARINA.CASTRO@email.com', aceite_regulamento: true }) });
 checa('link solicitado', r.status === 200 && r.dados.papel === 'indicador', JSON.stringify(r.dados));
 const link = r.dados.link_dev;
 checa('link de dev devolvido', Boolean(link), String(link));
 const token = new URL(link).searchParams.get('t');
 
-r = await req('/api/auth/solicitar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'quem.nao.existe@email.com' }) });
+r = await req('/api/auth/solicitar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'quem.nao.existe@email.com', aceite_regulamento: true }) });
 checa('e-mail fora da lista recebe acesso não liberado', r.status === 403 && r.dados.erro === 'nao_liberado', JSON.stringify(r.dados));
 
 r = await req('/api/auth/verificar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }) });
@@ -248,7 +253,7 @@ checa('não duplicou nada', painelC.dados.kpis.compras_confirmadas === 5, String
 console.log('\n== 15. limite de pedidos de link ==');
 let ultimo = 0;
 for (let i = 0; i < 7; i++) {
-  const t = await req('/api/auth/solicitar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'ana.souza@email.com' }) });
+  const t = await req('/api/auth/solicitar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'ana.souza@email.com', aceite_regulamento: true }) });
   ultimo = t.status;
 }
 checa('bloqueia depois de vários pedidos seguidos', ultimo === 429, String(ultimo));

@@ -1,9 +1,11 @@
-// POST /api/auth/solicitar  { email }
+// POST /api/auth/solicitar  { email, aceite_regulamento: true }
 // Emite o link mágico. Nunca autentica por e-mail digitado: o acesso só
 // acontece quando a pessoa clica no link que chegou na caixa dela.
+// O aceite do Regulamento é obrigatório e fica gravado como prova de
+// consentimento (e-mail, data/hora e versão vigente) antes de o link sair.
 
 import { erro, json } from '../../_lib/resposta.js';
-import { corpoJson, ipCliente, mesmaOrigem } from '../../_lib/requisicao.js';
+import { corpoJson, ipCliente, mesmaOrigem, userAgent } from '../../_lib/requisicao.js';
 import { emailValido, horasAtrasISO, normalizarEmail } from '../../_lib/util.js';
 import { ehAdmin } from '../../_lib/session.js';
 import { enviarLinkMagico } from '../../_lib/email.js';
@@ -14,11 +16,14 @@ import {
   contarLinksRecentes,
   guardarLinkMagico,
   limparLinksVencidos,
+  registrarAceiteRegulamento,
 } from '../../_lib/dados.js';
 import {
   LIMITE_LINKS_POR_EMAIL_HORA,
   LIMITE_LINKS_POR_IP_HORA,
   LINK_TTL_MIN,
+  REGULAMENTO_URL,
+  REGULAMENTO_VERSAO,
 } from '../../_lib/config.js';
 
 export async function onRequestPost({ request, env }) {
@@ -30,6 +35,16 @@ export async function onRequestPost({ request, env }) {
   const email = normalizarEmail(corpo.email);
   if (!email || !emailValido(email)) {
     return erro('email_invalido', 'Confira o e-mail digitado.', 400);
+  }
+
+  // A caixa de concordância é obrigatória. A tela não deixa enviar sem ela;
+  // aqui é a segunda tranca, para chamadas feitas por fora.
+  if (corpo.aceite_regulamento !== true) {
+    return erro(
+      'aceite_obrigatorio',
+      'Para continuar, confirme que leu e concorda com o Regulamento do Programa de Indicação.',
+      400
+    );
   }
 
   const db = banco(env);
@@ -56,6 +71,16 @@ export async function onRequestPost({ request, env }) {
       429
     );
   }
+
+  // Prova de consentimento, gravada antes de emitir o link: quem entra na
+  // plataforma tem, obrigatoriamente, um aceite registrado.
+  await registrarAceiteRegulamento(db, {
+    email,
+    versao: REGULAMENTO_VERSAO,
+    documento: REGULAMENTO_URL,
+    ip,
+    userAgent: userAgent(request),
+  });
 
   const papel = admin ? 'admin' : 'indicador';
   const token = tokenAleatorio();
