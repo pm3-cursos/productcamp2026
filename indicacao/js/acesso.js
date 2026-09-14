@@ -11,10 +11,27 @@ const MOTIVOS = {
 
 const form = $('#form-acesso');
 const campoEmail = $('#email');
+const aceite = $('#aceite-regulamento');
 const botao = $('#botao-acessar');
 const aviso = $('#aviso');
 const etapaForm = $('#etapa-form');
 const etapaEnviado = $('#etapa-enviado');
+
+// O botão só habilita com a concordância marcada. A caixa começa sempre
+// desmarcada — inclusive quando o navegador restaura o formulário ao voltar.
+function sincronizarBotao() {
+  botao.disabled = !aceite.checked;
+  botao.classList.toggle('bloqueado', !aceite.checked);
+}
+
+function zerarAceite() {
+  aceite.checked = false;
+  sincronizarBotao();
+}
+
+zerarAceite();
+window.addEventListener('pageshow', zerarAceite);
+aceite.addEventListener('change', sincronizarBotao);
 
 function mostrarAviso(texto, tipo = 'erro') {
   aviso.textContent = texto;
@@ -47,14 +64,24 @@ form.addEventListener('submit', async (evento) => {
     campoEmail.focus();
     return;
   }
+  if (!aceite.checked) {
+    mostrarAviso('Para continuar, confirme que leu e concorda com o Regulamento.');
+    aceite.focus();
+    return;
+  }
 
   botao.disabled = true;
   botao.textContent = 'Enviando link…';
 
-  const resultado = await api('/api/auth/solicitar', { method: 'POST', body: { email } });
+  // O aceite vai junto e é gravado no servidor (e-mail, data/hora e versão
+  // do regulamento) como prova de consentimento.
+  const resultado = await api('/api/auth/solicitar', {
+    method: 'POST',
+    body: { email, aceite_regulamento: true },
+  });
 
-  botao.disabled = false;
   botao.textContent = 'Acessar minha página';
+  sincronizarBotao();
 
   if (!resultado.ok) {
     mostrarAviso(mensagemDeErro(resultado, 'Não foi possível enviar o link agora.'));
@@ -81,5 +108,6 @@ $('#tentar-outro').addEventListener('click', () => {
   etapaForm.classList.remove('oculto');
   esconderAviso();
   campoEmail.value = '';
+  zerarAceite();
   campoEmail.focus();
 });

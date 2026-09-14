@@ -41,6 +41,16 @@ export const LIMITE_LINKS_POR_IP_HORA = 20;
 /** Tamanho máximo aceito no upload de planilha (bytes). */
 export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 
+/**
+ * Regulamento vigente do programa. A versão é gravada em cada aceite (tabela
+ * `aceites_regulamento`) como prova de consentimento. Ao publicar um novo
+ * regulamento: suba o PDF novo em `assets/docs/`, troque o `href` do link
+ * em `indicacao/index.html` e atualize os dois valores aqui — os aceites
+ * antigos continuam apontando para a versão que a pessoa realmente leu.
+ */
+export const REGULAMENTO_VERSAO = '1'; // rodapé do PDF: "versão 1, setembro de 2026"
+export const REGULAMENTO_URL = '/assets/docs/Regulamento-Programa-Indicacao-PCamp26.pdf';
+
 /** Mensagem de compartilhamento. `[cupom]` é o e-mail do indicador. */
 export function mensagemWhatsApp(cupom) {
   return (
