@@ -451,6 +451,78 @@ nav {
   border-color: rgba(24, 206, 244, 0.5);
 }
 
+/* Aceite do Regulamento: caixa própria (o nativo não segue o tema escuro),
+   rosa quando marcada como as demais ações; o link em ciano sublinhado
+   segue o padrão de links do site e mantém contraste sobre --navy-card. */
+.aceite {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 2px 0 20px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--white-70);
+  cursor: pointer;
+}
+
+.aceite input {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 auto;
+  display: grid;
+  place-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.aceite input::before {
+  content: '';
+  width: 11px;
+  height: 11px;
+  background: #fff;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  transition: transform 0.15s;
+}
+
+.aceite:hover input {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.aceite input:checked {
+  background: var(--pink);
+  border-color: var(--pink);
+}
+
+.aceite input:checked::before {
+  transform: scale(1);
+}
+
+.aceite a {
+  color: var(--cyan);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1.5px;
+  transition: color 0.2s;
+}
+
+.aceite a:hover {
+  color: var(--white);
+  text-decoration-color: var(--cyan);
+}
+
+/* Botão travado à espera do aceite (diferente do "enviando", que usa progress). */
+.btn-primary.bloqueado:disabled {
+  cursor: not-allowed;
+}
+
 .login-help {
   font-size: 12.5px;
   color: var(--white-40);

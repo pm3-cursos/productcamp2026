@@ -167,38 +167,70 @@ o resultado gravado.
 
 ### B. Cloudflare — banco e variáveis
 
+> **Estado em produção (14/09/2026):** o banco `pcamp-indicacao` já existe com
+> o binding `DB`, as variáveis de e-mail e o `SESSION_SECRET`, só no ambiente
+> Production. Ao publicar esta versão (planilha → D1), falta: rodar o
+> `schema-reset.sql` + `schema.sql` de novo, criar o token de D1 e os secrets
+> do GitHub (C), e os secrets novos do Pages (`N8N_*`, `GITHUB_SYNC_TOKEN`).
+
+> ⚠️ **Confira a conta antes de rodar qualquer comando do Wrangler.** O projeto
+> `productcamp2026` fica na conta da Cloudflare `7023d597cae5b2533647b58f8c05b290`
+> (login `contato@productcamp.com.br`). O Wrangler usa a conta do login ativo:
+> se ele estiver numa conta pessoal, o `d1 create` cria o banco lá, e esse banco
+> não tem como ser ligado ao site. Rode `npx wrangler whoami` e, se o login
+> enxergar mais de uma conta, fixe a certa:
+>
+> ```bash
+> export CLOUDFLARE_ACCOUNT_ID=7023d597cae5b2533647b58f8c05b290
+> ```
+
 ```bash
 npx wrangler d1 create pcamp-indicacao
 npx wrangler d1 execute pcamp-indicacao --remote --file=indicacao/schema.sql
 ```
+
+O `schema.sql` é idempotente — pode rodar de novo sem perder dados. Rode-o de
+novo sempre que ele mudar no repositório (tabela nova, índice novo).
 
 > Se o banco foi criado com a versão anterior da plataforma (upload de
 > planilha da Sympla), rode antes `indicacao/schema-reset.sql`: as tabelas de
 > snapshot mudaram. Ele preserva `premios` (VIP liberado), `vip_log` e
 > `magic_links`.
 
-No projeto do Pages, **Settings → Bindings → Add → D1 database**, Production e
-Preview:
+No projeto do Pages, **Settings → Bindings → Add → D1 database**:
 
 - Variable name: `DB` ← exatamente esse
 - D1 database: `pcamp-indicacao`
 
+Faça isso **só em Production**. O Preview (o site temporário que a Cloudflare
+sobe para cada PR) fica **sem banco, de propósito**: ligado ao mesmo banco,
+qualquer teste feito numa preview — liberar VIP, disparar sincronização — iria
+direto para os dados reais. Se um dia for preciso testar a plataforma em
+preview, crie um banco separado (`pcamp-indicacao-preview`).
+
 > Não existe `wrangler.toml` na raiz de propósito: a configuração de
 > hospedagem vive no painel da Cloudflare (ver `CLAUDE.md`). O único arquivo
-> de configuração do Wrangler é `sync/wrangler.local.jsonc`, usado só para o
-> D1 **local**.
+> de configuração do Wrangler é `tests/wrangler.e2e.toml`, usado só para o
+> D1 **local** (testes e `sync/index.mjs --local`).
 
-**Settings → Variables and Secrets**, Production e Preview:
+**Settings → Variables and Secrets**, em Production:
 
 | Variável | Tipo | Valor |
 | --- | --- | --- |
 | `SESSION_SECRET` | Secret | String aleatória de 32+ caracteres (`openssl rand -base64 32`). Trocar invalida todas as sessões |
 | `MAIL_PROVIDER` | Texto | `resend` ou `sendgrid` |
-| `MAIL_FROM` | Texto | `Product Camp 2026 <indicacao@productcamp.com.br>` |
+| `MAIL_FROM` | Texto | `Product Camp 2026 <eventos@pm3.com.br>` — tem que terminar em `@pm3.com.br` (domínio verificado no Resend; o DMARC é estrito) |
 | `RESEND_API_KEY` / `SENDGRID_API_KEY` | Secret | Conforme o provedor |
 | `N8N_VIP_WEBHOOK_URL` | Secret | URL do webhook do n8n que grava a cortesia na planilha |
 | `N8N_VIP_WEBHOOK_TOKEN` | Secret | Opcional — vai como `Authorization: Bearer` se o webhook exigir |
 | `GITHUB_SYNC_TOKEN` | Secret | Opcional — habilita o botão **Atualizar dados** no painel (ver D) |
+
+O domínio do remetente precisa estar verificado no provedor de e-mail, senão
+os links mágicos caem em spam ou nem saem. Hoje o remetente é o **`pm3.com.br`**,
+verificado na conta da PM3 no Resend — a `RESEND_API_KEY` precisa ser **dessa
+mesma conta**. Atenção ao limite diário do plano do Resend: cada pedido de
+acesso é um e-mail, e um convite em massa pode estourar o limite e travar o
+login até ele renovar.
 
 Token da API para o GitHub gravar no D1: [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
 → **Create Custom Token** → permissão **Account → D1 → Edit**, só a conta da
@@ -289,9 +321,10 @@ toca em VIP liberado** — isso é decisão do time e só o botão do painel mud
 Dois perfis, decididos pelo e-mail:
 
 - **Time PM3 (admin)** — allowlist fixa no código, em
-  `functions/_lib/config.js`: `jaqueline.santos@pm3.com.br`,
-  `luiza.pagani@pm3.com.br`, `larissa.chinaglia@pm3.com.br`. Mudar essa lista é
-  mudar código, revisado por PR.
+  `functions/_lib/config.js`: hoje só a caixa compartilhada `eventos@pm3.com.br`.
+  Quem tem acesso a essa caixa é admin (o controle real está no provedor de
+  e-mail), e o `liberado_por` de todo VIP registra `eventos@`, não a pessoa.
+  Mudar essa lista é mudar código, revisado por PR.
 - **Indicador** — qualquer e-mail que a última sincronização colocou na tabela
   `indicadores` (Passaporte sem VIP).
 
@@ -313,6 +346,31 @@ Detalhes que valem saber:
   sem sessão a URL não entrega a página, mesmo para quem conhece o endereço.
 - As páginas da plataforma são `noindex` e `/indicacao/` está bloqueado no
   `robots.txt`.
+### Aceite do Regulamento
+
+A tela de acesso tem a caixa **"Declaro que li e concordo com o Regulamento do
+Programa de Indicação"**, sempre desmarcada ao abrir. O botão **Acessar minha
+página** só habilita com ela marcada, e o link do texto abre o PDF de
+`assets/docs/` em nova aba.
+
+O servidor recusa o pedido de link sem o aceite (`aceite_obrigatorio`) e, ao
+emitir o link, grava uma linha na tabela `aceites_regulamento` com o e-mail, a
+data/hora (UTC), a versão vigente (`REGULAMENTO_VERSAO`, em
+`functions/_lib/config.js`), o caminho do PDF, o IP e o user-agent. É um
+registro só de inclusão — a prova de consentimento. Para consultar:
+
+```bash
+npx wrangler d1 execute pcamp-indicacao --remote \
+  --command "SELECT email, versao, aceito_em FROM aceites_regulamento ORDER BY id DESC LIMIT 50"
+```
+
+Para publicar um regulamento novo: suba o PDF em `assets/docs/`, troque o
+`href` do link em `indicacao/index.html` e atualize `REGULAMENTO_VERSAO` e
+`REGULAMENTO_URL`. Os aceites antigos continuam apontando para a versão que
+cada pessoa leu.
+
+Detalhes que valem saber:
+
 - Nenhum segredo fica no código: a chave da conta de serviço e o ID da planilha
   só existem nos secrets do GitHub; os tokens do n8n e do GitHub, nos secrets
   do Pages. O navegador nunca fala com o Google.
@@ -334,16 +392,25 @@ N8N_VIP_WEBHOOK_URL=http://127.0.0.1:8799/vip
 # SHEET_TAB=Pedidos
 EOF
 
-# 2. Sobe o site + as Functions com um D1 local
-npx wrangler pages dev . --d1 DB --compatibility-date=2025-09-01
+# 2. Cria as tabelas no D1 local
+npx wrangler d1 execute DB --local --config tests/wrangler.e2e.toml \
+  --persist-to .wrangler/state --file=indicacao/schema.sql
 
-# 3. Em outro terminal, cria as tabelas no D1 local
-npx wrangler d1 execute DB --local --config sync/wrangler.local.jsonc --persist-to .wrangler/state --file=indicacao/schema.sql
+# 3. Sobe o site + as Functions apontando para o mesmo banco
+npx wrangler pages dev . --d1 DB=local-e2e --persist-to .wrangler/state \
+  --compatibility-date=2026-06-23 --ip 127.0.0.1 --port 8788
 
 # 4. Alimenta o D1 local
 node sync/index.mjs --local --fixture=tests/fixtures/planilha-pedidos.csv   # com a planilha de exemplo
 node sync/index.mjs --local                                                   # com a planilha real (precisa do passo 1)
 ```
+
+O `d1 execute --local` não aceita o banco só por flag: precisa de um arquivo de
+configuração. Ele fica em `tests/wrangler.e2e.toml`, e não num `wrangler.toml`
+na raiz, pelo motivo explicado acima. O `--persist-to` e o `DB=local-e2e` fazem
+os comandos enxergarem o mesmo banco (o `sync/index.mjs --local` usa os mesmos).
+O `--compatibility-date` é o de produção (`2026-06-23`); um Wrangler antigo em
+cache pode recusar a data — nesse caso, `npx wrangler@latest`.
 
 `node sync/index.mjs` sem `--local` só lê e imprime o resumo — é a forma mais
 rápida de conferir as regras contra a planilha real sem gravar nada.

@@ -2,11 +2,22 @@
 //
 // Precisa de duas coisas antes:
 //
-//   1. npx wrangler pages dev . --d1 DB --compatibility-date=2025-09-01
-//      com um .dev.vars contendo SESSION_SECRET, MAIL_PROVIDER=console,
-//      MOSTRAR_LINK=1 e, para testar o aviso ao n8n,
-//      N8N_VIP_WEBHOOK_URL=http://127.0.0.1:8799/vip
-//   2. npx wrangler d1 execute DB --local --config sync/wrangler.local.jsonc --file=indicacao/schema.sql
+//   1. um .dev.vars (ignorado pelo git) com:
+//        SESSION_SECRET=um-segredo-local-de-32-caracteres-ou-mais
+//        MAIL_PROVIDER=console
+//        MOSTRAR_LINK=1
+//        N8N_VIP_WEBHOOK_URL=http://127.0.0.1:8799/vip   (para testar o aviso ao n8n)
+//
+//   2. o schema no D1 local:
+//        npx wrangler d1 execute DB --local --config tests/wrangler.e2e.toml \
+//          --persist-to .wrangler/state --file=indicacao/schema.sql
+//
+//   3. o servidor local, apontando para o mesmo banco:
+//        npx wrangler pages dev . --d1 DB=local-e2e --persist-to .wrangler/state \
+//          --compatibility-date=2026-06-23 --ip 127.0.0.1 --port 8788
+//
+//      A data é a mesma de produção. Se o Wrangler em cache recusar a data,
+//      use npx wrangler@latest.
 //
 // Depois:  node tests/e2e.mjs
 //
@@ -14,9 +25,13 @@
 // fixture tests/fixtures/planilha-pedidos.csv, sem Google, e confere a API.
 // Ele espera um banco sem VIP liberado. Para rodar de novo, zere as tabelas:
 //
-//   npx wrangler d1 execute DB --local --config sync/wrangler.local.jsonc --command \
+//   npx wrangler d1 execute DB --local --config tests/wrangler.e2e.toml \
+//     --persist-to .wrangler/state --command \
 //     "DELETE FROM compras; DELETE FROM premios; DELETE FROM indicadores; \
 //      DELETE FROM sincronizacoes; DELETE FROM magic_links; DELETE FROM vip_log;"
+//
+// Por que o tests/wrangler.e2e.toml: o `d1 execute --local` não aceita o banco
+// só por flag. E ele não pode virar um wrangler.toml na raiz — ver o arquivo.
 //
 // A sessão de admin é forjada localmente com o mesmo SESSION_SECRET do
 // servidor — é assim que o teste entra no painel sem abrir um e-mail.
@@ -42,7 +57,7 @@ function checa(nome, condicao, extra = '') {
 }
 
 const env = { SESSION_SECRET: SEGREDO };
-const cookieAdmin = `pc_ind_sessao=${encodeURIComponent(await criarSessao(env, { email: 'jaqueline.santos@pm3.com.br', papel: 'admin' }))}`;
+const cookieAdmin = `pc_ind_sessao=${encodeURIComponent(await criarSessao(env, { email: 'eventos@pm3.com.br', papel: 'admin' }))}`;
 
 // Retenta em ECONNRESET: quando o sync grava no SQLite local que o `pages dev`
 // tem aberto, o workerd às vezes derruba a primeira conexão seguinte. Só
@@ -131,7 +146,7 @@ try {
 
   r = await jsonPost('/api/admin/vip', { email: 'marina.castro@email.com', liberado: true }, cookieAdmin);
   checa('VIP liberado para quem qualificou', r.status === 200 && r.dados.vip_liberado === true, JSON.stringify(r.dados));
-  checa('registra quem liberou', r.dados.liberado_por === 'jaqueline.santos@pm3.com.br', String(r.dados.liberado_por));
+  checa('registra quem liberou', r.dados.liberado_por === 'eventos@pm3.com.br', String(r.dados.liberado_por));
   if (r.dados.webhook && r.dados.webhook.status === 'nao_configurado') {
     console.log('  (aviso ao n8n não testado: defina N8N_VIP_WEBHOOK_URL=http://127.0.0.1:8799/vip no .dev.vars)');
   } else {
@@ -146,7 +161,7 @@ try {
   const painel3 = await req('/api/admin/painel', { headers: { Cookie: cookieAdmin } });
   const marina3 = painel3.dados.indicadores.find((i) => i.email === 'marina.castro@email.com');
   checa('VIP de Marina continua liberado', marina3.vip_liberado === true);
-  checa('liberado_por preservado', marina3.liberado_por === 'jaqueline.santos@pm3.com.br');
+  checa('liberado_por preservado', marina3.liberado_por === 'eventos@pm3.com.br');
   checa('KPI vip liberados = 1', painel3.dados.kpis.vip_liberados === 1);
 
   console.log('\n== 5. cortesia gravada pelo n8n mantém a indicadora ==');
@@ -175,14 +190,19 @@ try {
 
   console.log('\n== 7. login por link mágico do indicador ==');
   r = await jsonPost('/api/auth/solicitar', { email: 'MARINA.CASTRO@email.com' }, '');
+  checa('sem aceite do regulamento não emite link', r.status === 400 && r.dados.erro === 'aceite_obrigatorio', JSON.stringify(r.dados));
+  r = await jsonPost('/api/auth/solicitar', { email: 'MARINA.CASTRO@email.com', aceite_regulamento: 'sim' }, '');
+  checa('aceite precisa ser booleano true', r.status === 400 && r.dados.erro === 'aceite_obrigatorio', JSON.stringify(r.dados));
+
+  r = await jsonPost('/api/auth/solicitar', { email: 'MARINA.CASTRO@email.com', aceite_regulamento: true }, '');
   checa('link solicitado', r.status === 200 && r.dados.papel === 'indicador', JSON.stringify(r.dados));
   const link = r.dados.link_dev;
   checa('link de dev devolvido', Boolean(link), String(link));
   const token = new URL(link).searchParams.get('t');
 
-  r = await jsonPost('/api/auth/solicitar', { email: 'caio.ferreira@email.com' }, '');
+  r = await jsonPost('/api/auth/solicitar', { email: 'caio.ferreira@email.com', aceite_regulamento: true }, '');
   checa('quem tem VIP não acessa como indicador', r.status === 403 && r.dados.erro === 'nao_liberado', JSON.stringify(r.dados));
-  r = await jsonPost('/api/auth/solicitar', { email: 'quem.nao.existe@email.com' }, '');
+  r = await jsonPost('/api/auth/solicitar', { email: 'quem.nao.existe@email.com', aceite_regulamento: true }, '');
   checa('e-mail fora da planilha recebe acesso não liberado', r.status === 403 && r.dados.erro === 'nao_liberado', JSON.stringify(r.dados));
 
   r = await jsonPost('/api/auth/verificar', { token }, '');
@@ -226,7 +246,7 @@ try {
   checa('origem externa é bloqueada', r.status === 403 && r.dados.erro === 'origem_invalida', JSON.stringify(r.dados));
   r = await jsonPost('/api/admin/sincronizar', {}, cookieAdmin, { Origin: 'https://site-malicioso.com' });
   checa('disparo de sync bloqueado por origem', r.status === 403, String(r.status));
-  const forjado = 'pc_ind_sessao=' + encodeURIComponent(Buffer.from(JSON.stringify({ e: 'jaqueline.santos@pm3.com.br', p: 'admin', x: 9999999999 })).toString('base64url') + '.assinaturafalsa');
+  const forjado = 'pc_ind_sessao=' + encodeURIComponent(Buffer.from(JSON.stringify({ e: 'eventos@pm3.com.br', p: 'admin', x: 9999999999 })).toString('base64url') + '.assinaturafalsa');
   r = await req('/api/admin/painel', { headers: { Cookie: forjado } });
   checa('cookie forjado não abre o painel', r.status === 403, String(r.status));
   r = await jsonPost('/api/admin/sincronizar', {}, cookieIndicador);
@@ -253,7 +273,7 @@ try {
   console.log('\n== 14. limite de pedidos de link ==');
   let ultimo = 0;
   for (let i = 0; i < 7; i++) {
-    const t = await jsonPost('/api/auth/solicitar', { email: 'ana.souza@email.com' }, '');
+    const t = await jsonPost('/api/auth/solicitar', { email: 'ana.souza@email.com', aceite_regulamento: true }, '');
     ultimo = t.status;
   }
   checa('bloqueia depois de vários pedidos seguidos', ultimo === 429, String(ultimo));

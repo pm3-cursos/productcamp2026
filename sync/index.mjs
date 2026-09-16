@@ -133,11 +133,11 @@ function executarNoD1(statements, syncId) {
 
   // Remoto: o banco é achado pelo nome na conta (CLOUDFLARE_API_TOKEN +
   // CLOUDFLARE_ACCOUNT_ID). Local: precisa do binding, que está em
-  // sync/wrangler.local.jsonc — o mesmo banco que `wrangler pages dev` usa.
+  // tests/wrangler.e2e.toml — o mesmo banco que `wrangler pages dev` usa.
   const banco = alvo === 'remote' ? process.env.D1_DATABASE || 'pcamp-indicacao' : 'DB';
   const argumentos = ['wrangler', 'd1', 'execute', banco, `--${alvo}`, `--file=${arquivo}`, '-y'];
   if (alvo === 'local') {
-    argumentos.push(`--config=${path.join(raiz, 'sync', 'wrangler.local.jsonc')}`);
+    argumentos.push(`--config=${path.join(raiz, 'tests', 'wrangler.e2e.toml')}`);
     // O estado local fica na raiz, onde o `wrangler pages dev` também grava.
     argumentos.push(`--persist-to=${path.join(raiz, '.wrangler', 'state')}`);
   }

@@ -4,11 +4,7 @@
  * Allowlist fixa do time PM3. Só estes e-mails acessam o painel interno.
  * Qualquer mudança aqui é uma mudança de código, revisada por PR.
  */
-export const ADMINS = [
-  'jaqueline.santos@pm3.com.br',
-  'luiza.pagani@pm3.com.br',
-  'larissa.chinaglia@pm3.com.br',
-];
+export const ADMINS = ['eventos@pm3.com.br'];
 
 /** Compras confirmadas necessárias para qualificar ao upgrade VIP. */
 export const META_COMPRAS = 3;
@@ -71,6 +67,16 @@ export const GITHUB_REF = 'main';
 
 /** Intervalo mínimo entre dois disparos manuais da sincronização. */
 export const INTERVALO_SYNC_MIN = 5;
+
+/**
+ * Regulamento vigente do programa. A versão é gravada em cada aceite (tabela
+ * `aceites_regulamento`) como prova de consentimento. Ao publicar um novo
+ * regulamento: suba o PDF novo em `assets/docs/`, troque o `href` do link
+ * em `indicacao/index.html` e atualize os dois valores aqui — os aceites
+ * antigos continuam apontando para a versão que a pessoa realmente leu.
+ */
+export const REGULAMENTO_VERSAO = '1'; // rodapé do PDF: "versão 1, setembro de 2026"
+export const REGULAMENTO_URL = '/assets/docs/Regulamento-Programa-Indicacao-PCamp26.pdf';
 
 /** Mensagem de compartilhamento. `[cupom]` é o e-mail do indicador. */
 export function mensagemWhatsApp(cupom) {

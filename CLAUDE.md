@@ -7,15 +7,16 @@ Guia para qualquer assistente de IA que trabalhe neste repositório. Leia antes 
 Landing page do **Product Camp Brasil 2026** — o maior evento de produto da América Latina (08 e 09 de dezembro de 2026, São Paulo, SP) — e a **plataforma de indicação** do evento, em `/indicacao/`.
 
 - **Site estático**, sem build, sem framework. O site em si não tem backend; a única parte com servidor é a plataforma de indicação (ver a seção própria abaixo).
-- Todo o conteúdo do site vive em **`index.html`** (página única). CSS em blocos `<style>` internos.
+- O site tem **várias páginas estáticas**, cada uma com seu próprio bloco `<style>`: a home em **`index.html`**, `pocket.html`, `para-empresas/` e `lives-pre-pcamp26/`. Os tokens do design system são copiados entre elas — ao mexer num token, atualize todas.
 - **Estrutura de arquivos:**
   - `assets/fonts/` — fontes Inter Tight (WOFF2, subset Latin ~1025 glifos para performance). Backup das fontes completas em `assets/fonts/_full/` — restaurar de lá se precisar de algum glifo fora do Latin. Ao adicionar conteúdo com caracteres especiais incomuns, verifique se o subset os cobre.
   - `assets/img/` — imagens, organizadas em subpastas: `bg/`, `speakers/`, `coordinators/`, `venue/`, `sponsors/`, `brand/`. `og-image.png` fica em `assets/img/`. `assets/img/legacy/` guarda imagens órfãs (não referenciadas) arquivadas.
+  - `assets/docs/` — documentos públicos servidos pelo site (hoje, o PDF do Regulamento do Programa de Indicação, linkado na tela de acesso de `/indicacao/`).
   - `indicacao/` — telas da plataforma de indicação (HTML/CSS/JS estáticos) + `schema.sql` + `LEIA-ME.md`.
   - `functions/` — a API da plataforma de indicação (Cloudflare Pages Functions). **Nenhuma rota do site passa por aqui** (garantido pelo `_routes.json` na raiz).
   - `sync/` — script que lê a planilha de pedidos (Google Sheets) e grava o snapshot no D1; roda no GitHub Actions (`.github/workflows/sync-indicacao.yml`).
   - `tests/` — testes da plataforma de indicação: `run.mjs` (unitários, sem dependências) e `e2e.mjs` (contra o servidor local).
-  - **Raiz:** `index.html`, favicons (`favicon.png`, `favicon-16.png`, `apple-touch-icon.png` — ficam na raiz por convenção), `robots.txt`, `sitemap.xml`, `llms.txt`, `.gitignore`, `CLAUDE.md`, `README.md`.
+  - **Raiz:** `index.html`, `pocket.html`, favicons (`favicon.png`, `favicon-16.png`, `apple-touch-icon.png` — ficam na raiz por convenção), `robots.txt`, `sitemap.xml`, `llms.txt`, `.gitignore`, `CLAUDE.md`, `README.md`.
   - Ao adicionar uma imagem nova, coloque-a na subpasta correta de `assets/img/` (nunca na raiz) e referencie com o caminho relativo completo.
 - **Hospedagem:** Cloudflare Pages, conectado ao Git. **Todo push na `main` republica o site automaticamente.**
 - **Domínio:** `https://www.productcamp.com.br` (apex `productcamp.com.br` redireciona 301 → www).
@@ -26,7 +27,7 @@ Landing page do **Product Camp Brasil 2026** — o maior evento de produto da Am
 1. **Performance é prioridade.** Sempre otimizar o tempo de carregamento — mas sem desrespeitar o que o prompt pede. As duas coisas convivem; quando conflitarem, ver item 2.
 2. **Questione prompts que levem a carregamento lento.** Se uma instrução tende a inflar o tempo de load (libs pesadas, imagens não otimizadas, fontes extras, scripts bloqueantes), **avise antes de executar** e proponha a alternativa mais leve.
 3. **Boas práticas de HTML e CSS, com foco em SEO.** HTML semântico, headings em hierarquia correta, `alt` em imagens, meta tags válidas, dados estruturados quando fizer sentido.
-4. **Sem estilos inline.** Evitar `style=` no HTML. Manter o CSS limpo, organizado e centralizado. (Hoje existem ~28 inline styles legados — reduzir progressivamente quando tocar nas seções correspondentes, sem refactor de big-bang não solicitado.)
+4. **Sem estilos inline.** Evitar `style=` no HTML. Manter o CSS limpo, organizado e centralizado. (Resta 1 inline style legado na home — migrar quando tocar na seção correspondente.)
 5. **SEO não pode quebrar a marca.** Otimização nunca compromete o layout aprovado, o design system nem o key visual do evento. As duas coisas têm que coexistir.
 
 ## Mobile-first
@@ -46,7 +47,7 @@ O site é pensado **primeiro para mobile** — a maioria do tráfego de evento v
 - **Imagens:** preferir `.webp`/`.avif` (já é o padrão do repo). Dimensionar para o uso real; `loading="lazy"` abaixo da dobra (já aplicado em boa parte do site).
 - **Vídeo:** evitar autoplay de vídeo pesado. Sem autoplay hoje — manter assim.
 - **Animações:** evitar animações pesadas/custosas que travem a rolagem.
-- **Fontes:** Inter Tight local (`fonts/`). Não adicionar pesos/fontes novas sem necessidade real. Usar `font-display: swap`.
+- **Fontes:** Inter Tight local (`assets/fonts/`). Não adicionar pesos/fontes novas sem necessidade real. Usar `font-display: swap`.
 - **CSS/JS:** nada de bibliotecas pesadas para efeitos que CSS resolve. Sem render-blocking desnecessário. Reduzir scripts dispensáveis. Minificar só se não atrapalhar a manutenção.
 - **Terceiros:** scripts de tracking/marketing (pixels, analytics) devem ser `async`/`defer` e carregados após o conteúdo principal.
 
@@ -58,31 +59,13 @@ O site é pensado **primeiro para mobile** — a maioria do tráfego de evento v
   - `title` claro e específico (ex: "Product Camp 2026 | Conferência de Produto em São Paulo").
   - `meta description` objetiva e coerente com o conteúdo.
   - **Open Graph** e **Twitter/X Card** completos, com URL absoluta válida.
-  - **`canonical`** quando necessário. ⚠️ **Pendência:** hoje o site não tem `<link rel="canonical">` — adicionar apontando para a URL canônica (`https://www.productcamp.com.br/`).
-  - ⚠️ **Pendência:** `og:image` ainda aponta para `framerusercontent.com` (resíduo de export do Framer). Trocar por imagem hospedada no próprio domínio/Pages.
+  - **`canonical`** em toda página, apontando para a URL absoluta dela (já presente nas páginas atuais — manter ao criar página nova).
+  - `og:image` sempre hospedada no próprio domínio (hoje `assets/img/og-image.png`), nunca em CDN de terceiro.
 - **Alt text:** descritivo, refletindo o conteúdo real da imagem; sem keyword stuffing; nunca genérico ("imagem", "foto"). `alt=""` em imagens puramente decorativas.
 - **Favicon:** já configurado (`favicon.png` 32x32, `favicon-16.png`, `apple-touch-icon.png`). Manter; só atualizar se a marca mudar.
-- **Dados estruturados (`Event`):** ⚠️ **Pendência — não existe schema no site.** Adicionar JSON-LD `schema.org/Event` para o evento aparecer melhor na busca. Incluir: nome, descrição, `startDate`/`endDate` (08–09/12/2026, fuso `-03:00`), local e endereço (São Paulo, SP), imagem, organizador (PM3 — `https://www.cursospm3.com.br`), URL oficial, `eventStatus`, `eventAttendanceMode` (presencial) e ofertas/ingressos quando aplicável.
+- **Dados estruturados:** a home tem JSON-LD `schema.org/Event` com `offers` (preço, lote e `priceValidUntil`); a `/para-empresas/` tem `Event` + `FAQPage`. **As ofertas mudam a cada virada de lote** — o aviso no topo de `assets/js/pcamp-countdown-lotes.js` lista tudo o que precisa mudar junto no mesmo deploy (badges, preços, nome da oferta e `priceValidUntil`). Se uma página tem `FAQPage`, o JSON-LD precisa bater com as perguntas visíveis.
 
-  ```html
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Event",
-    "name": "Product Camp 2026",
-    "startDate": "2026-12-08T09:00:00-03:00",
-    "endDate": "2026-12-09T18:00:00-03:00",
-    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
-    "eventStatus": "https://schema.org/EventScheduled",
-    "location": { "@type": "Place", "name": "São Paulo",
-      "address": { "@type": "PostalAddress", "addressLocality": "São Paulo", "addressRegion": "SP", "addressCountry": "BR" } },
-    "organizer": { "@type": "Organization", "name": "PM3", "url": "https://www.cursospm3.com.br" },
-    "url": "https://www.productcamp.com.br/"
-  }
-  </script>
-  ```
-
-- **URLs amigáveis** *(condicional — só quando o site deixar de ser página única)*: usar caminhos simples e descritivos (`/agenda`, `/palestrantes`, `/ingressos`, `/local`). Evitar URLs longas, parâmetros/IDs sem contexto e mistura de idiomas. Hoje o site é single-page, então não se aplica ainda.
+- **URLs amigáveis:** caminhos simples e descritivos, como os atuais (`/pocket`, `/para-empresas/`, `/lives-pre-pcamp26/`, `/indicacao/`). Evitar URLs longas, parâmetros/IDs sem contexto e mistura de idiomas. Página nova entra também no `sitemap.xml`, e no `llms.txt` se for de interesse público.
 
 ## CSS — organização
 
@@ -154,14 +137,18 @@ O que não pode ser esquecido ao tocar nessa parte:
 - **Não crie `wrangler.toml` na raiz.** O Pages passaria a ler a configuração
   do arquivo e a ignorar o painel da Cloudflare, o que pode quebrar o deploy do
   site. Bindings e variáveis ficam no painel; para rodar local, use as flags do
-  `wrangler pages dev` e o `.dev.vars`. O único arquivo do Wrangler é
-  `sync/wrangler.local.jsonc`, e serve só para o D1 local.
+  `wrangler pages dev` e o `.dev.vars`. O `wrangler d1 execute --local` exige um
+  arquivo de config — por isso ele existe em `tests/wrangler.e2e.toml`, fora da
+  raiz e invisível para o deploy (o `sync/index.mjs --local` usa o mesmo arquivo).
 - **Nenhuma Function na raiz.** `functions/` só tem arquivos dentro de `api/` e
   de `indicacao/`. Um `functions/_middleware.js` na raiz passaria a interceptar
   **todas** as requisições, inclusive as da landing page, e cobraria latência de
   uma página que hoje é 100% estática.
-- **A allowlist de admin é código**, em `functions/_lib/config.js`. Mudar quem é
-  admin é mudar código, revisado por PR — não existe tela para isso.
+- **A allowlist de admin é código**, em `functions/_lib/config.js`, e hoje tem
+  **só a caixa compartilhada `eventos@pm3.com.br`**. Duas consequências: quem tem
+  acesso a essa caixa é admin (o controle real está no provedor de e-mail, não no
+  repo), e o `liberado_por` de todo upgrade VIP registra `eventos@`, não a pessoa.
+  Remover um e-mail da lista derruba na hora as sessões abertas dele.
 - **A fonte de verdade é a planilha do Google Sheets, lida pelo GitHub Actions.**
   As Functions só leem o D1. A sincronização é um snapshot completo e **nunca
   toca em `premios.vip_liberado`** — o teste de `gerarSQL` garante isso.
@@ -179,7 +166,9 @@ O que não pode ser esquecido ao tocar nessa parte:
   `assets/fonts/` — e não há nenhuma fonte exclusiva da plataforma. Ao mexer
   nos tokens do site, atualize esse bloco junto; a única cor fora do design
   system é o verde do WhatsApp, e está comentada no arquivo.
-- Rode `node tests/run.mjs` antes de abrir PR.
+- Rode `node tests/run.mjs` antes de abrir PR. Se mexeu em `functions/`, rode
+  também o `tests/e2e.mjs` — o passo a passo do ambiente local está no topo
+  desse arquivo. Os dois rodam no Windows.
 
 ## Não mexer
 

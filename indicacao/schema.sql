@@ -121,3 +121,20 @@ CREATE TABLE IF NOT EXISTS vip_log (
   webhook     TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_vip_log_email ON vip_log (email, criado_em);
+
+-- ---------------------------------------------------------------------------
+-- Prova de consentimento: cada vez que alguém conclui a tela de acesso com a
+-- caixa "li e concordo com o Regulamento" marcada, grava-se uma linha aqui.
+-- É um registro só de inclusão (nunca se atualiza nem apaga). A versão vem
+-- de REGULAMENTO_VERSAO em functions/_lib/config.js.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS aceites_regulamento (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  email      TEXT NOT NULL,
+  versao     TEXT NOT NULL,
+  documento  TEXT NOT NULL,
+  aceito_em  TEXT NOT NULL,
+  ip         TEXT,
+  user_agent TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_aceites_email ON aceites_regulamento (email, aceito_em);

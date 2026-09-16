@@ -9,6 +9,11 @@ export function ipCliente(request) {
   );
 }
 
+/** User-Agent do visitante, para os registros de auditoria. */
+export function userAgent(request) {
+  return request.headers.get('User-Agent') || '';
+}
+
 /**
  * Confere se a requisição veio da própria origem. Proteção simples de CSRF
  * para os endpoints que mudam estado — o cookie é SameSite=Lax, isto é a

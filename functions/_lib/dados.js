@@ -186,6 +186,25 @@ export async function contarLinksRecentes(db, { email, ip, desdeISO }) {
   return { email: (porEmail && porEmail.total) || 0, ip: (porIp && porIp.total) || 0 };
 }
 
+// ---------------------------------------------------------------- aceite do regulamento
+
+/**
+ * Prova de consentimento: quem concluiu a tela de acesso com a caixa
+ * "li e concordo" marcada. Só insere — o histórico nunca é reescrito.
+ */
+export async function registrarAceiteRegulamento(
+  db,
+  { email, versao, documento, ip, userAgent }
+) {
+  await db
+    .prepare(
+      `INSERT INTO aceites_regulamento (email, versao, documento, aceito_em, ip, user_agent)
+       VALUES (?, ?, ?, ?, ?, ?)`
+    )
+    .bind(email, versao, documento, agoraISO(), ip || '', String(userAgent || '').slice(0, 300))
+    .run();
+}
+
 /** Faxina de links vencidos (roda junto com a emissão, é barato). */
 export async function limparLinksVencidos(db) {
   await db
