@@ -1,0 +1,5 @@
+{
+  "version": 1,
+  "include": ["/api/*", "/indicacao/minha-pagina/*", "/indicacao/pm3/*"],
+  "exclude": []
+}

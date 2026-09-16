@@ -18,9 +18,38 @@ export function chaveTexto(valor) {
     .trim();
 }
 
-/** `true` só para estados de pagamento aprovados. */
-export function pagamentoAprovado(estado) {
-  return chaveTexto(estado) === 'aprovado';
+/**
+ * Lê `Número de Ingressos`: devolve `{cancelado, quantidade}`.
+ * "CANCELADO" marca o pedido como cancelado; vazio conta como 1 ingresso.
+ */
+export function parseQuantidade(valor, marcaCancelado = 'CANCELADO') {
+  const chave = chaveTexto(valor);
+  if (chave && chave === chaveTexto(marcaCancelado)) return { cancelado: true, quantidade: 0 };
+  if (valor == null || String(valor).trim() === '') return { cancelado: false, quantidade: 1 };
+  const numero = Number.parseInt(String(valor).replace(/[^\d-]/g, ''), 10);
+  if (!Number.isFinite(numero) || numero <= 0) return { cancelado: false, quantidade: 1 };
+  return { cancelado: false, quantidade: numero };
+}
+
+/** Cupom de indicação é um e-mail: precisa de "@" com algo dos dois lados. */
+export function cupomEhEmail(cupom) {
+  const email = normalizarEmail(cupom);
+  return /^[^@\s]+@[^@\s]+$/.test(email);
+}
+
+/** Agora no fuso de São Paulo, como a planilha escreve: dd/mm/aaaa hh:mm. */
+export function agoraBR() {
+  const partes = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).formatToParts(new Date());
+  const pega = (tipo) => (partes.find((p) => p.type === tipo) || {}).value || '';
+  return `${pega('day')}/${pega('month')}/${pega('year')} ${pega('hour')}:${pega('minute')}`;
 }
 
 /**

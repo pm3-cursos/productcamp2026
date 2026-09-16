@@ -1,0 +1,16 @@
+Data do Pedido;Nome;Sobrenome;E-mail;Telefone;Lote;Número de Ingressos;Valor por ingresso;Valor total do pedido;Cupom;Categoria;Formato;Modalidade;Cupom Online enviado;Está na aba do Sympla;Duplicado;Data Corrigida;Resgate Compras PJ;Data;Evento;Ano
+01/08/2026 10:00;Marina;Castro;marina.castro@email.com;11999990001;Lote 1;1;R$ 1.214,10;R$ 1.214,10;;Sympla;B2C;Passaporte;Sim;Sim;;01/08/2026;;01/08/2026;Pcamp 2026;2026
+02/08/2026 11:00;Rafael;Antunes;rafael.antunes@email.com;11999990002;Lote 1;1;R$ 1.214,10;R$ 1.214,10;;Sympla;B2C;Passaporte;Sim;Sim;;02/08/2026;;02/08/2026;Pcamp 2026;2026
+03/08/2026 09:00;Caio;Ferreira;caio.ferreira@email.com;11999990003;Lote 1;1;R$ 1.849,00;R$ 1.849,00;;Sympla;B2C;VIP;Sim;Sim;;03/08/2026;;03/08/2026;Pcamp 2026;2026
+03/08/2026 09:30;Caio;Ferreira;caio.ferreira@email.com;11999990003;Lote 1;1;R$ 1.214,10;R$ 1.214,10;;Sympla;B2C;Passaporte;Sim;Sim;;03/08/2026;;03/08/2026;Pcamp 2026;2026
+04/08/2026 14:32;Ana;Souza;ana.souza@email.com;11999990004;Lote 2;1;R$ 1.300,00;R$ 1.300,00;marina.castro@email.com;Sympla;B2C;Passaporte;Sim;Sim;;04/08/2026;;04/08/2026;Pcamp 2026;2026
+05/08/2026 15:00;Bruno;Lima;bruno.lima@email.com;11999990005;Lote 2;2;R$ 1.300,00;R$ 2.600,00;Marina.Castro@Email.com ;Sympla;B2B;Passaporte;Sim;Sim;;05/08/2026;;05/08/2026;Pcamp 2026;2026
+06/08/2026 16:00;Carla;Dias;carla.dias@email.com;11999990006;Lote 2;1;R$ 1.300,00;R$ 1.300,00;rafael.antunes@email.com;Sympla;B2C;Passaporte;Sim;Sim;;06/08/2026;;06/08/2026;Pcamp 2026;2026
+07/08/2026 10:00;Diego;Nunes;diego.nunes@email.com;11999990007;Lote 2;CANCELADO;R$ 1.300,00;R$ 1.300,00;rafael.antunes@email.com;Sympla;B2C;Passaporte;Sim;Sim;;07/08/2026;;07/08/2026;Pcamp 2026;2026
+08/08/2026 10:00;Elisa;Prado;elisa.prado@email.com;11999990008;Lote 2;1;R$ 1.300,00;R$ 1.300,00;PCAMP10;Sympla;B2C;Passaporte;Sim;Sim;;08/08/2026;;08/08/2026;Pcamp 2026;2026
+09/08/2026 10:00;Fábio;Rocha;fabio.rocha@email.com;11999990009;Lote 2;1;R$ 1.300,00;R$ 1.300,00;caio.ferreira@email.com;Sympla;B2C;Passaporte;Sim;Sim;;09/08/2026;;09/08/2026;Pcamp 2026;2026
+10/08/2026 10:00;Marina;Castro;marina.castro@email.com;11999990001;Lote 2;1;R$ 1.300,00;R$ 1.300,00;marina.castro@email.com;Sympla;B2C;Passaporte;Sim;Sim;;10/08/2026;;10/08/2026;Pcamp 2026;2026
+11/08/2026 10:00;Gabi;Moura;gabi.moura@email.com;11999990010;Lote 2;1;R$ 1.300,00;R$ 1.300,00;rafael.antunes@email.com;Sympla;B2C;Passaporte;Sim;Sim;;11/08/2026;;11/08/2026;Pcamp 2025;2025
+12/08/2026 10:00;Hugo;Teles;hugo.teles@email.com;11999990011;Lote 2;1;R$ 1.300,00;R$ 1.300,00;ninguem@email.com;Sympla;B2C;Passaporte;Sim;Sim;;12/08/2026;;12/08/2026;Pcamp 2026;2026
+13/08/2026 10:00;Marina;Castro;marina.castro@email.com;11999990001;VIP liberado por indicação - Cortesia;1;0;0;;Cortesia;B2C;VIP;;;;13/08/2026;;13/08/2026;Pcamp 2026;2026
+14/08/2026 10:00;Igor;Vaz;igor.vaz@email.com;11999990012;Lote 3;1;R$ 1.400,00;R$ 1.400,00;;Sympla;B2C;Pocket;Sim;Sim;;14/08/2026;;14/08/2026;Pcamp 2026;2026

@@ -38,8 +38,39 @@ export const SESSAO_TTL_H = 12;
 export const LIMITE_LINKS_POR_EMAIL_HORA = 5;
 export const LIMITE_LINKS_POR_IP_HORA = 20;
 
-/** Tamanho máximo aceito no upload de planilha (bytes). */
-export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+/**
+ * Planilha de pedidos (Google Sheets). A planilha é multi-evento: só entram
+ * as linhas cujo `Evento` bate com este valor (comparação sem acento/caixa).
+ */
+export const EVENTO_PLANILHA = 'Pcamp 2026';
+
+/** `Modalidade` que libera a pessoa para indicar. */
+export const MODALIDADE_INDICADOR = 'Passaporte';
+
+/** `Modalidade` que, se a pessoa também tiver, a tira da lista de indicadores. */
+export const MODALIDADE_VIP = 'VIP';
+
+/** `Formato` cuja compra de Passaporte NÃO libera a pessoa para indicar (compra corporativa). */
+export const FORMATO_SEM_INDICACAO = 'B2B';
+
+/**
+ * Lote gravado pelo n8n quando o time libera o upgrade VIP de um indicador.
+ * Uma linha VIP com este lote (ou Categoria "Cortesia") NÃO exclui a pessoa
+ * como indicadora: ela ganhou o VIP indicando e o cupom continua ativo.
+ */
+export const LOTE_VIP_CORTESIA = 'VIP liberado por indicação - Cortesia';
+export const CATEGORIA_CORTESIA = 'Cortesia';
+
+/** Valor de `Número de Ingressos` que marca um pedido cancelado. */
+export const MARCA_CANCELADO = 'CANCELADO';
+
+/** Repositório cujo workflow de sincronização o painel dispara. */
+export const GITHUB_REPO = 'pm3-cursos/productcamp2026';
+export const GITHUB_WORKFLOW = 'sync-indicacao.yml';
+export const GITHUB_REF = 'main';
+
+/** Intervalo mínimo entre dois disparos manuais da sincronização. */
+export const INTERVALO_SYNC_MIN = 5;
 
 /** Mensagem de compartilhamento. `[cupom]` é o e-mail do indicador. */
 export function mensagemWhatsApp(cupom) {

@@ -2,18 +2,22 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const lib = (nome) => import(path.join(raiz, 'functions/_lib', nome));
+// pathToFileURL: no Windows, import() de caminho absoluto sem file:// falha.
+const modulo = (relativo) => import(pathToFileURL(path.join(raiz, relativo)).href);
+const lib = (nome) => modulo(path.join('functions/_lib', nome));
 
-const { chaveTexto, normalizarEmail, pagamentoAprovado, parseValorBR, parseDataSympla, nomeAbreviado, iniciais, primeiroNome, formatarBRL, formatarBRLCompacto } = await lib('util.js');
-const { parseDelimitado, detectarSeparador, gerarCSV } = await lib('csv.js');
-const { lerXlsx } = await lib('xlsx.js');
-const { mapearColunas, lerCompras, lerIndicadores, derivarIndicadores } = await lib('planilha.js');
-const { calcularContagens, resolverQualificacao, montarFilaVip, montarRanking, dentroDoTeto } = await lib('reconciliacao.js');
+const { chaveTexto, normalizarEmail, parseQuantidade, cupomEhEmail, parseValorBR, parseDataSympla, nomeAbreviado, iniciais, primeiroNome, formatarBRL, formatarBRLCompacto, agoraBR } = await lib('util.js');
+const { gerarCSV } = await lib('csv.js');
+const { mapearColunas, lerCompras, derivarIndicadores, lerPlanilha, idDaLinha } = await lib('planilha.js');
+const { calcularContagens, dataDeQualificacao, montarFilaVip, montarRanking, dentroDoTeto } = await lib('reconciliacao.js');
 const { criarSessao, lerSessao, ehAdmin, cookieSessao } = await lib('session.js');
-const { META_COMPRAS, TETO_VIP, ADMINS, mensagemWhatsApp, TEXTO_VIP_BANNER, TEXTO_VIP_CUPOM_ATIVO } = await lib('config.js');
+const { META_COMPRAS, TETO_VIP, ADMINS, mensagemWhatsApp, TEXTO_VIP_BANNER, TEXTO_VIP_CUPOM_ATIVO, LOTE_VIP_CORTESIA } = await lib('config.js');
+const { montarAvisoVip } = await lib('webhook.js');
+const { parseDelimitado, detectarSeparador } = await modulo('sync/csv.js');
+const { montarSnapshot, gerarSQL, sql } = await modulo('sync/snapshot.js');
 
 let passou = 0;
 const falhas = [];
@@ -34,14 +38,25 @@ await teste('normalizarEmail tira espaços e caixa', () => {
   assert.equal(normalizarEmail(null), '');
 });
 
-await teste('pagamentoAprovado só aceita aprovado', () => {
-  assert.equal(pagamentoAprovado('Aprovado'), true);
-  assert.equal(pagamentoAprovado('APROVADO'), true);
-  assert.equal(pagamentoAprovado(' aprovado '), true);
-  assert.equal(pagamentoAprovado('Não aprovado'), false);
-  assert.equal(pagamentoAprovado('Pendente'), false);
-  assert.equal(pagamentoAprovado('Recusado'), false);
-  assert.equal(pagamentoAprovado(''), false);
+await teste('parseQuantidade lê CANCELADO, número e vazio', () => {
+  assert.deepEqual(parseQuantidade('CANCELADO'), { cancelado: true, quantidade: 0 });
+  assert.deepEqual(parseQuantidade(' cancelado '), { cancelado: true, quantidade: 0 });
+  assert.deepEqual(parseQuantidade('3'), { cancelado: false, quantidade: 3 });
+  assert.deepEqual(parseQuantidade(2), { cancelado: false, quantidade: 2 });
+  assert.deepEqual(parseQuantidade(''), { cancelado: false, quantidade: 1 });
+  assert.deepEqual(parseQuantidade('0'), { cancelado: false, quantidade: 1 });
+});
+
+await teste('cupomEhEmail só aceita cupom em formato de e-mail', () => {
+  assert.equal(cupomEhEmail('ana.souza@email.com'), true);
+  assert.equal(cupomEhEmail(' Ana.Souza@Email.com '), true);
+  assert.equal(cupomEhEmail('PCAMP10'), false);
+  assert.equal(cupomEhEmail(''), false);
+  assert.equal(cupomEhEmail('@'), false);
+});
+
+await teste('agoraBR escreve dd/mm/aaaa hh:mm', () => {
+  assert.match(agoraBR(), /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/);
 });
 
 await teste('parseValorBR entende os formatos da Sympla', () => {
@@ -78,254 +93,224 @@ await teste('formatação de moeda', () => {
 });
 
 // ---------------------------------------------------------------- csv
-await teste('CSV respeita aspas, separador e linhas vazias', () => {
-  const linhas = parseDelimitado('Nome;Sobrenome\nAna;"Souza; Jr"\r\n\nBob;Lima\n');
-  assert.deepEqual(linhas, [['Nome', 'Sobrenome'], ['Ana', 'Souza; Jr'], ['Bob', 'Lima']]);
-  assert.equal(detectarSeparador('a,b,c'), ',');
-  assert.equal(detectarSeparador('a;b;c'), ';');
-  assert.deepEqual(parseDelimitado('a,b\n"li\nnha","as""pas"'), [['a', 'b'], ['li\nnha', 'as"pas']]);
-});
-
-await teste('CSV ignora BOM no cabeçalho', () => {
-  const linhas = parseDelimitado('﻿Nº ingresso,Cupom de Desconto\nABC,ana@x.com\n');
-  assert.equal(linhas[0][0], 'Nº ingresso');
+await teste('CSV (fixture) respeita aspas, separador e linhas vazias', () => {
+  const linhas = parseDelimitado('a;b\n"x;y";"diz ""oi"""\n\n1;2\n');
+  assert.deepEqual(linhas, [['a', 'b'], ['x;y', 'diz "oi"'], ['1', '2']]);
+  assert.equal(detectarSeparador('a,b,c\n'), ',');
+  assert.equal(detectarSeparador('a;b;c\n'), ';');
 });
 
 await teste('gerarCSV escapa e usa ponto e vírgula', () => {
-  assert.equal(gerarCSV(['a', 'b'], [['x', 'y;z']]), '﻿a;b\r\nx;"y;z"\r\n');
+  const csv = gerarCSV(['a', 'b'], [['x;y', 'diz "oi"'], [1, null]]);
+  assert.equal(csv, '﻿a;b\r\n"x;y";"diz ""oi"""\r\n1;\r\n');
 });
 
-// ---------------------------------------------------------------- xlsx
-const bufferXlsx = fs.readFileSync(path.join(raiz, 'tests/fixtures/sympla-participantes.xlsx'));
-const linhasXlsx = await lerXlsx(
-  bufferXlsx.buffer.slice(bufferXlsx.byteOffset, bufferXlsx.byteOffset + bufferXlsx.byteLength)
-);
+// ---------------------------------------------------------------- planilha
+const fixture = parseDelimitado(fs.readFileSync(path.join(raiz, 'tests/fixtures/planilha-pedidos.csv'), 'utf8'));
+const CAB = fixture[0];
 
-await teste('XLSX lê o cabeçalho da Sympla', () => {
-  assert.equal(linhasXlsx[0][0], 'Nº ingresso');
-  assert.equal(linhasXlsx[0][9], 'Cupom de Desconto');
-  assert.equal(linhasXlsx.length, 10);
-});
-
-await teste('XLSX mantém colunas alinhadas quando há célula vazia', () => {
-  // A linha da Fabiana (VIP) tem o cupom em branco: se o leitor colapsar a
-  // célula vazia, o "Não" do check-in vira cupom.
-  const fabiana = linhasXlsx.find((l) => l[2] === 'Fabiana');
-  assert.equal(fabiana.length, 11);
-  assert.equal(fabiana[9], '');
-  assert.equal(fabiana[10], 'Não');
-});
-
-await teste('XLSX converte serial de data em data legível', () => {
-  const pedro = linhasXlsx.find((l) => l[2] === 'Pedro');
-  assert.equal(pedro[8], '02/09/2026 14:32');
-});
-
-// ---------------------------------------------------------------- colunas
-await teste('mapearColunas casa os nomes da Sympla', () => {
-  const { indices, faltando } = mapearColunas(linhasXlsx[0]);
+await teste('mapearColunas casa os nomes da planilha de pedidos', () => {
+  const { indices, faltando } = mapearColunas(CAB);
   assert.deepEqual(faltando, []);
-  assert.equal(indices.id_compra, 0);
-  assert.equal(indices.cupom_email, 9);
-  assert.equal(indices.estado_pagamento, 7);
-  assert.equal(indices.valor, 6);
+  assert.equal(CAB[indices.email], 'E-mail');
+  assert.equal(CAB[indices.cupom], 'Cupom');
+  assert.equal(CAB[indices.quantidade], 'Número de Ingressos');
+  assert.equal(CAB[indices.valor], 'Valor total do pedido');
+  assert.equal(CAB[indices.valor_unitario], 'Valor por ingresso');
+  assert.equal(CAB[indices.data_compra], 'Data do Pedido');
+  assert.equal(CAB[indices.modalidade], 'Modalidade');
+  assert.equal(CAB[indices.evento], 'Evento');
 });
 
 await teste('mapearColunas reclama das colunas obrigatórias que faltam', () => {
-  const { faltando } = mapearColunas(['Nome', 'Email']);
-  assert.deepEqual(faltando, ['Nº ingresso', 'Cupom de Desconto', 'Estado de pagamento']);
+  const { faltando } = mapearColunas(['Nome', 'Sobrenome', 'Telefone']);
+  assert.deepEqual(faltando, ['E-mail', 'Cupom', 'Modalidade', 'Evento', 'Número de Ingressos']);
 });
 
-// ---------------------------------------------------------------- compras
-const { compras, linhasLidas } = lerCompras(linhasXlsx);
-
-await teste('lerCompras normaliza e-mail, valor e aprovação', () => {
-  assert.equal(linhasLidas, 9);
-  assert.equal(compras.length, 9);
-  const pedro = compras.find((c) => c.id_compra === 'UGUZ-77-YTR8');
-  assert.equal(pedro.comprador_email, 'pedro.lima@email.com');
-  assert.equal(pedro.cupom_email, 'marina.castro@email.com');
-  assert.equal(pedro.valor, 1214.1);
-  assert.equal(pedro.aprovado, 1);
-  assert.equal(pedro.comprador_nome, 'Pedro Lima');
-  const julia = compras.find((c) => c.id_compra === 'UGUZ-78-YTR9');
-  assert.equal(julia.cupom_email, 'marina.castro@email.com', 'cupom com espaço e caixa alta');
-  const bruno = compras.find((c) => c.id_compra === 'UGUZ-80-AAA1');
-  assert.equal(bruno.aprovado, 0, 'Pendente não é aprovado');
+await teste('lerCompras filtra evento e canceladas e normaliza os campos', () => {
+  const lido = lerCompras(fixture);
+  assert.equal(lido.linhasLidas, 15);
+  assert.equal(lido.outrosEventos, 1, 'Gabi é do Pcamp 2025');
+  assert.equal(lido.canceladas, 1, 'Diego está CANCELADO');
+  assert.equal(lido.compras.length, 13);
+  const bruno = lido.compras.find((c) => c.comprador_email === 'bruno.lima@email.com');
+  assert.equal(bruno.cupom, 'Marina.Castro@Email.com', 'cupom bruto preservado');
+  assert.equal(bruno.cupom_email, 'marina.castro@email.com', 'cupom normalizado');
+  assert.equal(bruno.quantidade, 2);
+  assert.equal(bruno.valor, 2600);
+  assert.equal(bruno.valor_unitario, 1300);
+  assert.equal(bruno.data_compra, '2026-08-05 15:00');
+  assert.equal(bruno.comprador_nome, 'Bruno Lima');
+  assert.equal(bruno.comprador_primeiro_nome, 'Bruno');
+  const elisa = lido.compras.find((c) => c.comprador_email === 'elisa.prado@email.com');
+  assert.equal(elisa.cupom, 'PCAMP10');
+  assert.equal(elisa.cupom_email, '', 'cupom que não é e-mail não vira indicação');
 });
 
-await teste('lerCompras deduplica o mesmo Nº ingresso no arquivo', () => {
-  const cabecalho = ['Nº ingresso', 'Cupom de Desconto', 'Estado de pagamento', 'Valor'];
-  const r = lerCompras([
-    cabecalho,
-    ['ING-1', 'ana@x.com', 'Aprovado', '100,00'],
-    ['ING-1', 'ana@x.com', 'Aprovado', '150,00'],
-    ['ING-2', 'ana@x.com', 'Aprovado', '100,00'],
+await teste('idDaLinha é estável e distingue linhas iguais em posições diferentes', () => {
+  assert.equal(idDaLinha(2, ['a', 'b']), idDaLinha(2, ['a', 'b']));
+  assert.notEqual(idDaLinha(2, ['a', 'b']), idDaLinha(3, ['a', 'b']));
+  assert.match(idDaLinha(1, ['x']), /^[0-9a-f]{16}$/);
+});
+
+await teste('indicador = Passaporte sem VIP; VIP de cortesia não exclui', () => {
+  const { compras } = lerCompras(fixture);
+  const { indicadores, excluidosVip, excluidosB2B } = derivarIndicadores(compras);
+  const emails = indicadores.map((i) => i.email).sort();
+  assert.deepEqual(emails, [
+    'ana.souza@email.com',
+    'carla.dias@email.com',
+    'elisa.prado@email.com',
+    'fabio.rocha@email.com',
+    'hugo.teles@email.com',
+    'marina.castro@email.com',
+    'rafael.antunes@email.com',
   ]);
-  assert.equal(r.compras.length, 2);
-  assert.equal(r.duplicadasNoArquivo, 1);
-  assert.equal(r.compras.find((c) => c.id_compra === 'ING-1').valor, 150, 'última linha vence');
+  assert.equal(excluidosVip, 1, 'Caio tem Passaporte e VIP de verdade');
+  assert.equal(excluidosB2B, 1, 'Bruno só tem Passaporte B2B');
+  assert.ok(!emails.includes('bruno.lima@email.com'), 'B2B não indica');
+  assert.ok(!emails.includes('igor.vaz@email.com'), 'Pocket não indica');
+  assert.ok(emails.includes('marina.castro@email.com'), 'VIP cortesia mantém a Marina');
+  const marina = indicadores.find((i) => i.email === 'marina.castro@email.com');
+  assert.equal(marina.primeiro_nome, 'Marina');
+  assert.equal(marina.nome_completo, 'Marina Castro');
 });
 
-await teste('lerCompras ignora linha sem Nº ingresso', () => {
-  const r = lerCompras([
-    ['Nº ingresso', 'Cupom de Desconto', 'Estado de pagamento'],
-    ['', 'ana@x.com', 'Aprovado'],
-    ['ING-9', 'ana@x.com', 'Aprovado'],
-  ]);
-  assert.equal(r.compras.length, 1);
-  assert.equal(r.semIdentificador, 1);
+await teste('lote de cortesia é o texto exato combinado com o n8n', () => {
+  assert.equal(LOTE_VIP_CORTESIA, 'VIP liberado por indicação - Cortesia');
 });
 
-// ---------------------------------------------------------------- regras
-const indicadores = [
-  { email: 'marina.castro@email.com', codigo_publico: 'UGUZ-77-YTR8', primeiro_nome: 'Marina', ativo: 1 },
-  { email: 'rafael.antunes@email.com', codigo_publico: 'UGUN-T1-THSM', primeiro_nome: 'Rafael', ativo: 1 },
-  { email: 'ana.souza@email.com', codigo_publico: 'UGUP-0R-FKUX', primeiro_nome: 'Ana', ativo: 1 },
-  { email: 'diego.farias@email.com', codigo_publico: 'UGUZ-0F-YS3K', primeiro_nome: 'Diego', ativo: 0 },
-];
+// ---------------------------------------------------------------- reconciliação
+const planilha = lerPlanilha(fixture);
+const contagens = calcularContagens({ compras: planilha.compras, indicadores: planilha.indicadores });
 
-await teste('só compra aprovada conta, e a do próprio indicador não conta', () => {
-  const { porIndicador, diagnostico } = calcularContagens({ compras, indicadores });
-  const marina = porIndicador.get('marina.castro@email.com');
-  // 3 aprovadas de terceiros + 1 pendente (não conta) + 1 dela mesma (não conta)
-  assert.equal(marina.total, 3);
+await teste('conta Número de Ingressos, ignora auto-indicação e cupom órfão', () => {
+  const marina = contagens.porIndicador.get('marina.castro@email.com');
+  assert.equal(marina.total, 3, 'Ana (1) + Bruno (2)');
+  assert.equal(marina.receita, 3900);
   assert.equal(marina.qualificado, true);
-  assert.equal(Math.round(marina.receita * 100) / 100, 3642.3);
-  assert.equal(diagnostico.autoindicacoes, 1);
-  assert.equal(diagnostico.naoAprovadas, 1);
+  assert.equal(marina.qualificou_em, '2026-08-05 15:00', 'data da compra que fechou a meta');
+  assert.equal(contagens.porIndicador.get('rafael.antunes@email.com').total, 1, 'Carla; Diego cancelado e Gabi de outro evento');
+  assert.equal(contagens.diagnostico.autoindicacoes, 1, 'Marina com o próprio cupom');
+  assert.equal(contagens.diagnostico.cuponsOrfaosDistintos, 2, 'caio (VIP) e ninguem');
+  assert.equal(contagens.cuponsOrfaos.get('caio.ferreira@email.com'), 1);
 });
 
-await teste('cupom que não casa com indicador vira órfão', () => {
-  const { cuponsOrfaos, diagnostico } = calcularContagens({ compras, indicadores });
-  assert.equal(cuponsOrfaos.get('nao.existe@email.com'), 1);
-  assert.equal(diagnostico.linhasComCupomOrfao, 1);
-  assert.equal(diagnostico.cuponsOrfaosDistintos, 1);
+await teste('meta é 3 ingressos indicados', () => {
+  assert.equal(META_COMPRAS, 3);
+  assert.equal(dataDeQualificacao([{ quantidade: 1, data_compra: 'a' }, { quantidade: 1, data_compra: 'b' }]), null);
+  assert.equal(dataDeQualificacao([{ quantidade: 2, data_compra: 'a' }, { quantidade: 1, data_compra: 'b' }]), 'b');
+  assert.equal(dataDeQualificacao([{ quantidade: 3, data_compra: 'a' }]), 'a');
 });
 
 await teste('indicador inativo não recebe compras nem entra na contagem', () => {
-  const { porIndicador } = calcularContagens({
-    compras: [
-      { id_compra: 'X1', aprovado: 1, cupom_email: 'diego.farias@email.com', comprador_email: 'z@x.com', valor: 100 },
-    ],
-    indicadores,
-  });
-  assert.equal(porIndicador.has('diego.farias@email.com'), false);
+  const inativos = planilha.indicadores.map((i) => (i.email === 'marina.castro@email.com' ? { ...i, ativo: 0 } : i));
+  const r = calcularContagens({ compras: planilha.compras, indicadores: inativos });
+  assert.equal(r.porIndicador.has('marina.castro@email.com'), false);
+  assert.equal(r.cuponsOrfaos.get('marina.castro@email.com'), 3, 'Ana, Bruno e a própria Marina viram órfãs');
 });
 
-await teste('compra sem cupom é apenas contabilizada no diagnóstico', () => {
-  const { diagnostico } = calcularContagens({ compras, indicadores });
-  assert.equal(diagnostico.semCupom, 1);
-});
-
-await teste('compra ausente da última planilha deixa de contar', () => {
-  const base = [
-    { id_compra: 'A', aprovado: 1, cupom_email: 'ana.souza@email.com', comprador_email: 'a@x.com', valor: 100 },
-    { id_compra: 'B', aprovado: 1, cupom_email: 'ana.souza@email.com', comprador_email: 'b@x.com', valor: 100, ausente: 1 },
-  ];
-  const { porIndicador, diagnostico } = calcularContagens({ compras: base, indicadores });
-  assert.equal(porIndicador.get('ana.souza@email.com').total, 1);
-  assert.equal(diagnostico.ausentes, 1);
-});
-
-await teste('reimportar a mesma planilha não muda nada (idempotência)', () => {
-  const primeira = calcularContagens({ compras, indicadores });
-  const segunda = calcularContagens({ compras: compras.slice().reverse(), indicadores });
-  for (const email of primeira.porIndicador.keys()) {
-    assert.equal(
-      primeira.porIndicador.get(email).total,
-      segunda.porIndicador.get(email).total,
-      email
-    );
-  }
-});
-
-await teste('meta é 3 compras confirmadas', () => {
-  assert.equal(META_COMPRAS, 3);
-  const { porIndicador } = calcularContagens({ compras, indicadores });
-  assert.equal(porIndicador.get('ana.souza@email.com').total, 1);
-  assert.equal(porIndicador.get('ana.souza@email.com').qualificado, false);
-});
-
-await teste('qualificou_em é gravado uma vez e nunca reescrito', () => {
-  const primeiro = resolverQualificacao(null, 3, '2026-09-10T10:00:00Z');
-  assert.equal(primeiro.qualificouAgora, true);
-  assert.equal(primeiro.qualificou_em, '2026-09-10T10:00:00Z');
-
-  const depois = resolverQualificacao('2026-09-10T10:00:00Z', 7, '2026-09-20T10:00:00Z');
-  assert.equal(depois.qualificou_em, '2026-09-10T10:00:00Z');
-  assert.equal(depois.qualificouAgora, false);
-
-  const abaixo = resolverQualificacao(null, 2, '2026-09-10T10:00:00Z');
-  assert.equal(abaixo.qualificou_em, null);
-
-  const cancelou = resolverQualificacao('2026-09-10T10:00:00Z', 1, '2026-09-25T10:00:00Z');
-  assert.equal(cancelou.qualificou_em, '2026-09-10T10:00:00Z', 'histórico preservado');
+await teste('sincronizar a mesma planilha duas vezes dá o mesmo resultado (idempotência)', () => {
+  const a = montarSnapshot(fixture, { agora: 'T' });
+  const b = montarSnapshot(fixture, { agora: 'T' });
+  assert.deepEqual(a.contagens, b.contagens);
+  assert.deepEqual(a.compras.map((c) => c.id_compra), b.compras.map((c) => c.id_compra));
 });
 
 await teste('fila do VIP segue a ordem de chegada à meta e respeita o teto de 50', () => {
-  const premios = [
-    { email: 'c@x.com', qualificou_em: '2026-09-03T00:00:00Z', compras_confirmadas: 3 },
-    { email: 'a@x.com', qualificou_em: '2026-09-01T00:00:00Z', compras_confirmadas: 5 },
-    { email: 'b@x.com', qualificou_em: '2026-09-02T00:00:00Z', compras_confirmadas: 4 },
-    { email: 'z@x.com', qualificou_em: null, compras_confirmadas: 1 },
-  ];
+  assert.equal(TETO_VIP, 50);
+  const premios = [];
+  for (let i = 0; i < 55; i++) {
+    premios.push({ email: 'p' + i + '@x.com', compras_confirmadas: 3, qualificou_em: '2026-09-' + String(1 + (i % 28)).padStart(2, '0') + ' ' + String(i).padStart(2, '0') + ':00' });
+  }
+  premios.push({ email: 'zero@x.com', compras_confirmadas: 1, qualificou_em: null });
   const fila = montarFilaVip(premios);
-  assert.equal(fila.get('a@x.com'), 1);
-  assert.equal(fila.get('b@x.com'), 2);
-  assert.equal(fila.get('c@x.com'), 3);
-  assert.equal(fila.has('z@x.com'), false);
+  assert.equal(fila.get('p0@x.com'), 1);
+  assert.equal(fila.has('zero@x.com'), false);
   assert.equal(dentroDoTeto(50), true);
   assert.equal(dentroDoTeto(51), false);
-  assert.equal(dentroDoTeto(undefined), false);
-  assert.equal(TETO_VIP, 50);
+  assert.equal(dentroDoTeto(null), false);
+  assert.equal([...fila.values()].filter((p) => p <= 50).length, 50);
 });
 
-await teste('ranking ordena por compras e empata na mesma posição', () => {
-  const ranking = montarRanking([
-    { email: 'a@x.com', compras_confirmadas: 9 },
-    { email: 'b@x.com', compras_confirmadas: 7 },
-    { email: 'c@x.com', compras_confirmadas: 7 },
-    { email: 'd@x.com', compras_confirmadas: 2 },
+await teste('ranking ordena por ingressos e empata na mesma posição', () => {
+  const r = montarRanking([
+    { email: 'a@x', compras_confirmadas: 1 },
+    { email: 'b@x', compras_confirmadas: 5 },
+    { email: 'c@x', compras_confirmadas: 5 },
+    { email: 'd@x', compras_confirmadas: 0 },
   ]);
-  assert.deepEqual(ranking.map((r) => r.email), ['a@x.com', 'b@x.com', 'c@x.com', 'd@x.com']);
-  assert.deepEqual(ranking.map((r) => r.posicao), [1, 2, 2, 4]);
+  assert.deepEqual(r.map((x) => [x.email, x.posicao]), [['b@x', 1], ['c@x', 1], ['a@x', 3], ['d@x', 4]]);
 });
 
-// ---------------------------------------------------------------- indicadores
-await teste('derivarIndicadores exclui VIP e fixa um código por e-mail', () => {
-  const linhas = [
-    ['Nº ingresso', 'Nome', 'Sobrenome', 'Email', 'Tipo de ingresso', 'Estado de pagamento', 'Cupom de Desconto'],
-    ['ING-1', 'Ana', 'Souza', 'ana@x.com', 'Passaporte', 'Aprovado', ''],
-    ['ING-2', 'Ana', 'Souza', 'ana@x.com', 'Passaporte', 'Aprovado', ''],
-    ['ING-3', 'Vera', 'Vip', 'vera@x.com', 'Ingresso VIP', 'Aprovado', ''],
-    ['ING-4', 'Bo', 'Lima', 'bo@x.com', 'Passaporte', 'Pendente', ''],
-  ];
-  const { indicadores: derivados, excluidosVip } = derivarIndicadores(linhas);
-  assert.equal(derivados.length, 1);
-  assert.equal(derivados[0].email, 'ana@x.com');
-  assert.equal(derivados[0].codigo_publico, 'ING-1', 'primeiro Nº ingresso do e-mail');
-  assert.equal(derivados[0].primeiro_nome, 'Ana');
-  assert.equal(excluidosVip, 1);
+// ---------------------------------------------------------------- snapshot / SQL
+await teste('montarSnapshot marca conta/motivo compra a compra', () => {
+  const snap = montarSnapshot(fixture, { agora: 'T' });
+  assert.deepEqual(snap.faltando, []);
+  const por = (email) => snap.compras.filter((c) => c.comprador_email === email);
+  assert.equal(por('ana.souza@email.com')[0].conta, 1);
+  assert.equal(por('elisa.prado@email.com')[0].motivo, 'cupom não é um e-mail');
+  assert.equal(por('fabio.rocha@email.com')[0].motivo, 'cupom sem indicador');
+  assert.equal(por('marina.castro@email.com').find((c) => c.cupom_email).motivo, 'compra do próprio indicador');
+  assert.equal(snap.resumo.indicadores, 7);
+  assert.equal(snap.resumo.qualificados, 1);
+  assert.equal(snap.resumo.ingressos_indicados, 4);
 });
 
-await teste('lerIndicadores aceita lista de cupons pronta', () => {
-  const { indicadores: lidos } = lerIndicadores([
-    ['E-mail', 'Código público', 'Primeiro nome', 'Ativo'],
-    [' Marina.Castro@email.com ', 'UGUZ-77-YTR8', 'Marina Castro', '1'],
-    ['rafael@x.com', 'UGUN-T1-THSM', 'Rafael', 'não'],
-  ]);
-  assert.equal(lidos.length, 2);
-  assert.equal(lidos[0].email, 'marina.castro@email.com');
-  assert.equal(lidos[0].primeiro_nome, 'Marina');
-  assert.equal(lidos[1].ativo, 0);
+await teste('gerarSQL nunca toca em vip_liberado e apaga só o que ficou velho', () => {
+  const snap = montarSnapshot(fixture, { agora: 'T' });
+  const statements = gerarSQL(snap, 123, 'teste');
+  const tudo = statements.join('\n');
+  assert.ok(!/INSERT INTO premios \([^)]*vip_liberado/.test(tudo), 'não pode inserir vip_liberado');
+  assert.ok(!/SET[^;]*vip_liberado\s*=/.test(tudo), 'não pode atualizar vip_liberado');
+  assert.ok(!/liberado_por|liberado_em/.test(tudo));
+  assert.ok(tudo.includes('DELETE FROM compras WHERE sync_id <> 123;'));
+  assert.ok(tudo.includes('DELETE FROM indicadores WHERE sync_id <> 123;'));
+  assert.ok(tudo.includes('DELETE FROM premios WHERE vip_liberado = 0 AND email NOT IN'));
+  assert.ok(tudo.includes("('planilha', 123, 'teste'"));
+  assert.ok(!tudo.includes('DELETE FROM compras;'), 'nunca esvazia a tabela');
 });
 
-await teste('lerIndicadores reconhece um export da Sympla e deriva a lista', () => {
-  const { indicadores: lidos } = lerIndicadores(linhasXlsx);
-  assert.ok(lidos.length > 0);
-  assert.ok(lidos.every((i) => i.email && i.codigo_publico));
-  assert.equal(lidos.some((i) => i.email === 'fabiana.rocha@email.com'), false, 'VIP fora');
+await teste('literal SQL escapa aspas e trata nulos', () => {
+  assert.equal(sql("d'agua"), "'d''agua'");
+  assert.equal(sql(null), 'NULL');
+  assert.equal(sql(1.5), '1.5');
+  assert.equal(sql(true), '1');
+});
+
+await teste('faltando coluna, o snapshot não gera nada', () => {
+  const snap = montarSnapshot([['Nome', 'Telefone'], ['a', 'b']]);
+  assert.deepEqual(snap.faltando, ['E-mail', 'Cupom', 'Modalidade', 'Evento', 'Número de Ingressos']);
+  assert.equal(snap.compras.length, 0);
+});
+
+// ---------------------------------------------------------------- webhook
+await teste('aviso ao n8n tem exatamente as colunas da planilha', () => {
+  const corpo = montarAvisoVip({ nome: 'Marina Castro', email: 'marina.castro@email.com', quando: '16/09/2026 10:00' });
+  assert.deepEqual(corpo, {
+    'Data do Pedido': '16/09/2026 10:00',
+    Nome: 'Marina Castro',
+    'E-mail': 'marina.castro@email.com',
+    Lote: 'VIP liberado por indicação - Cortesia',
+    'Número de Ingressos': 1,
+    'Valor por ingresso': 0,
+    'Valor total do pedido': 0,
+    Cupom: '',
+    Categoria: 'Cortesia',
+    Formato: 'B2C',
+    Modalidade: 'VIP',
+  });
+});
+
+await teste('a linha que o n8n grava é lida de volta como cortesia e mantém o indicador', () => {
+  const corpo = montarAvisoVip({ nome: 'Rafael Antunes', email: 'rafael.antunes@email.com', quando: '16/09/2026 10:00' });
+  const linha = CAB.map((coluna) => {
+    if (coluna in corpo) return String(corpo[coluna]);
+    if (coluna === 'Evento') return 'Pcamp 2026';
+    return '';
+  });
+  const { indicadores } = lerPlanilha([...fixture, linha]);
+  assert.ok(indicadores.some((i) => i.email === 'rafael.antunes@email.com'), 'Rafael continua indicador');
 });
 
 // ---------------------------------------------------------------- acesso

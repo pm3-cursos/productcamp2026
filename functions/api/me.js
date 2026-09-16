@@ -1,6 +1,6 @@
 // GET /api/me — tudo o que a página do indicador precisa.
 // Devolve apenas os dados da própria pessoa. O ranking sai sem e-mail de
-// ninguém: só primeiro nome e código público, como manda a regra.
+// ninguém: só o primeiro nome, como manda a regra.
 
 import { erro, json } from '../_lib/resposta.js';
 import { lerSessao } from '../_lib/session.js';
@@ -34,18 +34,14 @@ export async function onRequestGet({ request, env }) {
     listarIndicadoresComPremio(db),
   ]);
 
-  // Só entram na lista as compras que contam: aprovadas, presentes na última
-  // planilha e de outra pessoa (a própria compra do indicador não conta).
+  // Só entram na lista as compras que contam (a regra já foi aplicada na
+  // sincronização e ficou gravada em `conta`).
   const indicacoes = (comprasDoCupom || [])
-    .filter(
-      (c) =>
-        Number(c.aprovado) === 1 &&
-        Number(c.ausente) === 0 &&
-        c.comprador_email !== sessao.email
-    )
+    .filter((c) => Number(c.conta) === 1)
     .map((c) => ({
       nome: nomeAbreviado(c.comprador_nome) || 'Convidado',
       iniciais: iniciais(c.comprador_nome) || '?',
+      quantidade: Number(c.quantidade) || 1,
       data: c.data_compra || null,
     }));
 
@@ -65,7 +61,6 @@ export async function onRequestGet({ request, env }) {
     .map((r) => ({
       posicao: r.posicao,
       primeiro_nome: r.primeiro_nome,
-      codigo_publico: r.codigo_publico,
       compras: r.compras_confirmadas || 0,
       sou_eu: r.email === sessao.email,
     }));
@@ -77,7 +72,6 @@ export async function onRequestGet({ request, env }) {
     email: sessao.email,
     cupom: sessao.email,
     primeiro_nome: indicador.primeiro_nome,
-    codigo_publico: indicador.codigo_publico,
     iniciais: iniciais(indicador.nome_completo || indicador.primeiro_nome),
     meta: META_COMPRAS,
     compras_confirmadas: confirmadas,
@@ -96,7 +90,6 @@ export async function onRequestGet({ request, env }) {
       eu: {
         posicao: confirmadas > 0 ? eu.posicao : null,
         primeiro_nome: indicador.primeiro_nome,
-        codigo_publico: indicador.codigo_publico,
         compras: confirmadas,
       },
     },

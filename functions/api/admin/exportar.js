@@ -15,6 +15,8 @@ function csv(nome, conteudo) {
   });
 }
 
+const decimal = (n) => String(Number(n) || 0).replace('.', ',');
+
 export async function onRequestGet({ request, env }) {
   const db = banco(env);
   const tipo = new URL(request.url).searchParams.get('tipo') || 'indicadores';
@@ -23,44 +25,50 @@ export async function onRequestGet({ request, env }) {
   if (tipo === 'compras') {
     const { results } = await db
       .prepare(
-        `SELECT c.id_compra, c.numero_pedido, c.comprador_nome, c.comprador_email,
-                c.cupom_email, i.codigo_publico, c.tipo_ingresso, c.valor,
-                c.estado_pagamento, c.data_compra, c.ausente
+        `SELECT c.linha, c.comprador_nome, c.comprador_email, c.cupom, c.cupom_email,
+                i.primeiro_nome AS indicador, c.lote, c.modalidade, c.categoria, c.formato,
+                c.quantidade, c.valor_unitario, c.valor, c.data_compra, c.conta, c.motivo
            FROM compras c
            LEFT JOIN indicadores i ON i.email = c.cupom_email
-          ORDER BY c.data_compra, c.id_compra`
+          ORDER BY c.data_compra, c.linha`
       )
       .all();
 
     const linhas = (results || []).map((c) => [
-      c.id_compra,
-      c.numero_pedido,
+      c.linha,
+      c.data_compra || '',
       c.comprador_nome,
       c.comprador_email,
-      c.cupom_email,
-      c.codigo_publico || '(cupom sem indicador)',
-      c.tipo_ingresso,
-      String(Number(c.valor) || 0).replace('.', ','),
-      c.estado_pagamento,
-      c.data_compra || '',
-      Number(c.ausente) === 1 ? 'sim' : 'não',
+      c.cupom || '',
+      c.indicador || (c.cupom_email ? '(cupom sem indicador)' : ''),
+      c.lote,
+      c.modalidade,
+      c.categoria,
+      c.formato,
+      c.quantidade,
+      decimal(c.valor_unitario),
+      decimal(c.valor),
+      Number(c.conta) === 1 ? 'sim' : c.motivo || 'não',
     ]);
 
     return csv(
       `pcamp26-indicacao-compras-${hoje}.csv`,
       gerarCSV(
         [
-          'Nº ingresso',
-          'Nº pedido',
+          'Linha na planilha',
+          'Data do pedido',
           'Comprador',
           'E-mail do comprador',
-          'Cupom (e-mail do indicador)',
-          'Código do indicador',
-          'Tipo de ingresso',
-          'Valor',
-          'Estado de pagamento',
-          'Data da compra',
-          'Ausente da última planilha',
+          'Cupom',
+          'Indicador',
+          'Lote',
+          'Modalidade',
+          'Categoria',
+          'Formato',
+          'Número de ingressos',
+          'Valor por ingresso',
+          'Valor total do pedido',
+          'Conta para a indicação',
         ],
         linhas
       )
@@ -74,12 +82,11 @@ export async function onRequestGet({ request, env }) {
     const posicaoFila = fila.get(i.email) || null;
     return [
       i.posicao,
-      i.codigo_publico,
       i.primeiro_nome,
       i.nome_completo || '',
       i.email,
       compras,
-      String(Number(i.receita) || 0).replace('.', ','),
+      decimal(i.receita),
       compras >= META_COMPRAS ? 'sim' : 'não',
       i.qualificou_em || '',
       posicaoFila || '',
@@ -87,7 +94,6 @@ export async function onRequestGet({ request, env }) {
       Number(i.vip_liberado) === 1 ? 'sim' : 'não',
       i.liberado_por || '',
       i.liberado_em || '',
-      Number(i.ativo) === 1 ? 'sim' : 'não',
     ];
   });
 
@@ -96,11 +102,10 @@ export async function onRequestGet({ request, env }) {
     gerarCSV(
       [
         'Posição no ranking',
-        'Código público',
-        'Primeiro nome',
+        'Nome',
         'Nome completo',
         'Cupom (e-mail)',
-        'Compras confirmadas',
+        'Ingressos indicados',
         'Receita gerada',
         'Qualificou',
         'Qualificou em',
@@ -109,7 +114,6 @@ export async function onRequestGet({ request, env }) {
         'VIP liberado',
         'Liberado por',
         'Liberado em',
-        'Ativo',
       ],
       linhas
     )

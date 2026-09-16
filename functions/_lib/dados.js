@@ -1,5 +1,7 @@
-// Acesso ao D1. Concentra as consultas para que os endpoints fiquem finos e a
-// regra de negócio continue no módulo de reconciliação (implementação única).
+// Acesso ao D1 a partir das Functions. As tabelas de snapshot (indicadores,
+// compras, contagens em premios) são escritas pelo script sync/ — aqui só se
+// lê. O que as Functions escrevem: liberação de VIP, links mágicos e o
+// registro dos disparos manuais de sincronização.
 
 import { agoraISO } from './util.js';
 
@@ -13,13 +15,6 @@ export function banco(env) {
     );
   }
   return env.DB;
-}
-
-/** Executa um `batch` em blocos, para não estourar limite de statements. */
-async function emBlocos(db, statements, tamanho = 100) {
-  for (let i = 0; i < statements.length; i += tamanho) {
-    await db.batch(statements.slice(i, i + tamanho));
-  }
 }
 
 /** Lê uma tabela inteira paginando, para não depender do tamanho do resultado. */
@@ -42,7 +37,7 @@ async function lerTudo(db, sql, ordem) {
 export async function buscarIndicador(db, email) {
   return db
     .prepare(
-      `SELECT i.email, i.codigo_publico, i.primeiro_nome, i.nome_completo, i.ativo,
+      `SELECT i.email, i.primeiro_nome, i.nome_completo, i.ativo,
               COALESCE(p.compras_confirmadas, 0) AS compras_confirmadas,
               COALESCE(p.receita, 0) AS receita,
               p.qualificou_em,
@@ -55,19 +50,11 @@ export async function buscarIndicador(db, email) {
     .first();
 }
 
-export function listarIndicadores(db) {
-  return lerTudo(
-    db,
-    'SELECT email, codigo_publico, primeiro_nome, nome_completo, ativo FROM indicadores',
-    'email'
-  );
-}
-
 /** Indicadores + status de prêmio, para o painel e o ranking. */
 export function listarIndicadoresComPremio(db) {
   return lerTudo(
     db,
-    `SELECT i.email, i.codigo_publico, i.primeiro_nome, i.nome_completo, i.ativo,
+    `SELECT i.email, i.primeiro_nome, i.nome_completo, i.ativo,
             COALESCE(p.compras_confirmadas, 0) AS compras_confirmadas,
             COALESCE(p.receita, 0) AS receita,
             p.qualificou_em,
@@ -79,50 +66,13 @@ export function listarIndicadoresComPremio(db) {
   );
 }
 
-export async function salvarIndicadores(db, indicadores) {
-  const agora = agoraISO();
-  const statements = indicadores.map((i) =>
-    db
-      .prepare(
-        `INSERT INTO indicadores (email, codigo_publico, primeiro_nome, nome_completo, ativo, criado_em, atualizado_em)
-         VALUES (?, ?, ?, ?, ?, ?, ?)
-         ON CONFLICT(email) DO UPDATE SET
-           codigo_publico = excluded.codigo_publico,
-           primeiro_nome  = excluded.primeiro_nome,
-           nome_completo  = excluded.nome_completo,
-           ativo          = excluded.ativo,
-           atualizado_em  = excluded.atualizado_em`
-      )
-      .bind(
-        i.email,
-        i.codigo_publico || i.email,
-        i.primeiro_nome || '',
-        i.nome_completo || '',
-        Number(i.ativo) === 0 ? 0 : 1,
-        agora,
-        agora
-      )
-  );
-  await emBlocos(db, statements);
-}
-
 // ---------------------------------------------------------------- compras
-
-/** Campos mínimos para a contagem — mantém o payload pequeno. */
-export function listarComprasParaContagem(db) {
-  return lerTudo(
-    db,
-    `SELECT id_compra, cupom_email, comprador_email, valor, aprovado, ausente, data_compra
-       FROM compras`,
-    'id_compra'
-  );
-}
 
 export function listarComprasDoIndicador(db, cupomEmail) {
   return db
     .prepare(
-      `SELECT id_compra, numero_pedido, comprador_nome, comprador_email, tipo_ingresso,
-              valor, estado_pagamento, aprovado, ausente, data_compra
+      `SELECT id_compra, linha, comprador_nome, comprador_email, lote, categoria, formato,
+              modalidade, quantidade, valor_unitario, valor, data_compra, conta, motivo
          FROM compras
         WHERE cupom_email = ?
         ORDER BY data_compra, id_compra`
@@ -131,109 +81,9 @@ export function listarComprasDoIndicador(db, cupomEmail) {
     .all();
 }
 
-export async function idsDeComprasExistentes(db) {
-  const linhas = await lerTudo(db, 'SELECT id_compra FROM compras', 'id_compra');
-  return new Set(linhas.map((l) => l.id_compra));
-}
-
-export async function salvarCompras(db, compras, importId) {
-  const agora = agoraISO();
-  const statements = compras.map((c) =>
-    db
-      .prepare(
-        `INSERT INTO compras (id_compra, numero_pedido, comprador_nome, comprador_email,
-                              cupom_email, tipo_ingresso, valor, estado_pagamento, aprovado,
-                              data_compra, ausente, primeiro_import_id, ultimo_import_id,
-                              criado_em, atualizado_em)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, ?)
-         ON CONFLICT(id_compra) DO UPDATE SET
-           numero_pedido    = excluded.numero_pedido,
-           comprador_nome   = excluded.comprador_nome,
-           comprador_email  = excluded.comprador_email,
-           cupom_email      = excluded.cupom_email,
-           tipo_ingresso    = excluded.tipo_ingresso,
-           valor            = excluded.valor,
-           estado_pagamento = excluded.estado_pagamento,
-           aprovado         = excluded.aprovado,
-           data_compra      = excluded.data_compra,
-           ausente          = 0,
-           ultimo_import_id = excluded.ultimo_import_id,
-           atualizado_em    = excluded.atualizado_em`
-      )
-      .bind(
-        c.id_compra,
-        c.numero_pedido || '',
-        c.comprador_nome || '',
-        c.comprador_email || '',
-        c.cupom_email || '',
-        c.tipo_ingresso || '',
-        Number(c.valor) || 0,
-        c.estado_pagamento || '',
-        c.aprovado ? 1 : 0,
-        c.data_compra || null,
-        importId,
-        importId,
-        agora,
-        agora
-      )
-  );
-  await emBlocos(db, statements);
-}
-
-/**
- * A planilha é sempre a foto completa da base: o que não veio neste import
- * é marcado como ausente e deixa de contar (reembolso, cancelamento).
- * Devolve quantas compras aprovadas saíram da foto.
- */
-export async function marcarAusentes(db, importId) {
-  const { results } = await db
-    .prepare(
-      `SELECT COUNT(*) AS total FROM compras
-        WHERE ultimo_import_id IS NOT ? AND aprovado = 1 AND ausente = 0`
-    )
-    .bind(importId)
-    .all();
-  const total = results && results[0] ? results[0].total : 0;
-  await db
-    .prepare('UPDATE compras SET ausente = 1 WHERE ultimo_import_id IS NOT ?')
-    .bind(importId)
-    .run();
-  return total;
-}
-
 // ---------------------------------------------------------------- prêmios
 
-export function listarPremios(db) {
-  return lerTudo(
-    db,
-    `SELECT email, compras_confirmadas, receita, qualificou_em, vip_liberado,
-            liberado_por, liberado_em
-       FROM premios`,
-    'email'
-  );
-}
-
-/**
- * Grava contagem, receita e qualificação. Não menciona `vip_liberado`,
- * `liberado_por` nem `liberado_em`: a marcação manual do time é intocável.
- */
-export async function salvarContagens(db, registros) {
-  const statements = registros.map((r) =>
-    db
-      .prepare(
-        `INSERT INTO premios (email, compras_confirmadas, receita, qualificou_em)
-         VALUES (?, ?, ?, ?)
-         ON CONFLICT(email) DO UPDATE SET
-           compras_confirmadas = excluded.compras_confirmadas,
-           receita             = excluded.receita,
-           qualificou_em       = COALESCE(premios.qualificou_em, excluded.qualificou_em)`
-      )
-      .bind(r.email, r.compras_confirmadas, r.receita, r.qualificou_em)
-  );
-  await emBlocos(db, statements);
-}
-
-export async function definirVip(db, { email, liberado, adminEmail }) {
+export async function definirVip(db, { email, liberado, adminEmail, webhook }) {
   const agora = agoraISO();
   await db.batch([
     db
@@ -247,56 +97,42 @@ export async function definirVip(db, { email, liberado, adminEmail }) {
       )
       .bind(email, liberado ? 1 : 0, liberado ? adminEmail : null, liberado ? agora : null),
     db
-      .prepare('INSERT INTO vip_log (email, liberado, admin_email, criado_em) VALUES (?, ?, ?, ?)')
-      .bind(email, liberado ? 1 : 0, adminEmail, agora),
+      .prepare(
+        'INSERT INTO vip_log (email, liberado, admin_email, criado_em, webhook) VALUES (?, ?, ?, ?, ?)'
+      )
+      .bind(email, liberado ? 1 : 0, adminEmail, agora, webhook || null),
   ]);
 }
 
-// ---------------------------------------------------------------- importações
+// ---------------------------------------------------------------- sincronizações
 
-export async function criarImport(db, { tipo, arquivo, adminEmail }) {
-  const { results } = await db
-    .prepare(
-      `INSERT INTO imports (tipo, arquivo, admin_email, criado_em)
-       VALUES (?, ?, ?, ?) RETURNING id`
-    )
-    .bind(tipo, arquivo || '', adminEmail, agoraISO())
-    .all();
-  return results[0].id;
-}
-
-export async function fecharImport(db, id, resumo) {
-  await db
-    .prepare(
-      `UPDATE imports SET linhas_lidas = ?, aprovadas = ?, novas = ?, atualizadas = ?,
-              qualificados_agora = ?, cupons_orfaos = ?, autoindicacoes = ?, ausentes = ?,
-              vip_alterados = 0, resumo = ?
-        WHERE id = ?`
-    )
-    .bind(
-      resumo.linhas_lidas || 0,
-      resumo.aprovadas || 0,
-      resumo.novas || 0,
-      resumo.atualizadas || 0,
-      resumo.qualificados_agora || 0,
-      resumo.cupons_orfaos || 0,
-      resumo.autoindicacoes || 0,
-      resumo.ausentes || 0,
-      JSON.stringify(resumo),
-      id
-    )
-    .run();
-}
-
-export function ultimoImport(db, tipo) {
+/** Última sincronização concluída (a que alimentou o snapshot atual). */
+export function ultimaSincronizacao(db) {
   return db
     .prepare(
-      `SELECT id, tipo, arquivo, admin_email, criado_em, linhas_lidas, novas
-         FROM imports WHERE tipo = ? AND resumo IS NOT NULL
+      `SELECT id, sync_id, origem, criado_em, linhas_lidas, compras, indicadores,
+              qualificados, cupons_orfaos, autoindicacoes, canceladas, resumo
+         FROM sincronizacoes WHERE tipo = 'planilha'
         ORDER BY id DESC LIMIT 1`
     )
-    .bind(tipo)
     .first();
+}
+
+/** Último disparo manual (para a trava de intervalo do botão). */
+export function ultimoDisparo(db) {
+  return db
+    .prepare(
+      `SELECT id, origem, criado_em FROM sincronizacoes WHERE tipo = 'disparo'
+        ORDER BY id DESC LIMIT 1`
+    )
+    .first();
+}
+
+export async function registrarDisparo(db, adminEmail) {
+  await db
+    .prepare(`INSERT INTO sincronizacoes (tipo, origem, criado_em) VALUES ('disparo', ?, ?)`)
+    .bind(adminEmail, agoraISO())
+    .run();
 }
 
 // ---------------------------------------------------------------- links mágicos

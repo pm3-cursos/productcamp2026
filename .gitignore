@@ -6,3 +6,7 @@
 
 # Dependências locais eventuais (o site em si não tem build)
 node_modules/
+
+# Chave da conta de serviço do Google (só local; no GitHub vai como secret)
+sync/*.json
+*.sa.json

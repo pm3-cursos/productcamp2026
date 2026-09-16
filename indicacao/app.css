@@ -853,11 +853,6 @@ nav {
   font-weight: 600;
 }
 
-.rk .nm .code {
-  font-size: 12px;
-  color: var(--white-40);
-}
-
 .rk .ct {
   font-family: var(--font-display);
   font-weight: 600;
@@ -882,13 +877,8 @@ nav {
 }
 
 .youtag {
-  font-size: 11px;
   font-weight: 600;
-  color: #fff;
-  background: var(--pink);
-  padding: 2px 8px;
-  border-radius: 100px;
-  margin-left: 8px;
+  color: var(--pink-light);
 }
 
 /* ══ REGRAS ══ */
@@ -1095,19 +1085,30 @@ nav {
   color: #fff;
 }
 
+/* A tabela cabe na largura da página sem rolagem lateral: layout fixo com
+   largura por coluna, e o que é longo (nome, e-mail) quebra linha em vez de
+   empurrar as outras colunas para fora da tela. */
 .adm-table {
   margin-top: 20px;
   background: var(--navy-card);
   border: 1px solid var(--navy-border);
   border-radius: 16px;
-  overflow-x: auto;
+  overflow: hidden;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 760px;
+  table-layout: fixed;
 }
+
+.adm-table col.c-expandir { width: 38px; }
+.adm-table col.c-nome { width: 22%; }
+.adm-table col.c-cupom { width: 24%; }
+.adm-table col.c-ingressos { width: 9%; }
+.adm-table col.c-status { width: 15%; }
+.adm-table col.c-vip { width: 180px; }
+.adm-table col.c-receita { width: 11%; }
 
 th {
   font-family: var(--font-display);
@@ -1117,16 +1118,17 @@ th {
   text-transform: uppercase;
   color: var(--white-40);
   text-align: left;
-  padding: 14px;
+  padding: 14px 12px;
   background: var(--navy-mid);
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
 td {
-  padding: 14px;
+  padding: 12px;
   border-top: 1px solid var(--navy-border);
   font-size: 14px;
   vertical-align: middle;
+  overflow-wrap: anywhere;
 }
 
 .col-expandir {
@@ -1136,20 +1138,13 @@ td {
 .who {
   display: flex;
   align-items: center;
-  gap: 12px;
-  white-space: nowrap;
+  gap: 10px;
   font-weight: 600;
+  min-width: 0;
 }
 
-.b-code {
-  background: var(--white-10);
-  border: 1px solid var(--navy-border);
-  color: var(--white-70);
-  font-weight: 600;
-  font-size: 12px;
-  padding: 4px 9px;
-  border-radius: 6px;
-  white-space: nowrap;
+.who .ini {
+  flex-shrink: 0;
 }
 
 .em {
@@ -1159,7 +1154,7 @@ td {
 }
 
 td.em {
-  min-width: 128px;
+  overflow-wrap: anywhere;
 }
 
 td.receita {
@@ -1172,13 +1167,11 @@ td.receita {
   color: var(--cyan);
   font-weight: 600;
   font-size: 13.5px;
-  white-space: nowrap;
 }
 
 .status-p {
   color: var(--white-40);
   font-size: 13.5px;
-  white-space: nowrap;
 }
 
 .fila-fora {
@@ -1293,7 +1286,7 @@ td.receita {
   border: 1px solid var(--navy-border);
   border-radius: 10px;
   overflow: hidden;
-  min-width: 560px;
+  table-layout: auto;
 }
 
 .mini th {
@@ -1313,7 +1306,31 @@ td.receita {
 }
 
 .mini-wrap {
-  overflow-x: auto;
+  overflow: hidden;
+}
+
+/* ══ PAGINAÇÃO ══ */
+.paginacao {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--white-40);
+  font-variant-numeric: tabular-nums;
+}
+
+.paginacao button[disabled] {
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+.detail-inner .paginacao {
+  margin-top: 10px;
 }
 
 .adm-note {
@@ -1329,183 +1346,25 @@ td.receita {
   font-weight: 600;
 }
 
-/* ══ IMPORTAÇÃO ══ */
-.drop {
-  background: var(--navy-card);
-  border: 1px dashed rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
-  padding: 40px 24px;
-  text-align: center;
-  transition: border-color 0.2s, background 0.2s;
-}
-
-.drop.hover {
-  border-color: rgba(24, 206, 244, 0.5);
-  background: rgba(24, 206, 244, 0.04);
-}
-
-.drop .ic {
-  font-size: 30px;
-}
-
-.drop h3 {
-  font-size: 19px;
-  margin: 14px 0 8px;
-}
-
-.drop p {
-  font-size: 14px;
-  color: var(--white-70);
-  margin-bottom: 22px;
+/* ══ SINCRONIZAÇÃO ══ */
+.sync-status {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--white-40);
   line-height: 1.6;
 }
 
-.drop .btn-primary {
-  margin: 0 auto;
-}
-
-.drop .arquivo-nome {
-  margin-top: 16px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--cyan);
-  word-break: break-all;
-}
-
-.tipo-import {
-  display: flex;
-  gap: 4px;
-  background: var(--white-10);
-  border: 1px solid var(--navy-border);
-  border-radius: 8px;
-  padding: 3px;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-}
-
-.tipo-import button {
-  flex: 1;
-  min-width: 150px;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: 13px;
-  border: 0;
-  background: transparent;
+.sync-status b {
   color: var(--white-70);
-  padding: 10px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: color 0.2s, background 0.2s;
-}
-
-.tipo-import button:hover {
-  color: var(--white);
-}
-
-.tipo-import button.on {
-  background: var(--pink);
-  color: #fff;
-}
-
-.imp-note {
-  margin-top: 18px;
-  background: var(--cyan-muted);
-  border: 1px solid rgba(24, 206, 244, 0.25);
-  border-radius: 12px;
-  padding: 16px 18px;
-  font-size: 13.5px;
-  color: #c7ebf9;
-  line-height: 1.65;
-}
-
-.imp-note b {
-  color: var(--white);
   font-weight: 600;
 }
 
-.result {
-  margin-top: 24px;
+.sync-status .sync-alerta {
+  color: #ffb3d5;
 }
 
-.res-cards {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-}
-
-.res-card {
-  background: var(--navy-card);
-  border: 1px solid var(--navy-border);
-  border-radius: 12px;
-  padding: 20px;
-}
-
-.res-card .n {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: clamp(24px, 2.6vw, 30px);
-  line-height: 1;
-  letter-spacing: -0.03em;
-  color: var(--white);
-}
-
-.res-card .n.c {
+.sync-status .sync-andamento {
   color: var(--cyan);
-}
-
-.res-card .n.p {
-  color: var(--pink);
-}
-
-.res-card .l {
-  font-size: 12.5px;
-  color: var(--white-70);
-  margin-top: 10px;
-  line-height: 1.5;
-}
-
-.res-detalhes {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 20px;
-  margin-top: 16px;
-  font-size: 13px;
-  color: var(--white-70);
-}
-
-.res-detalhes b {
-  font-family: var(--font-display);
-  font-weight: 600;
-  color: var(--white);
-}
-
-.res-preview {
-  margin-top: 18px;
-  background: var(--navy-card);
-  border: 1px solid var(--navy-border);
-  border-radius: 16px;
-  overflow-x: auto;
-}
-
-.res-preview table {
-  min-width: 520px;
-}
-
-.res-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-  flex-wrap: wrap;
-}
-
-.tag-new {
-  background: var(--cyan-muted);
-  border: 1px solid rgba(24, 206, 244, 0.3);
-  color: var(--cyan);
-  font-weight: 600;
-  font-size: 11.5px;
-  padding: 4px 10px;
-  border-radius: 100px;
 }
 
 .carregando {
@@ -1564,12 +1423,6 @@ footer {
     grid-template-columns: 1fr 340px;
   }
   .kpis {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-@media (min-width: 720px) {
-  .res-cards {
     grid-template-columns: repeat(4, 1fr);
   }
 }
