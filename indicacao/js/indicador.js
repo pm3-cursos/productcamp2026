@@ -70,10 +70,7 @@ function renderRanking(dados) {
     const classePos = medalhas[lider.posicao] ? ` ${medalhas[lider.posicao]}` : '';
     return `<div class="rk${lider.sou_eu ? ' me' : ''}">
       <div class="pos${classePos}">${lider.posicao}</div>
-      <div class="nm"><b>${esc(lider.primeiro_nome)}</b>
-        <span class="code">· ${esc(lider.codigo_publico)}</span>
-        ${lider.sou_eu ? '<span class="youtag">você</span>' : ''}
-      </div>
+      <div class="nm"><b>${esc(lider.primeiro_nome)}</b>${lider.sou_eu ? ' <span class="youtag">(Você)</span>' : ''}</div>
       <div class="ct">${lider.compras}</div>
     </div>`;
   });
@@ -82,10 +79,7 @@ function renderRanking(dados) {
     if (lideres.length) linhas.push('<div class="rk-div" aria-hidden="true">· · ·</div>');
     linhas.push(`<div class="rk me">
       <div class="pos">${eu.posicao || '—'}</div>
-      <div class="nm"><b>${esc(eu.primeiro_nome)}</b>
-        <span class="code">· ${esc(eu.codigo_publico)}</span>
-        <span class="youtag">você</span>
-      </div>
+      <div class="nm"><b>${esc(eu.primeiro_nome)}</b> <span class="youtag">(Você)</span></div>
       <div class="ct">${eu.compras}</div>
     </div>`);
   }

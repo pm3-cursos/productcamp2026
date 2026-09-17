@@ -1,5 +1,6 @@
-// Painel do time PM3: tabela de indicadores, liberação manual do VIP e
-// importação da planilha da Sympla (prévia de conciliação e confirmação).
+// Painel do time PM3: tabela de indicadores, liberação manual do VIP e o
+// botão que sincroniza com o Worker de vendas (lê os pedidos e regrava o
+// snapshot da indicação — leva poucos segundos).
 
 import {
   $,
@@ -25,9 +26,34 @@ const estado = {
   expandidos: new Set(),
   comprasPorEmail: new Map(),
   kpis: {},
-  tipoImport: 'compras',
-  arquivo: null,
+  // Paginação: página da tabela principal e, por indicador, do detalhe.
+  pagina: 1,
+  paginaDetalhe: new Map(),
+  sincronizando: false,
 };
+const POR_PAGINA = 20;
+
+// ---------------------------------------------------------------- paginação
+
+/** Fatia a lista na página pedida (1-based), corrigindo página fora do alcance. */
+function paginar(itens, pagina) {
+  const total = itens.length;
+  const paginas = Math.max(1, Math.ceil(total / POR_PAGINA));
+  const atual = Math.min(Math.max(1, pagina), paginas);
+  const inicio = (atual - 1) * POR_PAGINA;
+  return { fatia: itens.slice(inicio, inicio + POR_PAGINA), atual, paginas, total, inicio };
+}
+
+/** Controles Anterior / Próxima. `alvo` diz a qual tabela pertence. */
+function renderPaginacao({ atual, paginas, total, inicio, fatia }, alvo) {
+  if (total <= POR_PAGINA) return '';
+  const fim = inicio + fatia.length;
+  return `<nav class="paginacao" aria-label="Páginas da tabela">
+    <button type="button" class="btn-secondary btn-compacto" data-pagina="${atual - 1}" data-alvo="${esc(alvo)}" ${atual <= 1 ? 'disabled' : ''}>&larr; Anterior</button>
+    <span>${inicio + 1}–${fim} de ${total} · página ${atual} de ${paginas}</span>
+    <button type="button" class="btn-secondary btn-compacto" data-pagina="${atual + 1}" data-alvo="${esc(alvo)}" ${atual >= paginas ? 'disabled' : ''}>Próxima &rarr;</button>
+  </nav>`;
+}
 
 // ------------------------------------------------------------------ painel
 
@@ -64,7 +90,7 @@ function linhaStatus(indicador) {
         : '';
     return `<span class="status-q">✓ Qualificou</span>${fora}`;
   }
-  if (indicador.compras === 0) return '<span class="status-p">sem compras</span>';
+  if (indicador.compras === 0) return '<span class="status-p">sem indicações</span>';
   return `<span class="status-p">${plural(indicador.faltam, 'falta', 'faltam')} ${
     indicador.faltam
   }</span>`;
@@ -72,8 +98,8 @@ function linhaStatus(indicador) {
 
 function linhaVip(indicador) {
   if (!indicador.qualificado) {
-    return `<button type="button" class="viptog" disabled aria-label="VIP disponível a partir de ${estado.kpis.meta} compras">
-      <span class="track"><i></i></span><span class="txt">após ${estado.kpis.meta} compras</span>
+    return `<button type="button" class="viptog" disabled aria-label="VIP disponível a partir de ${estado.kpis.meta} ingressos indicados">
+      <span class="track"><i></i></span><span class="txt">após ${estado.kpis.meta} ingressos</span>
     </button>`;
   }
   const ligado = indicador.vip_liberado;
@@ -97,13 +123,14 @@ function renderDetalhe(email) {
   if (!dados.compras.length) {
     return '<p class="em">Nenhuma compra registrada com este cupom até agora.</p>';
   }
-  const linhas = dados.compras
+  const pagina = paginar(dados.compras, estado.paginaDetalhe.get(email) || 1);
+  const linhas = pagina.fatia
     .map(
       (compra) => `<tr class="${compra.conta ? '' : 'nao-conta'}">
         <td>${esc(compra.comprador_nome || '—')}</td>
         <td>${esc(compra.comprador_email || '—')}</td>
-        <td>${esc(compra.numero_pedido || '—')}</td>
-        <td>${esc(compra.tipo_ingresso || '—')}</td>
+        <td>${esc(compra.modalidade || '—')}</td>
+        <td>${compra.quantidade}</td>
         <td>${brl(compra.valor)}</td>
         <td>${esc(dataLonga(compra.data_compra) || '—')}</td>
         <td>${compra.conta ? '✓ conta' : esc(compra.motivo || 'não conta')}</td>
@@ -111,9 +138,9 @@ function renderDetalhe(email) {
     )
     .join('');
   return `<div class="mini-wrap"><table class="mini">
-      <thead><tr><th>Indicado</th><th>E-mail</th><th>Nº pedido</th><th>Ingresso</th><th>Valor</th><th>Data</th><th>Conta?</th></tr></thead>
+      <thead><tr><th>Indicado</th><th>E-mail</th><th>Modalidade</th><th>Ingressos</th><th>Valor</th><th>Data</th><th>Conta?</th></tr></thead>
       <tbody>${linhas}</tbody>
-    </table></div>`;
+    </table></div>${renderPaginacao(pagina, email)}`;
 }
 
 /** Iniciais do primeiro e do último nome, para o avatar da linha. */
@@ -132,16 +159,21 @@ function renderTabela(indicadores) {
   const corpo = $('#corpo-tabela');
   if (!indicadores.length) {
     corpo.innerHTML =
-      '<tr><td colspan="8" class="carregando">Nenhum indicador encontrado com esse filtro.</td></tr>';
+      '<tr><td colspan="7" class="carregando">Nenhum indicador encontrado com esse filtro.</td></tr>';
+    $('#paginacao').innerHTML = '';
     return;
   }
 
-  corpo.innerHTML = indicadores
+  const pagina = paginar(indicadores, estado.pagina);
+  estado.pagina = pagina.atual;
+  $('#paginacao').innerHTML = renderPaginacao(pagina, 'tabela');
+
+  corpo.innerHTML = pagina.fatia
     .map((indicador) => {
       const aberto = estado.expandidos.has(indicador.email);
       const detalhe = aberto
         ? `<tr class="detail">
-             <td colspan="8"><div class="detail-inner">
+             <td colspan="7"><div class="detail-inner">
                <h4>Compras indicadas por ${esc(indicador.nome_completo)}</h4>
                ${renderDetalhe(indicador.email)}
              </div></td>
@@ -156,11 +188,10 @@ function renderTabela(indicadores) {
           <td class="celula-nome"><div class="who"><span class="ini" aria-hidden="true">${esc(
             iniciaisDe(indicador)
           )}</span> ${esc(indicador.nome_completo)}</div></td>
-          <td data-rotulo="Código"><span class="b-code">${esc(indicador.codigo_publico)}</span></td>
           <td class="em" data-rotulo="Cupom" title="${esc(indicador.email)}">${esc(
             indicador.email
           )}</td>
-          <td data-rotulo="Compras"><b>${indicador.compras}</b></td>
+          <td data-rotulo="Ingressos"><b>${indicador.compras}</b></td>
           <td data-rotulo="Status">${linhaStatus(indicador)}</td>
           <td data-rotulo="VIP liberado">${linhaVip(indicador)}</td>
           <td class="receita" data-rotulo="Receita">${brl(indicador.receita)}</td>
@@ -168,6 +199,69 @@ function renderTabela(indicadores) {
     })
     .join('');
 }
+
+// ------------------------------------------------------------ sincronização
+
+function renderSync(dados) {
+  const alvo = $('#sync-status');
+  const botao = $('#sincronizar');
+  const ultima = dados.ultima_sincronizacao;
+
+  botao.disabled = estado.sincronizando || !dados.sync_configurado;
+  botao.textContent = estado.sincronizando ? 'Atualizando…' : 'Atualizar dados';
+  botao.title = dados.sync_configurado
+    ? 'Lê os pedidos no Worker de vendas agora e atualiza o painel'
+    : 'Fonte de pedidos não configurada (VENDAS_API_URL / VENDAS_API_TOKEN).';
+
+  const partes = [];
+  if (ultima) {
+    const r = ultima.resumo || {};
+    partes.push(
+      `Última sincronização: <b>${esc(dataLonga(ultima.criado_em))}</b> (${esc(
+        ultima.origem === 'worker' ? 'automática' : ultima.origem
+      )}) · ${ultima.linhas_lidas} pedidos lidos · ${ultima.compras} do evento · ${
+        ultima.indicadores
+      } indicadores · ${ultima.qualificados} qualificados${
+        r.fonte_sincronizado_em ? ` · planilha lida em ${esc(dataLonga(r.fonte_sincronizado_em))}` : ''
+      }`
+    );
+    if (ultima.cupons_orfaos) {
+      partes.push(
+        `<span class="sync-alerta">${ultima.cupons_orfaos} ${plural(
+          ultima.cupons_orfaos,
+          'cupom de e-mail sem indicador',
+          'cupons de e-mail sem indicador'
+        )}${
+          r.cupons_orfaos_lista && r.cupons_orfaos_lista.length
+            ? ': ' + esc(r.cupons_orfaos_lista.map((o) => o.cupom).slice(0, 5).join(', '))
+            : ''
+        }</span>`
+      );
+    }
+  } else {
+    partes.push('Nenhuma sincronização registrada ainda.');
+  }
+  alvo.innerHTML = partes.join('<br>');
+}
+
+$('#sincronizar').addEventListener('click', async () => {
+  estado.sincronizando = true;
+  const botao = $('#sincronizar');
+  botao.disabled = true;
+  botao.textContent = 'Atualizando…';
+  avisoPainel('');
+
+  const resultado = await api('/api/admin/sincronizar', { method: 'POST', body: {} });
+  estado.sincronizando = false;
+  if (!resultado.ok) {
+    avisoPainel(mensagemDeErro(resultado, 'Não conseguimos sincronizar agora.'));
+  } else {
+    estado.comprasPorEmail.clear();
+  }
+  await carregarPainel();
+});
+
+// ------------------------------------------------------------------ carga
 
 async function carregarPainel() {
   const geracao = ++estado.geracao;
@@ -190,25 +284,36 @@ async function carregarPainel() {
   avisoPainel('');
   renderKpis(resultado.dados.kpis);
   renderTabela(resultado.dados.indicadores);
+  renderSync(resultado.dados);
 
-  const ultimo = resultado.dados.ultimo_import;
   const mostrando = `Mostrando ${resultado.dados.indicadores.length} de ${resultado.dados.total} ${plural(
     resultado.dados.total,
     'indicador',
     'indicadores'
-  )}.`;
-  const importe = ultimo
-    ? ` Último import: ${esc(dataLonga(ultimo.criado_em))} por ${esc(ultimo.admin_email)}.`
-    : ' Nenhuma planilha importada ainda.';
-  $('#nota-painel').innerHTML = `${$('#nota-painel').dataset.base || ''}${mostrando}${importe}`;
+  )}. `;
+  $('#nota-painel').innerHTML = `${mostrando}${$('#nota-painel').dataset.base || ''}`;
 }
 
 // Guarda o texto fixo da nota para recompor com os números a cada carga.
-$('#nota-painel').dataset.base = $('#nota-painel').innerHTML.trim() + ' ';
+$('#nota-painel').dataset.base = $('#nota-painel').innerHTML.trim();
 
 // -------------------------------------------------------------- interações
 
+$('#paginacao').addEventListener('click', (evento) => {
+  const botao = evento.target.closest('[data-pagina]');
+  if (!botao) return;
+  estado.pagina = Number(botao.dataset.pagina);
+  carregarPainel();
+});
+
 $('#corpo-tabela').addEventListener('click', async (evento) => {
+  const paginaDetalhe = evento.target.closest('[data-pagina]');
+  if (paginaDetalhe) {
+    estado.paginaDetalhe.set(paginaDetalhe.dataset.alvo, Number(paginaDetalhe.dataset.pagina));
+    await carregarPainel();
+    return;
+  }
+
   const expandir = evento.target.closest('[data-expandir]');
   if (expandir) {
     const email = expandir.dataset.expandir;
@@ -252,6 +357,15 @@ async function alternarVip(email, liberar, confirmado) {
     return;
   }
 
+  const webhook = resultado.dados.webhook;
+  if (liberar && webhook && webhook.status !== 'ok') {
+    avisoPainel(
+      webhook.status === 'nao_configurado'
+        ? 'VIP liberado, mas o aviso ao n8n não está configurado (N8N_VIP_WEBHOOK_URL). Registre a cortesia na planilha manualmente.'
+        : `VIP liberado, mas o aviso ao n8n falhou (${webhook.detalhe}). Registre a cortesia na planilha manualmente.`
+    );
+  }
+
   estado.comprasPorEmail.delete(email);
   await carregarPainel();
 }
@@ -259,6 +373,7 @@ async function alternarVip(email, liberar, confirmado) {
 let debounce;
 $('#busca').addEventListener('input', (evento) => {
   estado.busca = evento.target.value;
+  estado.pagina = 1;
   clearTimeout(debounce);
   debounce = setTimeout(carregarPainel, 250);
 });
@@ -267,6 +382,7 @@ $('#filtros').addEventListener('click', (evento) => {
   const botao = evento.target.closest('[data-filtro]');
   if (!botao) return;
   estado.filtro = botao.dataset.filtro;
+  estado.pagina = 1;
   for (const outro of $('#filtros').querySelectorAll('button')) {
     outro.classList.toggle('on', outro === botao);
   }
@@ -275,256 +391,6 @@ $('#filtros').addEventListener('click', (evento) => {
 
 $('#exportar').addEventListener('click', () => {
   window.location.href = '/api/admin/exportar?tipo=indicadores';
-});
-
-// ------------------------------------------------------------- importação
-
-function mostrarVista(qual) {
-  $('#vista-painel').classList.toggle('oculto', qual !== 'painel');
-  $('#vista-import').classList.toggle('oculto', qual !== 'import');
-  $('#topo-titulo').textContent =
-    qual === 'import' ? 'Importar planilha · uso interno' : 'Painel de Indicação · uso interno';
-  window.scrollTo(0, 0);
-}
-
-function avisoImport(texto) {
-  const alvo = $('#aviso-import');
-  if (!texto) {
-    alvo.classList.add('oculto');
-    return;
-  }
-  alvo.textContent = texto;
-  alvo.classList.remove('oculto');
-}
-
-function limparResultado() {
-  $('#resultado').classList.add('oculto');
-  $('#resultado-cards').innerHTML = '';
-  $('#resultado-detalhes').innerHTML = '';
-  $('#resultado-previa').innerHTML = '';
-  $('#resultado-previa').classList.add('oculto');
-  $('#resultado-orfaos').innerHTML = '';
-  $('#resultado-orfaos').classList.add('oculto');
-}
-
-$('#abrir-import').addEventListener('click', () => {
-  avisoImport('');
-  limparResultado();
-  estado.arquivo = null;
-  $('#arquivo-nome').classList.add('oculto');
-  mostrarVista('import');
-});
-$('#voltar-painel').addEventListener('click', () => mostrarVista('painel'));
-$('#cancelar').addEventListener('click', () => {
-  limparResultado();
-  estado.arquivo = null;
-  $('#arquivo-nome').classList.add('oculto');
-});
-
-$('#tipo-import').addEventListener('click', (evento) => {
-  const botao = evento.target.closest('[data-tipo]');
-  if (!botao) return;
-  estado.tipoImport = botao.dataset.tipo;
-  for (const outro of $('#tipo-import').querySelectorAll('button')) {
-    outro.classList.toggle('on', outro === botao);
-  }
-  const compras = estado.tipoImport === 'compras';
-  $('#drop-titulo').textContent = compras
-    ? 'Arraste o export da Sympla aqui'
-    : 'Arraste a lista de indicadores aqui';
-  $('#drop-sub').textContent = compras
-    ? 'Formatos aceitos: .csv ou .xlsx · o mesmo relatório de participantes de sempre'
-    : 'Formatos aceitos: .csv ou .xlsx · com as colunas E-mail, Código público e Primeiro nome — ou o próprio export da Sympla, de onde a lista é derivada';
-  limparResultado();
-  avisoImport('');
-});
-
-$('#selecionar').addEventListener('click', () => $('#arquivo').click());
-$('#arquivo').addEventListener('change', (evento) => {
-  const arquivo = evento.target.files && evento.target.files[0];
-  if (arquivo) receberArquivo(arquivo);
-});
-
-const areaDrop = $('#area-drop');
-for (const nome of ['dragenter', 'dragover']) {
-  areaDrop.addEventListener(nome, (evento) => {
-    evento.preventDefault();
-    areaDrop.classList.add('hover');
-  });
-}
-for (const nome of ['dragleave', 'drop']) {
-  areaDrop.addEventListener(nome, (evento) => {
-    evento.preventDefault();
-    areaDrop.classList.remove('hover');
-  });
-}
-areaDrop.addEventListener('drop', (evento) => {
-  const arquivo = evento.dataTransfer && evento.dataTransfer.files[0];
-  if (arquivo) receberArquivo(arquivo);
-});
-
-async function receberArquivo(arquivo) {
-  estado.arquivo = arquivo;
-  $('#arquivo-nome').textContent = `${arquivo.name} · ${(arquivo.size / 1024).toFixed(0)} KB`;
-  $('#arquivo-nome').classList.remove('oculto');
-  await enviarImport('prever');
-}
-
-function card(valor, rotulo, cor = '') {
-  return `<div class="res-card"><div class="n ${cor}">${esc(valor)}</div><div class="l">${esc(
-    rotulo
-  )}</div></div>`;
-}
-
-function renderResumo(resumo, aplicado) {
-  // Os quatro números de cabeça são os das telas aprovadas. O resto da
-  // conciliação vem numa linha de detalhes, para o resumo não virar um mural.
-  const maisNovas = (n) => (Number(n) > 0 ? `+${n}` : String(n));
-  const cards = [];
-  const detalhes = [];
-
-  if (resumo.tipo === 'compras') {
-    cards.push(card(resumo.compras_na_planilha, 'compras lidas na planilha'));
-    cards.push(card(maisNovas(resumo.novas), 'novas desde o último import', 'c'));
-    cards.push(card(resumo.qualificados_agora, 'indicadores qualificaram agora', 'c'));
-    cards.push(card(resumo.vip_alterados, 'marcações de VIP alteradas', 'p'));
-
-    detalhes.push([resumo.aprovadas, 'com pagamento aprovado']);
-    detalhes.push([resumo.atualizadas, 'já existiam e foram atualizadas']);
-    detalhes.push([resumo.ausentes, 'aprovadas que saíram da planilha']);
-    detalhes.push([resumo.linhas_com_cupom_orfao, 'linhas com cupom sem indicador']);
-    detalhes.push([resumo.autoindicacoes, 'compras do próprio indicador (não contam)']);
-    if (resumo.sem_cupom) detalhes.push([resumo.sem_cupom, 'compras sem cupom']);
-    if (resumo.duplicadas_no_arquivo) {
-      detalhes.push([resumo.duplicadas_no_arquivo, 'Nº ingresso repetido no arquivo']);
-    }
-    if (resumo.sem_identificador) {
-      detalhes.push([resumo.sem_identificador, 'linhas sem Nº ingresso (ignoradas)']);
-    }
-  } else {
-    cards.push(card(resumo.indicadores_na_planilha, 'indicadores na planilha'));
-    cards.push(card(maisNovas(resumo.novos), 'novos na lista de cupons', 'c'));
-    cards.push(card(resumo.atualizados, 'já existiam e foram atualizados'));
-    cards.push(card(resumo.excluidos_vip, 'e-mails com ingresso VIP, fora da lista', 'p'));
-
-    if (resumo.qualificados_agora !== undefined) {
-      detalhes.push([resumo.qualificados_agora, 'indicadores qualificaram agora']);
-    }
-    if (resumo.cupons_orfaos !== undefined) {
-      detalhes.push([resumo.cupons_orfaos, 'cupons ainda sem indicador']);
-    }
-    if (resumo.vip_alterados !== undefined) {
-      detalhes.push([resumo.vip_alterados, 'marcações de VIP alteradas']);
-    }
-  }
-
-  $('#resultado-cards').innerHTML = cards.join('');
-  $('#resultado-detalhes').innerHTML = detalhes
-    .map(([valor, rotulo]) => `<span><b>${esc(valor)}</b> ${esc(rotulo)}</span>`)
-    .join('');
-
-  const previa = resumo.previa || [];
-  if (previa.length) {
-    const linhas =
-      resumo.tipo === 'compras'
-        ? previa
-            .map(
-              (item) => `<tr>
-                <td>${esc(item.comprador)}</td>
-                <td class="em">${esc(item.cupom)}</td>
-                <td>${esc(item.indicador || '(cupom sem indicador)')}</td>
-                <td>${brl(item.valor)}</td>
-                <td><span class="tag-new">nova</span></td>
-              </tr>`
-            )
-            .join('')
-        : previa
-            .map(
-              (item) => `<tr>
-                <td>${esc(item.primeiro_nome)}</td>
-                <td class="em">${esc(item.email)}</td>
-                <td><span class="b-code">${esc(item.codigo_publico)}</span></td>
-                <td><span class="tag-new">novo</span></td>
-              </tr>`
-            )
-            .join('');
-    const cabecalho =
-      resumo.tipo === 'compras'
-        ? '<tr><th>Comprador</th><th>Cupom usado (e-mail)</th><th>Indicador</th><th>Valor</th><th></th></tr>'
-        : '<tr><th>Nome</th><th>Cupom (e-mail)</th><th>Código</th><th></th></tr>';
-    $('#resultado-previa').innerHTML = `
-      <div class="card-h"><h3>Prévia da conciliação</h3><span class="sm">${
-        resumo.tipo === 'compras' ? 'novas compras atribuídas' : 'novos indicadores'
-      }</span></div>
-      <table><thead>${cabecalho}</thead><tbody>${linhas}</tbody></table>`;
-    $('#resultado-previa').classList.remove('oculto');
-  }
-
-  const orfaos = resumo.cupons_orfaos_lista || [];
-  if (orfaos.length) {
-    $('#resultado-orfaos').innerHTML = `
-      <div class="card-h"><h3>Cupons sem indicador</h3><span class="sm">revisar com a organização</span></div>
-      <table><thead><tr><th>Cupom na planilha</th><th>Linhas</th></tr></thead><tbody>${orfaos
-        .map(
-          (item) =>
-            `<tr><td class="em">${esc(item.cupom)}</td><td>${item.linhas}</td></tr>`
-        )
-        .join('')}</tbody></table>`;
-    $('#resultado-orfaos').classList.remove('oculto');
-  }
-
-  $('#confirmar').textContent = aplicado
-    ? 'Voltar ao painel'
-    : 'Confirmar e atualizar painel';
-  $('#resultado').classList.remove('oculto');
-}
-
-async function enviarImport(acao) {
-  if (!estado.arquivo) {
-    avisoImport('Escolha o arquivo da planilha primeiro.');
-    return;
-  }
-  avisoImport('');
-
-  const formulario = new FormData();
-  formulario.append('arquivo', estado.arquivo);
-  formulario.append('tipo', estado.tipoImport);
-  formulario.append('acao', acao);
-
-  $('#confirmar').disabled = true;
-  $('#selecionar').disabled = true;
-
-  const resultado = await api('/api/admin/importar', { method: 'POST', body: formulario });
-
-  $('#confirmar').disabled = false;
-  $('#selecionar').disabled = false;
-
-  if (resultado.status === 403) {
-    window.location.replace('/indicacao/?motivo=restrito');
-    return;
-  }
-  if (!resultado.ok) {
-    limparResultado();
-    avisoImport(mensagemDeErro(resultado, 'Não conseguimos ler esta planilha.'));
-    return;
-  }
-
-  renderResumo(resultado.dados.resumo, resultado.dados.aplicado);
-  if (resultado.dados.aplicado) {
-    estado.comprasPorEmail.clear();
-    await carregarPainel();
-  }
-}
-
-$('#confirmar').addEventListener('click', async () => {
-  if ($('#confirmar').textContent.startsWith('Voltar')) {
-    limparResultado();
-    estado.arquivo = null;
-    $('#arquivo-nome').classList.add('oculto');
-    mostrarVista('painel');
-    return;
-  }
-  await enviarImport('aplicar');
 });
 
 // ------------------------------------------------------------------ início
