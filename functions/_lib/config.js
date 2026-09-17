@@ -92,7 +92,7 @@ export function urlWhatsApp(cupom) {
 
 /** Textos fixos do estado "VIP conquistado" (não alterar sem pedido). */
 export const TEXTO_VIP_BANNER =
-  'Upgrade garantido! Sua vaga no VIP foi assegurada. Você receberá o acesso à nova modalidade de ingresso dentro de 7 dias úteis.';
+  'Upgrade garantido! Sua vaga no VIP foi assegurada. Você receberá o acesso à nova modalidade de ingresso dentro de 10 dias úteis.';
 
 export const TEXTO_VIP_CUPOM_ATIVO =
   'Você conquistou o VIP, mas o seu cupom continua ativo e você ainda pode compartilhá-lo com amigos que desejam um desconto a mais no ingresso! Nos vemos em breve!';
