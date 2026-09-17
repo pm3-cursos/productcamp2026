@@ -232,7 +232,7 @@ preview, crie um banco separado (`pcamp-indicacao-preview`).
 | `MAIL_PROVIDER` | Texto | `resend` ou `sendgrid` |
 | `MAIL_FROM` | Texto | `Product Camp 2026 <eventos@pm3.com.br>` — tem que terminar em `@pm3.com.br` (domínio verificado no Resend; o DMARC é estrito) |
 | `RESEND_API_KEY` / `SENDGRID_API_KEY` | Secret | Conforme o provedor |
-| `N8N_VIP_WEBHOOK_URL` | Secret | URL do webhook do n8n que grava a cortesia na planilha |
+| `N8N_VIP_WEBHOOK_URL` | Secret | **Opcional.** URL do webhook do n8n que grava a cortesia na planilha. Sem ela a liberação do VIP funciona normalmente — o painel mostra `nao_configurado` e alguém lança a linha da cortesia à mão. Hoje produção roda sem essa variável. |
 | `N8N_VIP_WEBHOOK_TOKEN` | Secret | Opcional — vai como `Authorization: Bearer` se o webhook exigir |
 | `VENDAS_API_URL` | Texto | URL do Worker de vendas (passo A) |
 | `VENDAS_API_TOKEN` | Secret | O `READ_TOKEN` do Worker — só leitura |
