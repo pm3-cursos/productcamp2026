@@ -1,43 +1,62 @@
-// Mapeamento das colunas da planilha da Sympla para o modelo da plataforma.
-// Puro e testável: recebe matriz de strings (do CSV ou do XLSX) e devolve
-// registros normalizados + diagnóstico do que não deu para ler.
+// Leitura da planilha de pedidos (Google Sheets) para o modelo da plataforma.
+// Puro e testável: recebe a matriz de strings (primeira linha = cabeçalho) e
+// devolve compras, indicadores e um diagnóstico do que ficou de fora.
+//
+// Regras (ver indicacao/LEIA-ME.md):
+//   - só linhas do evento configurado (`Evento` == EVENTO_PLANILHA);
+//   - `Número de Ingressos` = CANCELADO tira a linha de tudo;
+//   - indicador = tem compra Passaporte (não B2B) e nenhuma compra VIP (exceto a
+//     cortesia gravada pelo n8n quando o próprio prêmio é liberado);
+//   - indicação = `Cupom` é um e-mail; a contagem acontece na reconciliação.
 
 import {
+  CATEGORIA_CORTESIA,
+  EVENTO_PLANILHA,
+  FORMATO_SEM_INDICACAO,
+  LOTE_VIP_CORTESIA,
+  MARCA_CANCELADO,
+  MODALIDADE_INDICADOR,
+  MODALIDADE_VIP,
+} from './config.js';
+import {
   chaveTexto,
+  cupomEhEmail,
   normalizarEmail,
-  pagamentoAprovado,
   parseDataSympla,
+  parseQuantidade,
   parseValorBR,
   primeiroNome,
 } from './util.js';
 
 /**
- * Cabeçalhos aceitos por campo. A comparação é feita com `chaveTexto`
- * (minúsculo, sem acentos e sem pontuação), então "Nº ingresso" vira
- * "n ingresso". A primeira coluna que casar vence.
+ * Cabeçalhos aceitos por campo, comparados com `chaveTexto` (minúsculo, sem
+ * acento, sem pontuação). A primeira coluna que casar vence.
  */
 const COLUNAS = {
-  id_compra: ['n ingresso', 'numero do ingresso', 'numero ingresso', 'ingresso id', 'id do ingresso', 'ticket number'],
-  numero_pedido: ['n pedido', 'numero do pedido', 'numero pedido', 'pedido', 'order number'],
-  nome: ['nome', 'first name', 'primeiro nome'],
-  sobrenome: ['sobrenome', 'last name', 'ultimo nome'],
-  nome_completo: ['nome completo', 'participante', 'comprador', 'full name'],
-  email: ['email', 'e mail', 'email do comprador', 'e mail do comprador', 'email do participante'],
-  tipo_ingresso: ['tipo de ingresso', 'tipo ingresso', 'ticket type', 'setor'],
-  valor: ['valor', 'valor do ingresso', 'valor r', 'valor pago', 'preco', 'price'],
-  estado_pagamento: ['estado de pagamento', 'estado do pagamento', 'status do pagamento', 'status de pagamento', 'situacao do pagamento', 'payment status'],
-  data_compra: ['data compra', 'data da compra', 'data do pedido', 'data de compra', 'order date'],
-  cupom_email: ['cupom de desconto', 'cupom', 'codigo de desconto', 'cupom do indicador', 'discount coupon'],
+  data_compra: ['data do pedido', 'data pedido', 'data da compra'],
+  nome: ['nome', 'primeiro nome'],
+  sobrenome: ['sobrenome'],
+  email: ['e mail', 'email'],
+  lote: ['lote'],
+  quantidade: ['numero de ingressos', 'n de ingressos', 'qtd ingressos', 'ingressos'],
+  valor_unitario: ['valor por ingresso', 'valor do ingresso', 'valor unitario'],
+  valor: ['valor total do pedido', 'valor total', 'total do pedido'],
+  cupom: ['cupom', 'cupom de desconto', 'codigo de desconto'],
+  categoria: ['categoria'],
+  formato: ['formato'],
+  modalidade: ['modalidade', 'tipo de ingresso'],
+  evento: ['evento'],
 };
 
-/** Colunas sem as quais não dá para conciliar nada. */
-const OBRIGATORIAS = ['id_compra', 'cupom_email', 'estado_pagamento'];
+/** Sem estas colunas não dá para aplicar nenhuma regra. */
+const OBRIGATORIAS = ['email', 'cupom', 'modalidade', 'evento', 'quantidade'];
 
-/** Rótulo humano de cada coluna, para a mensagem de erro. */
 const ROTULOS = {
-  id_compra: 'Nº ingresso',
-  cupom_email: 'Cupom de Desconto',
-  estado_pagamento: 'Estado de pagamento',
+  email: 'E-mail',
+  cupom: 'Cupom',
+  modalidade: 'Modalidade',
+  evento: 'Evento',
+  quantidade: 'Número de Ingressos',
 };
 
 /**
@@ -48,7 +67,6 @@ const ROTULOS = {
 export function mapearColunas(cabecalho) {
   const chaves = (cabecalho || []).map((c) => chaveTexto(c));
   const indices = {};
-
   for (const [campo, aceitos] of Object.entries(COLUNAS)) {
     for (const aceito of aceitos) {
       const posicao = chaves.indexOf(aceito);
@@ -58,7 +76,6 @@ export function mapearColunas(cabecalho) {
       }
     }
   }
-
   const faltando = OBRIGATORIAS.filter((campo) => indices[campo] === undefined).map(
     (campo) => ROTULOS[campo]
   );
@@ -72,184 +89,155 @@ function celula(linha, indices, campo) {
   return valor == null ? '' : String(valor).trim();
 }
 
-/** Nome do comprador a partir de "Nome" + "Sobrenome" ou "Nome completo". */
-function montarNome(linha, indices) {
-  const completo = celula(linha, indices, 'nome_completo');
-  if (completo) return completo.replace(/\s+/g, ' ');
-  const nome = celula(linha, indices, 'nome');
-  const sobrenome = celula(linha, indices, 'sobrenome');
-  return `${nome} ${sobrenome}`.replace(/\s+/g, ' ').trim();
-}
-
 /**
- * Converte a matriz da planilha em registros de compra.
- * Não aplica regra de negócio (isso é a conciliação) — só normaliza.
- *
- * @param {string[][]} linhas primeira linha é o cabeçalho
+ * Identificador estável de uma linha dentro de um snapshot. Não existe ID na
+ * planilha, então a chave é o conteúdo que importa + a posição da linha
+ * (duas compras idênticas continuam sendo duas). FNV-1a em dois sabores,
+ * 16 hex — sem depender de crypto, para rodar igual em Node e no Worker.
  */
-export function lerCompras(linhas) {
-  if (!linhas || linhas.length === 0) {
-    return { compras: [], faltando: [], linhasLidas: 0, semIdentificador: 0 };
+export function idDaLinha(posicao, partes) {
+  const texto = `${posicao}|${partes.join('|')}`;
+  let a = 0x811c9dc5;
+  let b = 0x01000193;
+  for (let i = 0; i < texto.length; i++) {
+    const c = texto.charCodeAt(i);
+    a = Math.imul(a ^ c, 0x01000193) >>> 0;
+    b = Math.imul(b ^ c, 0x811c9dc5) >>> 0;
   }
-
-  const { indices, faltando } = mapearColunas(linhas[0]);
-  if (faltando.length) {
-    return { compras: [], faltando, linhasLidas: 0, semIdentificador: 0 };
-  }
-
-  const compras = [];
-  const vistos = new Set();
-  let semIdentificador = 0;
-  let duplicadasNoArquivo = 0;
-
-  for (let i = 1; i < linhas.length; i++) {
-    const linha = linhas[i];
-    const idCompra = celula(linha, indices, 'id_compra');
-    if (!idCompra) {
-      semIdentificador++;
-      continue;
-    }
-    if (vistos.has(idCompra)) {
-      // Mesmo Nº ingresso repetido no arquivo: a última linha vence.
-      duplicadasNoArquivo++;
-    }
-    vistos.add(idCompra);
-
-    const estado = celula(linha, indices, 'estado_pagamento');
-    const nome = montarNome(linha, indices);
-
-    compras.push({
-      id_compra: idCompra,
-      numero_pedido: celula(linha, indices, 'numero_pedido'),
-      comprador_nome: nome,
-      comprador_email: normalizarEmail(celula(linha, indices, 'email')),
-      cupom_email: normalizarEmail(celula(linha, indices, 'cupom_email')),
-      tipo_ingresso: celula(linha, indices, 'tipo_ingresso'),
-      valor: parseValorBR(celula(linha, indices, 'valor')),
-      estado_pagamento: estado,
-      aprovado: pagamentoAprovado(estado) ? 1 : 0,
-      data_compra: parseDataSympla(celula(linha, indices, 'data_compra')),
-    });
-  }
-
-  // Deduplica mantendo a última ocorrência de cada Nº ingresso.
-  const porId = new Map();
-  for (const compra of compras) porId.set(compra.id_compra, compra);
-
-  return {
-    compras: [...porId.values()],
-    faltando: [],
-    linhasLidas: linhas.length - 1,
-    semIdentificador,
-    duplicadasNoArquivo,
-  };
+  return a.toString(16).padStart(8, '0') + b.toString(16).padStart(8, '0');
 }
 
+const ehEvento = (valor) => chaveTexto(valor) === chaveTexto(EVENTO_PLANILHA);
+const ehPassaporte = (modalidade) =>
+  chaveTexto(modalidade).includes(chaveTexto(MODALIDADE_INDICADOR));
+const ehVip = (modalidade) => chaveTexto(modalidade).includes(chaveTexto(MODALIDADE_VIP));
+const ehB2B = (formato) => chaveTexto(formato) === chaveTexto(FORMATO_SEM_INDICACAO);
+const ehCortesiaVip = (compra) =>
+  chaveTexto(compra.lote) === chaveTexto(LOTE_VIP_CORTESIA) ||
+  chaveTexto(compra.categoria) === chaveTexto(CATEGORIA_CORTESIA);
+
 /**
- * Deriva a lista de indicadores a partir de um export da Sympla.
- * Regras: só compras aprovadas, quem já tem VIP não entra, e um mesmo e-mail
- * pode ter vários "Nº ingresso" — fixamos o primeiro como código público.
+ * Converte a matriz da planilha em compras normalizadas do evento.
+ * Linhas de outros eventos e canceladas não entram em `compras`, só no
+ * diagnóstico. Não decide quem é indicador nem o que conta — isso é
+ * `derivarIndicadores` e a reconciliação.
  *
  * @param {string[][]} linhas
  */
-export function derivarIndicadores(linhas) {
-  const { compras, faltando, linhasLidas } = lerCompras(linhas);
-  if (faltando.length) return { indicadores: [], faltando, linhasLidas, excluidosVip: 0 };
+export function lerCompras(linhas) {
+  const vazio = { compras: [], faltando: [], linhasLidas: 0, outrosEventos: 0, canceladas: 0, semEmail: 0 };
+  if (!linhas || linhas.length === 0) return vazio;
 
-  const emailsVip = new Set();
-  for (const compra of compras) {
-    if (compra.aprovado && /vip/i.test(compra.tipo_ingresso || '') && compra.comprador_email) {
-      emailsVip.add(compra.comprador_email);
+  const { indices, faltando } = mapearColunas(linhas[0]);
+  if (faltando.length) return { ...vazio, faltando };
+
+  const compras = [];
+  let outrosEventos = 0;
+  let canceladas = 0;
+  let semEmail = 0;
+
+  for (let i = 1; i < linhas.length; i++) {
+    const linha = linhas[i];
+    if (!linha || linha.every((v) => v == null || String(v).trim() === '')) continue;
+
+    if (!ehEvento(celula(linha, indices, 'evento'))) {
+      outrosEventos++;
+      continue;
     }
+
+    const { cancelado, quantidade } = parseQuantidade(
+      celula(linha, indices, 'quantidade'),
+      MARCA_CANCELADO
+    );
+    if (cancelado) {
+      canceladas++;
+      continue;
+    }
+
+    const email = normalizarEmail(celula(linha, indices, 'email'));
+    if (!email) {
+      semEmail++;
+      continue;
+    }
+
+    const cupomBruto = celula(linha, indices, 'cupom');
+    const cupomEmail = cupomEhEmail(cupomBruto) ? normalizarEmail(cupomBruto) : '';
+    const nome = celula(linha, indices, 'nome');
+    const sobrenome = celula(linha, indices, 'sobrenome');
+    const dataCompra = parseDataSympla(celula(linha, indices, 'data_compra'));
+    const valor = parseValorBR(celula(linha, indices, 'valor'));
+    const modalidade = celula(linha, indices, 'modalidade');
+
+    compras.push({
+      id_compra: idDaLinha(i, [email, dataCompra || '', cupomEmail, modalidade, quantidade, valor]),
+      linha: i + 1,
+      comprador_nome: `${nome} ${sobrenome}`.replace(/\s+/g, ' ').trim(),
+      comprador_primeiro_nome: nome.replace(/\s+/g, ' ').trim(),
+      comprador_email: email,
+      cupom: cupomBruto,
+      cupom_email: cupomEmail,
+      lote: celula(linha, indices, 'lote'),
+      categoria: celula(linha, indices, 'categoria'),
+      formato: celula(linha, indices, 'formato'),
+      modalidade,
+      quantidade,
+      valor_unitario: parseValorBR(celula(linha, indices, 'valor_unitario')),
+      valor,
+      data_compra: dataCompra,
+    });
+  }
+
+  return { compras, faltando: [], linhasLidas: linhas.length - 1, outrosEventos, canceladas, semEmail };
+}
+
+/**
+ * Quem pode indicar: tem Passaporte (em Formato que não seja B2B) e não tem
+ * VIP — a não ser que o VIP seja a cortesia do próprio programa. Um e-mail
+ * vira um indicador; o nome vem da primeira compra Passaporte dele e `primeiro_nome` é a coluna `Nome`.
+ *
+ * @param {object[]} compras saída de `lerCompras`
+ * @returns {{indicadores: object[], excluidosVip: number, excluidosB2B: number}}
+ */
+export function derivarIndicadores(compras) {
+  const comVip = new Set();
+  for (const compra of compras || []) {
+    if (ehVip(compra.modalidade) && !ehCortesiaVip(compra)) comVip.add(compra.comprador_email);
   }
 
   const porEmail = new Map();
-  for (const compra of compras) {
-    if (!compra.aprovado || !compra.comprador_email) continue;
-    if (emailsVip.has(compra.comprador_email)) continue;
+  const excluidos = new Set();
+  const soB2B = new Set();
+  for (const compra of compras || []) {
+    if (!ehPassaporte(compra.modalidade)) continue;
+    // Passaporte comprado como B2B (corporativo) não libera a indicação.
+    if (ehB2B(compra.formato)) {
+      soB2B.add(compra.comprador_email);
+      continue;
+    }
+    if (comVip.has(compra.comprador_email)) {
+      excluidos.add(compra.comprador_email);
+      continue;
+    }
     if (porEmail.has(compra.comprador_email)) continue;
     porEmail.set(compra.comprador_email, {
       email: compra.comprador_email,
-      codigo_publico: compra.id_compra,
-      primeiro_nome: primeiroNome(compra.comprador_nome),
+      primeiro_nome: primeiroNome(compra.comprador_primeiro_nome) || compra.comprador_email.split('@')[0],
       nome_completo: compra.comprador_nome,
       ativo: 1,
     });
   }
 
-  return {
-    indicadores: [...porEmail.values()],
-    faltando: [],
-    linhasLidas,
-    excluidosVip: emailsVip.size,
-  };
+  const excluidosB2B = [...soB2B].filter((e) => !porEmail.has(e) && !excluidos.has(e)).length;
+  return { indicadores: [...porEmail.values()], excluidosVip: excluidos.size, excluidosB2B };
 }
 
 /**
- * Lê uma lista de cupons já pronta (e-mail, código, nome).
- * Aceita cabeçalhos em português e também o export da Sympla — se as colunas
- * da Sympla estiverem presentes, cai em `derivarIndicadores`.
- *
+ * Atalho: planilha inteira -> compras + indicadores + diagnóstico.
  * @param {string[][]} linhas
  */
-export function lerIndicadores(linhas) {
-  if (!linhas || linhas.length === 0) {
-    return { indicadores: [], faltando: ['E-mail'], linhasLidas: 0 };
-  }
-
-  const chaves = linhas[0].map((c) => chaveTexto(c));
-  const acha = (...nomes) => {
-    for (const nome of nomes) {
-      const posicao = chaves.indexOf(nome);
-      if (posicao !== -1) return posicao;
-    }
-    return -1;
-  };
-
-  const iEmail = acha('email', 'e mail', 'email do indicador', 'cupom', 'cupom email');
-  const iCodigo = acha('codigo publico', 'codigo', 'n ingresso', 'numero do ingresso');
-  const iNome = acha('primeiro nome', 'nome', 'nome completo');
-  const iAtivo = acha('ativo');
-
-  // Se parece um export da Sympla (tem cupom + estado de pagamento), deriva.
-  const { faltando: faltandoSympla } = mapearColunas(linhas[0]);
-  if (faltandoSympla.length === 0 && iEmail !== -1 && chaves.includes('estado de pagamento')) {
-    return derivarIndicadores(linhas);
-  }
-
-  if (iEmail === -1) {
-    return {
-      indicadores: [],
-      faltando: ['E-mail'],
-      linhasLidas: Math.max(0, linhas.length - 1),
-    };
-  }
-
-  const porEmail = new Map();
-  let semEmail = 0;
-
-  for (let i = 1; i < linhas.length; i++) {
-    const linha = linhas[i];
-    const email = normalizarEmail(linha[iEmail]);
-    if (!email) {
-      semEmail++;
-      continue;
-    }
-    const nomeBruto = iNome !== -1 ? String(linha[iNome] || '').trim() : '';
-    const ativoBruto = iAtivo !== -1 ? chaveTexto(linha[iAtivo]) : '';
-    porEmail.set(email, {
-      email,
-      codigo_publico: iCodigo !== -1 ? String(linha[iCodigo] || '').trim() : '',
-      primeiro_nome: primeiroNome(nomeBruto) || email.split('@')[0],
-      nome_completo: nomeBruto,
-      ativo: ['0', 'nao', 'false', 'inativo'].includes(ativoBruto) ? 0 : 1,
-    });
-  }
-
-  return {
-    indicadores: [...porEmail.values()],
-    faltando: [],
-    linhasLidas: linhas.length - 1,
-    semEmail,
-  };
+export function lerPlanilha(linhas) {
+  const lido = lerCompras(linhas);
+  if (lido.faltando.length) return { ...lido, indicadores: [], excluidosVip: 0, excluidosB2B: 0 };
+  const { indicadores, excluidosVip, excluidosB2B } = derivarIndicadores(lido.compras);
+  return { ...lido, indicadores, excluidosVip, excluidosB2B };
 }

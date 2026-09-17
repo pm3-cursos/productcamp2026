@@ -13,7 +13,7 @@ Landing page do **Product Camp Brasil 2026** — o maior evento de produto da Am
   - `assets/img/` — imagens, organizadas em subpastas: `bg/`, `speakers/`, `coordinators/`, `venue/`, `sponsors/`, `brand/`. `og-image.png` fica em `assets/img/`. `assets/img/legacy/` guarda imagens órfãs (não referenciadas) arquivadas.
   - `assets/docs/` — documentos públicos servidos pelo site (hoje, o PDF do Regulamento do Programa de Indicação, linkado na tela de acesso de `/indicacao/`).
   - `indicacao/` — telas da plataforma de indicação (HTML/CSS/JS estáticos) + `schema.sql` + `LEIA-ME.md`.
-  - `functions/` — a API da plataforma de indicação (Cloudflare Pages Functions). **Nenhuma rota do site passa por aqui.**
+  - `functions/` — a API da plataforma de indicação (Cloudflare Pages Functions). **Nenhuma rota do site passa por aqui** (garantido pelo `_routes.json` na raiz).
   - `tests/` — testes da plataforma de indicação: `run.mjs` (unitários, sem dependências) e `e2e.mjs` (contra o servidor local).
   - **Raiz:** `index.html`, `pocket.html`, favicons (`favicon.png`, `favicon-16.png`, `apple-touch-icon.png` — ficam na raiz por convenção), `robots.txt`, `sitemap.xml`, `llms.txt`, `.gitignore`, `CLAUDE.md`, `README.md`.
   - Ao adicionar uma imagem nova, coloque-a na subpasta correta de `assets/img/` (nunca na raiz) e referencie com o caminho relativo completo.
@@ -148,12 +148,22 @@ O que não pode ser esquecido ao tocar nessa parte:
   acesso a essa caixa é admin (o controle real está no provedor de e-mail, não no
   repo), e o `liberado_por` de todo upgrade VIP registra `eventos@`, não a pessoa.
   Remover um e-mail da lista derruba na hora as sessões abertas dele.
-- **Import de planilha nunca altera marcação manual de VIP.** O resumo de
-  conciliação prova isso comparando o estado antes e depois de gravar; o número
-  "marcações de VIP alteradas" tem que ser sempre 0.
-- **Regra de negócio mora em `functions/_lib/reconciliacao.js`**, em JavaScript
-  puro e coberta por teste. Não duplique essas regras em SQL — o dia em que as
-  duas implementações discordarem, alguém perde um prêmio.
+- **A fonte de verdade é a tabela `pedidos` do Worker `pm3-eventos-vendas-sync`**
+  (repositório próprio, D1 `pm3-eventos` em outra conta da Cloudflare — por isso
+  a leitura é por HTTP, com token só de leitura, e não por binding). A
+  sincronização (`functions/_lib/sincronizacao.js`) grava um snapshot completo
+  em `pcamp-indicacao` e **nunca toca em `premios.vip_liberado`** — o teste de
+  `gravarSnapshot` garante isso.
+- **Nenhum segredo no código.** Tokens do Worker de vendas, do callback e do n8n
+  vivem nos secrets do Pages. Nada do Google existe neste repositório.
+- **Arquivos internos respondem 404 em produção** (`tests/`, `indicacao/schema*.sql`,
+  `indicacao/LEIA-ME.md`) por Functions listadas no `_routes.json` — o Pages
+  serve qualquer arquivo do repositório como estático. Ao criar pasta interna
+  nova, adicione ao bloqueio.
+- **Regra de negócio mora em `functions/_lib/planilha.js` e
+  `functions/_lib/reconciliacao.js`**, em JavaScript puro e coberta por teste.
+  Não duplique as regras em SQL —
+  o dia em que as duas implementações discordarem, alguém perde um prêmio.
 - **O visual é o design system do site, não um à parte.** `indicacao/app.css`
   abre com o mesmo bloco `:root` de `index.html`, copiado valor a valor, e
   reaproveita os componentes das páginas atuais (`nav`, `footer`,

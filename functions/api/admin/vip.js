@@ -1,6 +1,7 @@
 // POST /api/admin/vip  { email, liberado, confirmar_acima_do_teto? }
 // A liberação do VIP é uma decisão manual do time — a plataforma registra
-// quem liberou e quando, e avisa quando o teto de 50 já foi atingido.
+// quem liberou e quando, avisa quando o teto de 50 já foi atingido e manda
+// o aviso ao n8n para a cortesia entrar na planilha de pedidos.
 
 import { erro, json } from '../../_lib/resposta.js';
 import { corpoJson, mesmaOrigem } from '../../_lib/requisicao.js';
@@ -13,6 +14,7 @@ import {
 import { dentroDoTeto, montarFilaVip } from '../../_lib/reconciliacao.js';
 import { META_COMPRAS, TETO_VIP } from '../../_lib/config.js';
 import { normalizarEmail } from '../../_lib/util.js';
+import { avisarVipLiberado, montarAvisoVip } from '../../_lib/webhook.js';
 
 export async function onRequestPost({ request, env, data }) {
   if (!mesmaOrigem(request)) {
@@ -32,7 +34,7 @@ export async function onRequestPost({ request, env, data }) {
   if (liberado && confirmadas < META_COMPRAS) {
     return erro(
       'nao_qualificado',
-      `Este indicador tem ${confirmadas} compra(s) confirmada(s). O VIP só pode ser liberado a partir de ${META_COMPRAS}.`,
+      `Este indicador tem ${confirmadas} ingresso(s) indicado(s). O VIP só pode ser liberado a partir de ${META_COMPRAS}.`,
       409
     );
   }
@@ -61,7 +63,21 @@ export async function onRequestPost({ request, env, data }) {
     );
   }
 
-  await definirVip(db, { email, liberado, adminEmail: data.admin });
+  // Só a liberação avisa o n8n. Desfazer é raro e fica só no log.
+  let webhook = null;
+  if (liberado) {
+    webhook = await avisarVipLiberado(
+      env,
+      montarAvisoVip({ nome: indicador.nome_completo || indicador.primeiro_nome, email })
+    );
+  }
+
+  await definirVip(db, {
+    email,
+    liberado,
+    adminEmail: data.admin,
+    webhook: webhook ? `${webhook.status}: ${webhook.detalhe}` : null,
+  });
 
   return json({
     ok: true,
@@ -70,5 +86,6 @@ export async function onRequestPost({ request, env, data }) {
     liberado_por: liberado ? data.admin : null,
     vip_liberados: jaLiberados + (liberado ? 1 : 0),
     vagas_restantes: Math.max(0, TETO_VIP - (jaLiberados + (liberado ? 1 : 0))),
+    webhook,
   });
 }
