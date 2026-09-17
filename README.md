@@ -11,10 +11,12 @@ Site oficial do Product Camp Brasil 2026, o maior evento de produtos digitais da
 
 Além do site, o repositório hospeda a **plataforma do programa de indicação**
 do evento, em `/indicacao/`: o participante indica amigos com um cupom e, ao
-somar 3 compras confirmadas, qualifica para o upgrade gratuito de Passaporte
+somar 3 ingressos indicados, qualifica para o upgrade gratuito de Passaporte
 para VIP.
 
 - Telas em `indicacao/`, API em `functions/` (Cloudflare Pages Functions + D1).
+- Fonte de dados: a planilha de vendas, espelhada no D1 `pm3-eventos` pelo Worker
+  `pm3-eventos-vendas-sync` (repositório próprio); a plataforma lê de lá por HTTP.
 - Setup, operação, regras do programa e testes: **[`indicacao/LEIA-ME.md`](indicacao/LEIA-ME.md)**.
 - O site em si continua estático — nenhuma rota da landing page passa pela API.
 
