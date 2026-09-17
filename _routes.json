@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "include": [
+    "/api/*",
+    "/indicacao/minha-pagina/*",
+    "/indicacao/pm3/*",
+    "/indicacao/schema.sql",
+    "/indicacao/schema-reset.sql",
+    "/indicacao/LEIA-ME.md",
+    "/tests/*"
+  ],
+  "exclude": []
+}
