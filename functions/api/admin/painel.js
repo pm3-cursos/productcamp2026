@@ -2,14 +2,10 @@
 // Aceita ?q= (busca por nome ou e-mail) e ?filtro=qualificados|progresso|vip.
 
 import { json } from '../../_lib/resposta.js';
-import {
-  banco,
-  listarIndicadoresComPremio,
-  ultimaSincronizacao,
-  ultimoDisparo,
-} from '../../_lib/dados.js';
+import { banco, listarIndicadoresComPremio, ultimaSincronizacao } from '../../_lib/dados.js';
 import { dentroDoTeto, montarFilaVip, montarRanking } from '../../_lib/reconciliacao.js';
-import { INTERVALO_SYNC_MIN, META_COMPRAS, TETO_VIP } from '../../_lib/config.js';
+import { META_COMPRAS, TETO_VIP } from '../../_lib/config.js';
+import { vendasConfigurado } from '../../_lib/vendas.js';
 import { chaveTexto } from '../../_lib/util.js';
 
 export async function onRequestGet({ request, env }) {
@@ -18,10 +14,9 @@ export async function onRequestGet({ request, env }) {
   const busca = chaveTexto(url.searchParams.get('q') || '');
   const filtro = url.searchParams.get('filtro') || 'todos';
 
-  const [indicadores, sincronizacao, disparo] = await Promise.all([
+  const [indicadores, sincronizacao] = await Promise.all([
     listarIndicadoresComPremio(db),
     ultimaSincronizacao(db),
-    ultimoDisparo(db),
   ]);
 
   const ranking = montarRanking(indicadores);
@@ -69,13 +64,6 @@ export async function onRequestGet({ request, env }) {
     return chaveTexto(l.nome_completo).includes(busca) || chaveTexto(l.email).includes(busca);
   });
 
-  // O disparo manual fica "em andamento" enquanto a sincronização que ele
-  // pediu ainda não chegou (ou até o intervalo mínimo vencer).
-  const disparoPendente =
-    disparo &&
-    (!sincronizacao || sincronizacao.criado_em < disparo.criado_em) &&
-    Date.now() - Date.parse(disparo.criado_em) < INTERVALO_SYNC_MIN * 60 * 1000;
-
   return json({
     kpis,
     indicadores: filtradas,
@@ -83,9 +71,6 @@ export async function onRequestGet({ request, env }) {
     ultima_sincronizacao: sincronizacao
       ? { ...sincronizacao, resumo: sincronizacao.resumo ? JSON.parse(sincronizacao.resumo) : null }
       : null,
-    disparo_pendente: Boolean(disparoPendente),
-    ultimo_disparo: disparo || null,
-    intervalo_sync_min: INTERVALO_SYNC_MIN,
-    sync_configurado: Boolean(env.GITHUB_SYNC_TOKEN),
+    sync_configurado: vendasConfigurado(env),
   });
 }

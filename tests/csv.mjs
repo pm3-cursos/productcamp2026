@@ -1,6 +1,5 @@
-// Leitor de CSV (RFC 4180) para rodar a sincronização a partir de um arquivo
-// local em vez do Google Sheets — usado nos testes e para conferir regras
-// sem credenciais. Puro, sem dependências.
+// Leitor de CSV (RFC 4180) usado só pelos testes, para carregar as fixtures
+// como matriz de strings. Puro, sem dependências.
 
 /** Detecta o separador olhando a primeira linha fora de aspas. */
 export function detectarSeparador(texto) {

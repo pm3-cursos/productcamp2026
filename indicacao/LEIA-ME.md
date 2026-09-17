@@ -6,19 +6,26 @@ indica amigos usando o próprio e-mail como cupom; quando as indicações somam
 vale para os **50 primeiros** que baterem a marca, e a liberação é **manual**,
 feita pelo time PM3.
 
-A fonte de verdade é a **planilha de pedidos no Google Sheets**. Um job no
-GitHub Actions lê a planilha a cada 6 horas (ou quando alguém pede pelo painel)
-e grava um snapshot no banco da plataforma (Cloudflare D1). As telas leem só o
-banco — nunca a planilha em tempo real.
+A fonte de verdade é a **planilha de vendas de eventos no Google Sheets**,
+espelhada no D1 compartilhado `pm3-eventos` pelo Worker
+**`pm3-eventos-vendas-sync`** (repositório próprio; roda a cada 6 horas). A
+plataforma lê a tabela `pedidos` desse Worker por HTTP, aplica as regras de
+indicação e grava um snapshot no banco dela (`pcamp-indicacao`). As telas leem
+só esse banco — nunca a planilha nem o Worker em tempo real.
 
 ```
-Google Sheets ──(6/6 h · botão do painel)──► GitHub Actions ──► D1 (Cloudflare)
-                   conta de serviço, só leitura   sync/index.mjs      ▲
-                                                                       │ só leitura + VIP manual
-                                                        Pages Functions (/api/*, telas)
-                                                                       │
-                                                       liberou VIP ──► webhook do n8n ──► linha de cortesia na planilha
+Google Sheets ──(6/6 h)──► Worker pm3-eventos-vendas-sync ──► D1 pm3-eventos (tabela pedidos)
+                                        │ callback ao fim de cada rodada          ▲ GET /pedidos?evento=Pcamp 2026
+                                        ▼                                         │ (token só de leitura)
+                     Pages Functions da indicação ─── regras ──► D1 pcamp-indicacao ──► telas
+                       /api/sync/callback · /api/admin/sincronizar (botão)
+                                        │
+                        liberou VIP ──► webhook do n8n ──► linha de cortesia na planilha
 ```
+
+Por que HTTP e não binding: o site vive na conta Cloudflare do
+productcamp.com.br e o `pm3-eventos` na conta Admins@cursospm3 (com os outros
+apps da PM3). Binding de D1 só funciona dentro da mesma conta.
 
 ---
 
@@ -33,8 +40,9 @@ Roda no mesmo projeto do Cloudflare Pages do site, sem build:
 | `functions/api/` | A API (Cloudflare Pages Functions) |
 | `functions/_lib/` | Regras de negócio, leitura da planilha, sessão, e-mail, webhook |
 | `functions/indicacao/*/[_middleware.js]` | Portões de acesso das páginas logadas |
-| `sync/` | O script de sincronização planilha → D1 (Node puro, sem dependências) |
-| `.github/workflows/sync-indicacao.yml` | O agendamento (6/6 h) e o disparo manual |
+| `functions/_lib/vendas.js` | Cliente HTTP do Worker de vendas; pedidos → matriz que `planilha.js` lê |
+| `functions/_lib/snapshot.js` | Regras aplicadas → snapshot gravado no D1 (`gravarSnapshot`) |
+| `functions/_lib/sincronizacao.js` | Uma rodada completa (usada pelo botão e pelo callback) |
 | `indicacao/schema.sql` | Schema do banco (Cloudflare D1) |
 | `_routes.json` (raiz) | Garante que só `/api/*` e as páginas logadas passam pelas Functions |
 | `tests/` | Testes: `run.mjs` (unitários, sem dependências) e `e2e.mjs` (contra o servidor local) |
@@ -78,14 +86,16 @@ As telas usam o **design system do site**, não um tema próprio:
 
 ---
 
-## A planilha
+## A planilha (via `pedidos`)
 
-Uma aba com uma linha por pedido e este cabeçalho (a ordem não importa;
-maiúsculas e acentos também não):
+O Worker de vendas espelha a aba de pedidos como ela é — todos os eventos,
+cancelados marcados — na tabela `pedidos`. A plataforma pede só o evento
+`Pcamp 2026` (`GET /pedidos?evento=…`) e converte cada pedido numa linha com
+as colunas da planilha, para as regras continuarem escritas em termos dela:
 
-`Data do Pedido · Nome · Sobrenome · E-mail · Telefone · Lote · Número de
-Ingressos · Valor por ingresso · Valor total do pedido · Cupom · Categoria ·
-Formato · Modalidade · … · Evento · Ano`
+`Data do Pedido · Nome · Sobrenome · E-mail · Lote · Número de Ingressos ·
+Valor por ingresso · Valor total do pedido · Cupom · Categoria · Formato ·
+Modalidade · Evento`
 
 O que a plataforma lê:
 
@@ -108,7 +118,10 @@ estão em `functions/_lib/planilha.js`; os valores fixos (`Pcamp 2026`,
 `Passaporte`, `VIP`, `CANCELADO`) em `functions/_lib/config.js`.
 
 A planilha só tem compras confirmadas — não existe coluna de estado de
-pagamento. Cancelamento é `CANCELADO` em `Número de Ingressos`.
+pagamento. Cancelamento é `CANCELADO` em `Número de Ingressos` (o Worker guarda
+como `cancelado = 1`; a conversão devolve a marca). O Worker guarda só a data
+do pedido, sem hora: `qualificou_em` fica no formato `YYYY-MM-DD`, e dois
+indicadores que fecham a meta no mesmo dia desempatam por total e e-mail.
 
 ---
 
@@ -150,28 +163,26 @@ o resultado gravado.
 
 ## Setup (uma vez)
 
-### A. Google — a conta de serviço que lê a planilha
+### A. O Worker de vendas (repositório `pm3-eventos-vendas-sync`)
 
-1. [console.cloud.google.com](https://console.cloud.google.com) com a conta
-   tech@pm3.com.br → criar um projeto (ex.: `pcamp-indicacao`).
-2. **APIs e serviços → Biblioteca → Google Sheets API → Ativar.**
-3. **APIs e serviços → Credenciais → Criar credenciais → Conta de serviço.**
-   Nome `sync-indicacao`; permissões opcionais podem ficar vazias.
-4. Na conta criada, aba **Chaves → Adicionar chave → Criar nova chave → JSON.**
-   Baixa um `.json` — é a senha do robô, guarde bem.
-5. Copie o `client_email` do JSON e, na planilha, **Compartilhar → colar o
-   e-mail → Leitor.** Nada de "Publicar na web" nem "Qualquer pessoa com o
-   link".
-6. Anote o **ID da planilha** (trecho da URL entre `/d/` e `/edit`) e o nome
-   da aba com os pedidos.
+A conta de serviço do Google, a leitura da planilha e o D1 `pm3-eventos` são
+responsabilidade do Worker — setup no README dele. O que a plataforma precisa
+de lá:
+
+1. A URL do Worker (`https://pm3-eventos-vendas-sync.<conta>.workers.dev`).
+2. Um **token só de leitura** (`READ_TOKEN` no Worker) — dá acesso a
+   `GET /pedidos` e `GET /status`, nunca ao `POST /sync`.
+3. No Worker, `CALLBACK_URL = https://www.productcamp.com.br/api/sync/callback`
+   e `CALLBACK_TOKEN` igual ao `SYNC_CALLBACK_TOKEN` daqui — é o que faz o
+   painel se atualizar sozinho ao fim de cada espelhamento.
 
 ### B. Cloudflare — banco e variáveis
 
 > **Estado em produção (14/09/2026):** o banco `pcamp-indicacao` já existe com
 > o binding `DB`, as variáveis de e-mail e o `SESSION_SECRET`, só no ambiente
-> Production. Ao publicar esta versão (planilha → D1), falta: rodar o
-> `schema-reset.sql` + `schema.sql` de novo, criar o token de D1 e os secrets
-> do GitHub (C), e os secrets novos do Pages (`N8N_*`, `GITHUB_SYNC_TOKEN`).
+> Production. Ao publicar esta versão (pedidos → D1), falta: rodar o
+> `schema-reset.sql` + `schema.sql` de novo e criar os secrets novos do Pages
+> (`VENDAS_API_*`, `SYNC_CALLBACK_TOKEN`, `N8N_*`).
 
 > ⚠️ **Confira a conta antes de rodar qualquer comando do Wrangler.** O projeto
 > `productcamp2026` fica na conta da Cloudflare `7023d597cae5b2533647b58f8c05b290`
@@ -211,7 +222,7 @@ preview, crie um banco separado (`pcamp-indicacao-preview`).
 > Não existe `wrangler.toml` na raiz de propósito: a configuração de
 > hospedagem vive no painel da Cloudflare (ver `CLAUDE.md`). O único arquivo
 > de configuração do Wrangler é `tests/wrangler.e2e.toml`, usado só para o
-> D1 **local** (testes e `sync/index.mjs --local`).
+> D1 **local** (testes).
 
 **Settings → Variables and Secrets**, em Production:
 
@@ -223,7 +234,9 @@ preview, crie um banco separado (`pcamp-indicacao-preview`).
 | `RESEND_API_KEY` / `SENDGRID_API_KEY` | Secret | Conforme o provedor |
 | `N8N_VIP_WEBHOOK_URL` | Secret | URL do webhook do n8n que grava a cortesia na planilha |
 | `N8N_VIP_WEBHOOK_TOKEN` | Secret | Opcional — vai como `Authorization: Bearer` se o webhook exigir |
-| `GITHUB_SYNC_TOKEN` | Secret | Opcional — habilita o botão **Atualizar dados** no painel (ver D) |
+| `VENDAS_API_URL` | Texto | URL do Worker de vendas (passo A) |
+| `VENDAS_API_TOKEN` | Secret | O `READ_TOKEN` do Worker — só leitura |
+| `SYNC_CALLBACK_TOKEN` | Secret | O que o Worker manda em `Authorization: Bearer` ao chamar `/api/sync/callback` (`openssl rand -base64 32`) |
 
 O domínio do remetente precisa estar verificado no provedor de e-mail, senão
 os links mágicos caem em spam ou nem saem. Hoje o remetente é o **`pm3.com.br`**,
@@ -232,40 +245,18 @@ mesma conta**. Atenção ao limite diário do plano do Resend: cada pedido de
 acesso é um e-mail, e um convite em massa pode estourar o limite e travar o
 login até ele renovar.
 
-Token da API para o GitHub gravar no D1: [dash.cloudflare.com/profile/api-tokens](https://dash.cloudflare.com/profile/api-tokens)
-→ **Create Custom Token** → permissão **Account → D1 → Edit**, só a conta da
-PM3, validade até dezembro. Anote também o **Account ID**.
+### C. Primeira carga
 
-### C. GitHub — segredos do workflow
+Com as variáveis no lugar (e o deploy feito), entre em `/indicacao/pm3/` e
+clique **Atualizar dados**. Leva poucos segundos; a linha "Última
+sincronização" mostra quantos pedidos vieram e quando o Worker leu a planilha.
+Dali em diante o Worker chama o callback a cada rodada.
 
-No repositório → **Settings → Secrets and variables → Actions**:
+### D. Sem callback
 
-| Secret | Valor |
-| --- | --- |
-| `GOOGLE_SA_JSON` | O conteúdo inteiro do `.json` da conta de serviço (passo A4) |
-| `SHEET_ID` | O ID da planilha |
-| `SHEET_TAB` | O nome da aba (se vazio, usa a primeira) |
-| `CLOUDFLARE_API_TOKEN` | O token do passo B |
-| `CLOUDFLARE_ACCOUNT_ID` | O Account ID |
-
-Feito isso, o workflow `sync-indicacao` roda a cada 6 horas sozinho. Para
-rodar na hora: aba **Actions → sync-indicacao → Run workflow**.
-
-> O GitHub desativa workflows agendados após 60 dias sem commit no repositório.
-> Até o evento isso não acontece; depois dele, é o comportamento desejado.
-
-### D. O botão "Atualizar dados" no painel (opcional)
-
-Para o time disparar a sincronização sem abrir o GitHub:
-
-1. Na conta tech@pm3.com.br: **Settings → Developer settings → Personal access
-   tokens → Fine-grained → Generate.** Repositório: só este. Permissão:
-   **Actions → Read and write**, nada mais. Expiração: dezembro de 2026.
-2. Guarde como `GITHUB_SYNC_TOKEN` no Pages (tabela acima).
-
-Se o token vazar, o pior que alguém faz é disparar sincronizações — ele não lê
-a planilha nem escreve no banco. O painel trava disparos a menos de 5 minutos
-um do outro, e o workflow nunca roda duas vezes ao mesmo tempo.
+Se o `CALLBACK_URL` não estiver configurado no Worker, nada quebra: os pedidos
+continuam sendo espelhados a cada 6 h e o painel atualiza quando alguém clica
+**Atualizar dados**. O callback só tira o clique do caminho.
 
 ### E. O webhook do n8n
 
@@ -297,11 +288,11 @@ mão.
 
 ## Operação do dia a dia
 
-Nada a fazer: a planilha é lida a cada 6 horas. Quando quiser ver uma compra
-recém-feita:
+Nada a fazer: a planilha é espelhada a cada 6 horas e o painel se atualiza
+logo em seguida (callback). Quando quiser ver uma compra recém-feita que já
+esteja no espelho:
 
-1. `/indicacao/pm3/` → **Atualizar dados**. O botão fica "Atualizando…" e o
-   painel se atualiza sozinho em 1–2 minutos.
+1. `/indicacao/pm3/` → **Atualizar dados**. Leva poucos segundos.
 2. Conferir a linha "Última sincronização": linhas lidas, compras do evento,
    indicadores, qualificados e, se houver, **cupons de e-mail sem indicador**
    (alguém usou como cupom um e-mail que não tem Passaporte — revisar).
@@ -371,9 +362,12 @@ cada pessoa leu.
 
 Detalhes que valem saber:
 
-- Nenhum segredo fica no código: a chave da conta de serviço e o ID da planilha
-  só existem nos secrets do GitHub; os tokens do n8n e do GitHub, nos secrets
-  do Pages. O navegador nunca fala com o Google.
+- Nenhum segredo fica no código: o token de leitura do Worker de vendas, o do
+  callback e o do n8n vivem nos secrets do Pages; a chave do Google só existe
+  no Worker. O navegador nunca fala com o Google nem com o Worker.
+- Arquivos internos do repositório (`tests/`, `indicacao/schema*.sql`,
+  `indicacao/LEIA-ME.md`) respondem 404 em produção, por Functions listadas no
+  `_routes.json` — o Pages serviria qualquer arquivo do repo como estático.
 
 ---
 
@@ -386,10 +380,9 @@ SESSION_SECRET=um-segredo-local-de-32-caracteres-ou-mais
 MAIL_PROVIDER=console
 MOSTRAR_LINK=1
 N8N_VIP_WEBHOOK_URL=http://127.0.0.1:8799/vip
-# Para ler a planilha de verdade (opcional):
-# GOOGLE_SA_JSON_PATH=sync/conta-de-servico.json   (o .gitignore já ignora sync/*.json)
-# SHEET_ID=1AbC...xyz
-# SHEET_TAB=Pedidos
+VENDAS_API_URL=http://127.0.0.1:8798        # Worker de vendas falso que o e2e sobe
+VENDAS_API_TOKEN=token-vendas-local
+SYNC_CALLBACK_TOKEN=token-callback-local
 EOF
 
 # 2. Cria as tabelas no D1 local
@@ -400,28 +393,23 @@ npx wrangler d1 execute DB --local --config tests/wrangler.e2e.toml \
 npx wrangler pages dev . --d1 DB=local-e2e --persist-to .wrangler/state \
   --compatibility-date=2026-06-23 --ip 127.0.0.1 --port 8788
 
-# 4. Alimenta o D1 local
-node sync/index.mjs --local --fixture=tests/fixtures/planilha-pedidos.csv   # com a planilha de exemplo
-node sync/index.mjs --local                                                   # com a planilha real (precisa do passo 1)
+# 4. Alimenta o D1 local: rode o e2e (ele sobe o Worker falso com a fixture e
+#    sincroniza), ou aponte VENDAS_API_URL para um pm3-eventos-vendas-sync
+#    rodando localmente (`npm run dev` lá, com o READ_TOKEN dele) e clique
+#    "Atualizar dados" no painel.
+node tests/e2e.mjs
 ```
 
 O `d1 execute --local` não aceita o banco só por flag: precisa de um arquivo de
 configuração. Ele fica em `tests/wrangler.e2e.toml`, e não num `wrangler.toml`
 na raiz, pelo motivo explicado acima. O `--persist-to` e o `DB=local-e2e` fazem
-os comandos enxergarem o mesmo banco (o `sync/index.mjs --local` usa os mesmos).
+os comandos enxergarem o mesmo banco.
 O `--compatibility-date` é o de produção (`2026-06-23`); um Wrangler antigo em
 cache pode recusar a data — nesse caso, `npx wrangler@latest`.
-
-`node sync/index.mjs` sem `--local` só lê e imprime o resumo — é a forma mais
-rápida de conferir as regras contra a planilha real sem gravar nada.
 
 Com `MAIL_PROVIDER=console` nenhum e-mail é enviado: o link mágico é impresso
 no terminal e, com `MOSTRAR_LINK=1`, aparece também na própria tela de acesso.
 **Nunca** ligue `MOSTRAR_LINK` em produção.
-
-> Gravar no D1 local enquanto o `pages dev` está aberto às vezes derruba a
-> primeira requisição seguinte (dois processos no mesmo SQLite). Recarregue a
-> página. Em produção isso não existe: o sync escreve pela API do D1.
 
 ### Testes
 
@@ -433,8 +421,9 @@ node tests/run.mjs
 
 Cobrem a leitura da planilha (colunas, evento, cancelado, cupom que é e-mail),
 quem é indicador (Passaporte × VIP × cortesia), a contagem por ingressos, a
-data de qualificação, a fila dos 50, o ranking, o SQL do snapshot (nunca toca
-em `vip_liberado`), o corpo do webhook e o controle de acesso.
+data de qualificação, a fila dos 50, o ranking, a conversão de `pedidos` em
+planilha, a gravação do snapshot (nunca toca em `vip_liberado`), o corpo do
+webhook e o controle de acesso.
 
 **Ponta a ponta** — precisa do `wrangler pages dev` rodando (instruções no topo
 de `tests/e2e.mjs`):
@@ -443,11 +432,12 @@ de `tests/e2e.mjs`):
 node tests/e2e.mjs
 ```
 
-Roda o sync com a fixture no D1 local, confere o painel, sincroniza de novo
-para provar idempotência, libera VIP (com um n8n falso local que confere o
-JSON), prova que a sincronização preserva a marcação, simula cancelamento e
-cortesia, faz login por link mágico e testa o isolamento entre os perfis.
-Rode antes de qualquer PR que toque em `functions/` ou `sync/`.
+Sobe um Worker de vendas falso servindo a fixture, sincroniza pela API (botão
+e callback), confere o painel, sincroniza de novo para provar idempotência,
+libera VIP (com um n8n falso local que confere o JSON), prova que a
+sincronização preserva a marcação, simula cancelamento e cortesia, faz login
+por link mágico e testa o isolamento entre os perfis. Rode antes de qualquer
+PR que toque em `functions/`.
 
 ---
 

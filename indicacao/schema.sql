@@ -3,11 +3,12 @@
 --   npx wrangler d1 execute pcamp-indicacao --remote --file=indicacao/schema.sql
 -- O script é idempotente: pode rodar de novo sem perder dados.
 --
--- A fonte de verdade é a planilha de pedidos (Google Sheets). O script
--- sync/index.mjs lê a planilha e grava aqui um snapshot completo de
--- `indicadores`, `compras` e `premios` (contagens). O que é da plataforma e
--- nunca é tocado pelo snapshot: `premios.vip_liberado` (decisão manual do
--- time), `vip_log`, `magic_links`.
+-- A fonte de verdade é a tabela `pedidos` do D1 `pm3-eventos` (espelho da
+-- planilha de vendas, mantido pelo Worker pm3-eventos-vendas-sync). A
+-- Function de sincronização lê os pedidos por HTTP e grava aqui um snapshot
+-- completo de `indicadores`, `compras` e `premios` (contagens). O que é da
+-- plataforma e nunca é tocado pelo snapshot: `premios.vip_liberado` (decisão
+-- manual do time), `vip_log`, `aceites_regulamento`, `magic_links`.
 --
 -- Se o banco foi criado com o schema anterior (upload de planilha da Sympla),
 -- rode antes indicacao/schema-reset.sql: as tabelas de snapshot mudaram.
@@ -89,8 +90,8 @@ CREATE INDEX IF NOT EXISTS idx_magic_email ON magic_links (email, criado_em);
 CREATE INDEX IF NOT EXISTS idx_magic_expira ON magic_links (expira_em);
 
 -- ---------------------------------------------------------------------------
--- Histórico de sincronizações (tipo 'planilha') e de disparos manuais do
--- painel (tipo 'disparo'). `resumo` é o JSON completo da rodada.
+-- Histórico de sincronizações (tipo 'planilha'); `origem` diz quem pediu
+-- (e-mail do admin ou 'worker'). `resumo` é o JSON completo da rodada.
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS sincronizacoes (
   id                 INTEGER PRIMARY KEY AUTOINCREMENT,

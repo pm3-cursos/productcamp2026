@@ -16,8 +16,9 @@ const { calcularContagens, dataDeQualificacao, montarFilaVip, montarRanking, den
 const { criarSessao, lerSessao, ehAdmin, cookieSessao } = await lib('session.js');
 const { META_COMPRAS, TETO_VIP, ADMINS, mensagemWhatsApp, TEXTO_VIP_BANNER, TEXTO_VIP_CUPOM_ATIVO, LOTE_VIP_CORTESIA } = await lib('config.js');
 const { montarAvisoVip } = await lib('webhook.js');
-const { parseDelimitado, detectarSeparador } = await modulo('sync/csv.js');
-const { montarSnapshot, gerarSQL, sql } = await modulo('sync/snapshot.js');
+const { parseDelimitado, detectarSeparador } = await modulo('tests/csv.mjs');
+const { montarSnapshot, gravarSnapshot } = await lib('snapshot.js');
+const { pedidosParaMatriz, pedidoParaLinha, CABECALHO } = await lib('vendas.js');
 
 let passou = 0;
 const falhas = [];
@@ -84,6 +85,8 @@ await teste('nomes exibidos são abreviados', () => {
   assert.equal(nomeAbreviado('Thiago'), 'Thiago');
   assert.equal(iniciais('Ana Souza'), 'AS');
   assert.equal(primeiroNome('ana souza'), 'Ana');
+  assert.equal(primeiroNome('ACASSIO KONDO'), 'Acassio');
+  assert.equal(primeiroNome('McDonald Silva'), 'McDonald');
 });
 
 await teste('formatação de moeda', () => {
@@ -257,25 +260,62 @@ await teste('montarSnapshot marca conta/motivo compra a compra', () => {
   assert.equal(snap.resumo.ingressos_indicados, 4);
 });
 
-await teste('gerarSQL nunca toca em vip_liberado e apaga só o que ficou velho', () => {
+/** D1 de mentira: registra o SQL e os parâmetros de tudo que seria executado. */
+function bancoFalso() {
+  const executados = [];
+  const stmt = (sql) => ({
+    sql,
+    params: [],
+    bind(...params) { this.params = params; return this; },
+    async run() { executados.push({ sql, params: this.params }); return { meta: {} }; },
+    async first() { return null; },
+    async all() { return { results: [] }; },
+  });
+  return {
+    executados,
+    prepare: (sql) => stmt(sql),
+    async batch(lista) { for (const s of lista) executados.push({ sql: s.sql, params: s.params }); return []; },
+  };
+}
+
+await teste('gravarSnapshot nunca toca em vip_liberado e apaga só o que ficou velho', async () => {
   const snap = montarSnapshot(fixture, { agora: 'T' });
-  const statements = gerarSQL(snap, 123, 'teste');
-  const tudo = statements.join('\n');
+  const db = bancoFalso();
+  const { sync_id } = await gravarSnapshot(db, snap, { origem: 'teste', syncId: 123 });
+  assert.equal(sync_id, 123);
+  const sqls = db.executados.map((e) => e.sql.replace(/\s+/g, ' '));
+  const tudo = sqls.join('\n');
   assert.ok(!/INSERT INTO premios \([^)]*vip_liberado/.test(tudo), 'não pode inserir vip_liberado');
-  assert.ok(!/SET[^;]*vip_liberado\s*=/.test(tudo), 'não pode atualizar vip_liberado');
+  assert.ok(!sqls.some((q) => /SET.*vip_liberado\s*=/.test(q)), 'não pode atualizar vip_liberado');
   assert.ok(!/liberado_por|liberado_em/.test(tudo));
-  assert.ok(tudo.includes('DELETE FROM compras WHERE sync_id <> 123;'));
-  assert.ok(tudo.includes('DELETE FROM indicadores WHERE sync_id <> 123;'));
+  const del = (tabela) => db.executados.find((e) => e.sql.includes(`DELETE FROM ${tabela} WHERE sync_id <> ?`));
+  assert.deepEqual(del('compras').params, [123]);
+  assert.deepEqual(del('indicadores').params, [123]);
   assert.ok(tudo.includes('DELETE FROM premios WHERE vip_liberado = 0 AND email NOT IN'));
-  assert.ok(tudo.includes("('planilha', 123, 'teste'"));
   assert.ok(!tudo.includes('DELETE FROM compras;'), 'nunca esvazia a tabela');
+  assert.equal(db.executados.filter((e) => e.sql.includes('INSERT INTO indicadores')).length, 7);
+  assert.equal(db.executados.filter((e) => e.sql.includes('INSERT OR REPLACE INTO compras')).length, 13);
+  const registro = db.executados.find((e) => e.sql.includes('INSERT INTO sincronizacoes'));
+  assert.equal(registro.params[0], 123);
+  assert.equal(registro.params[1], 'teste');
 });
 
-await teste('literal SQL escapa aspas e trata nulos', () => {
-  assert.equal(sql("d'agua"), "'d''agua'");
-  assert.equal(sql(null), 'NULL');
-  assert.equal(sql(1.5), '1.5');
-  assert.equal(sql(true), '1');
+// ---------------------------------------------------------------- pedidos do Worker
+await teste('pedidos do Worker viram a matriz que planilha.js lê', () => {
+  const pedidos = [
+    { data_pedido: '2026-08-05', nome: 'Bruno', sobrenome: 'Lima', email: 'bruno.lima@email.com', lote: 'Lote 2', numero_ingressos: 2, cancelado: 0, valor_unitario: 1300, valor_total: 2600, cupom: 'Marina.Castro@Email.com', categoria: 'Sympla', formato: 'B2C', modalidade: 'Passaporte', evento: 'Pcamp 2026' },
+    { data_pedido: '2026-08-07', nome: 'Diego', sobrenome: null, email: 'diego@email.com', lote: null, numero_ingressos: null, cancelado: 1, valor_unitario: null, valor_total: null, cupom: null, categoria: null, formato: null, modalidade: 'Passaporte', evento: 'Pcamp 2026' },
+  ];
+  const matriz = pedidosParaMatriz(pedidos);
+  assert.deepEqual(matriz[0], CABECALHO);
+  assert.deepEqual(pedidoParaLinha(pedidos[0]), ['2026-08-05', 'Bruno', 'Lima', 'bruno.lima@email.com', 'Lote 2', '2', '1300', '2600', 'Marina.Castro@Email.com', 'Sympla', 'B2C', 'Passaporte', 'Pcamp 2026']);
+  assert.equal(pedidoParaLinha(pedidos[1])[5], 'CANCELADO', 'cancelado vira a marca que a regra reconhece');
+  const snap = montarSnapshot(matriz);
+  assert.deepEqual(snap.faltando, []);
+  assert.equal(snap.compras.length, 1, 'o cancelado fica de fora');
+  assert.equal(snap.compras[0].quantidade, 2);
+  assert.equal(snap.compras[0].valor, 2600);
+  assert.equal(snap.compras[0].cupom_email, 'marina.castro@email.com');
 });
 
 await teste('faltando coluna, o snapshot não gera nada', () => {

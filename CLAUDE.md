@@ -14,7 +14,6 @@ Landing page do **Product Camp Brasil 2026** — o maior evento de produto da Am
   - `assets/docs/` — documentos públicos servidos pelo site (hoje, o PDF do Regulamento do Programa de Indicação, linkado na tela de acesso de `/indicacao/`).
   - `indicacao/` — telas da plataforma de indicação (HTML/CSS/JS estáticos) + `schema.sql` + `LEIA-ME.md`.
   - `functions/` — a API da plataforma de indicação (Cloudflare Pages Functions). **Nenhuma rota do site passa por aqui** (garantido pelo `_routes.json` na raiz).
-  - `sync/` — script que lê a planilha de pedidos (Google Sheets) e grava o snapshot no D1; roda no GitHub Actions (`.github/workflows/sync-indicacao.yml`).
   - `tests/` — testes da plataforma de indicação: `run.mjs` (unitários, sem dependências) e `e2e.mjs` (contra o servidor local).
   - **Raiz:** `index.html`, `pocket.html`, favicons (`favicon.png`, `favicon-16.png`, `apple-touch-icon.png` — ficam na raiz por convenção), `robots.txt`, `sitemap.xml`, `llms.txt`, `.gitignore`, `CLAUDE.md`, `README.md`.
   - Ao adicionar uma imagem nova, coloque-a na subpasta correta de `assets/img/` (nunca na raiz) e referencie com o caminho relativo completo.
@@ -139,7 +138,7 @@ O que não pode ser esquecido ao tocar nessa parte:
   site. Bindings e variáveis ficam no painel; para rodar local, use as flags do
   `wrangler pages dev` e o `.dev.vars`. O `wrangler d1 execute --local` exige um
   arquivo de config — por isso ele existe em `tests/wrangler.e2e.toml`, fora da
-  raiz e invisível para o deploy (o `sync/index.mjs --local` usa o mesmo arquivo).
+  raiz e invisível para o deploy.
 - **Nenhuma Function na raiz.** `functions/` só tem arquivos dentro de `api/` e
   de `indicacao/`. Um `functions/_middleware.js` na raiz passaria a interceptar
   **todas** as requisições, inclusive as da landing page, e cobraria latência de
@@ -149,14 +148,21 @@ O que não pode ser esquecido ao tocar nessa parte:
   acesso a essa caixa é admin (o controle real está no provedor de e-mail, não no
   repo), e o `liberado_por` de todo upgrade VIP registra `eventos@`, não a pessoa.
   Remover um e-mail da lista derruba na hora as sessões abertas dele.
-- **A fonte de verdade é a planilha do Google Sheets, lida pelo GitHub Actions.**
-  As Functions só leem o D1. A sincronização é um snapshot completo e **nunca
-  toca em `premios.vip_liberado`** — o teste de `gerarSQL` garante isso.
-- **Nenhum segredo no código.** Chave da conta de serviço e ID da planilha só
-  existem nos secrets do GitHub; tokens do n8n e do GitHub, nos secrets do Pages.
+- **A fonte de verdade é a tabela `pedidos` do Worker `pm3-eventos-vendas-sync`**
+  (repositório próprio, D1 `pm3-eventos` em outra conta da Cloudflare — por isso
+  a leitura é por HTTP, com token só de leitura, e não por binding). A
+  sincronização (`functions/_lib/sincronizacao.js`) grava um snapshot completo
+  em `pcamp-indicacao` e **nunca toca em `premios.vip_liberado`** — o teste de
+  `gravarSnapshot` garante isso.
+- **Nenhum segredo no código.** Tokens do Worker de vendas, do callback e do n8n
+  vivem nos secrets do Pages. Nada do Google existe neste repositório.
+- **Arquivos internos respondem 404 em produção** (`tests/`, `indicacao/schema*.sql`,
+  `indicacao/LEIA-ME.md`) por Functions listadas no `_routes.json` — o Pages
+  serve qualquer arquivo do repositório como estático. Ao criar pasta interna
+  nova, adicione ao bloqueio.
 - **Regra de negócio mora em `functions/_lib/planilha.js` e
   `functions/_lib/reconciliacao.js`**, em JavaScript puro e coberta por teste.
-  O `sync/` roda essas mesmas funções em Node. Não duplique as regras em SQL —
+  Não duplique as regras em SQL —
   o dia em que as duas implementações discordarem, alguém perde um prêmio.
 - **O visual é o design system do site, não um à parte.** `indicacao/app.css`
   abre com o mesmo bloco `:root` de `index.html`, copiado valor a valor, e

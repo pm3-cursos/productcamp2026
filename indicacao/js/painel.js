@@ -1,6 +1,6 @@
 // Painel do time PM3: tabela de indicadores, liberação manual do VIP e o
-// botão que pede uma sincronização da planilha (roda no GitHub Actions; o
-// painel acompanha pela data da última sincronização).
+// botão que sincroniza com o Worker de vendas (lê os pedidos e regrava o
+// snapshot da indicação — leva poucos segundos).
 
 import {
   $,
@@ -29,13 +29,8 @@ const estado = {
   // Paginação: página da tabela principal e, por indicador, do detalhe.
   pagina: 1,
   paginaDetalhe: new Map(),
-  // Sincronização: id da última vista e o timer de acompanhamento.
-  ultimaSyncId: null,
-  aguardandoSync: false,
-  timerSync: null,
+  sincronizando: false,
 };
-
-const INTERVALO_ACOMPANHAMENTO_MS = 15000;
 const POR_PAGINA = 20;
 
 // ---------------------------------------------------------------- paginação
@@ -212,29 +207,23 @@ function renderSync(dados) {
   const botao = $('#sincronizar');
   const ultima = dados.ultima_sincronizacao;
 
-  // Chegou uma sincronização nova enquanto esperávamos? Então acabou.
-  if (estado.aguardandoSync && ultima && ultima.sync_id !== estado.ultimaSyncId) {
-    estado.aguardandoSync = false;
-    estado.comprasPorEmail.clear();
-  }
-  estado.ultimaSyncId = ultima ? ultima.sync_id : null;
-
-  const emAndamento = estado.aguardandoSync || dados.disparo_pendente;
-  botao.disabled = emAndamento || !dados.sync_configurado;
-  botao.textContent = emAndamento ? 'Atualizando…' : 'Atualizar dados';
+  botao.disabled = estado.sincronizando || !dados.sync_configurado;
+  botao.textContent = estado.sincronizando ? 'Atualizando…' : 'Atualizar dados';
   botao.title = dados.sync_configurado
-    ? 'Lê a planilha de pedidos agora e atualiza o painel (leva 1–2 min)'
-    : 'Disparo manual não configurado (GITHUB_SYNC_TOKEN). A sincronização automática continua a cada 6 h.';
+    ? 'Lê os pedidos no Worker de vendas agora e atualiza o painel'
+    : 'Fonte de pedidos não configurada (VENDAS_API_URL / VENDAS_API_TOKEN).';
 
   const partes = [];
   if (ultima) {
     const r = ultima.resumo || {};
     partes.push(
       `Última sincronização: <b>${esc(dataLonga(ultima.criado_em))}</b> (${esc(
-        ultima.origem === 'cron' ? 'automática' : ultima.origem
-      )}) · ${ultima.linhas_lidas} linhas lidas · ${ultima.compras} compras do evento · ${
+        ultima.origem === 'worker' ? 'automática' : ultima.origem
+      )}) · ${ultima.linhas_lidas} pedidos lidos · ${ultima.compras} do evento · ${
         ultima.indicadores
-      } indicadores · ${ultima.qualificados} qualificados`
+      } indicadores · ${ultima.qualificados} qualificados${
+        r.fonte_sincronizado_em ? ` · planilha lida em ${esc(dataLonga(r.fonte_sincronizado_em))}` : ''
+      }`
     );
     if (ultima.cupons_orfaos) {
       partes.push(
@@ -252,32 +241,23 @@ function renderSync(dados) {
   } else {
     partes.push('Nenhuma sincronização registrada ainda.');
   }
-  if (emAndamento) {
-    partes.push(
-      `<span class="sync-andamento">Sincronização em andamento${
-        dados.ultimo_disparo ? ` (pedida por ${esc(dados.ultimo_disparo.origem)})` : ''
-      } — o painel atualiza sozinho quando terminar.</span>`
-    );
-  }
   alvo.innerHTML = partes.join('<br>');
-
-  clearTimeout(estado.timerSync);
-  if (emAndamento) estado.timerSync = setTimeout(carregarPainel, INTERVALO_ACOMPANHAMENTO_MS);
 }
 
 $('#sincronizar').addEventListener('click', async () => {
+  estado.sincronizando = true;
   const botao = $('#sincronizar');
   botao.disabled = true;
-  botao.textContent = 'Pedindo…';
+  botao.textContent = 'Atualizando…';
   avisoPainel('');
 
   const resultado = await api('/api/admin/sincronizar', { method: 'POST', body: {} });
+  estado.sincronizando = false;
   if (!resultado.ok) {
-    avisoPainel(mensagemDeErro(resultado, 'Não conseguimos pedir a sincronização agora.'));
-    await carregarPainel();
-    return;
+    avisoPainel(mensagemDeErro(resultado, 'Não conseguimos sincronizar agora.'));
+  } else {
+    estado.comprasPorEmail.clear();
   }
-  estado.aguardandoSync = true;
   await carregarPainel();
 });
 

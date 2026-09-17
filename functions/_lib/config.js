@@ -60,13 +60,11 @@ export const CATEGORIA_CORTESIA = 'Cortesia';
 /** Valor de `Número de Ingressos` que marca um pedido cancelado. */
 export const MARCA_CANCELADO = 'CANCELADO';
 
-/** Repositório cujo workflow de sincronização o painel dispara. */
-export const GITHUB_REPO = 'pm3-cursos/productcamp2026';
-export const GITHUB_WORKFLOW = 'sync-indicacao.yml';
-export const GITHUB_REF = 'main';
-
-/** Intervalo mínimo entre dois disparos manuais da sincronização. */
-export const INTERVALO_SYNC_MIN = 5;
+/**
+ * Fonte dos pedidos: o Worker `pm3-eventos-vendas-sync` (D1 `pm3-eventos`),
+ * lido por HTTP com VENDAS_API_URL + VENDAS_API_TOKEN (secrets do Pages).
+ * Ver functions/_lib/vendas.js e indicacao/LEIA-ME.md.
+ */
 
 /**
  * Regulamento vigente do programa. A versão é gravada em cada aceite (tabela

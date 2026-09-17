@@ -114,7 +114,9 @@ export function primeiroNome(nome) {
   const limpo = String(nome == null ? '' : nome).trim().replace(/\s+/g, ' ');
   if (!limpo) return '';
   const parte = limpo.split(' ')[0];
-  return parte.charAt(0).toUpperCase() + parte.slice(1);
+  // 'ACASSIO' (planilha em caixa alta) vira 'Acassio'; 'McDonald' fica como está.
+  const resto = parte === parte.toUpperCase() ? parte.slice(1).toLowerCase() : parte.slice(1);
+  return parte.charAt(0).toUpperCase() + resto;
 }
 
 /**

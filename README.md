@@ -15,8 +15,8 @@ somar 3 ingressos indicados, qualifica para o upgrade gratuito de Passaporte
 para VIP.
 
 - Telas em `indicacao/`, API em `functions/` (Cloudflare Pages Functions + D1).
-- Fonte de dados: a planilha de pedidos no Google Sheets, sincronizada com o D1
-  pelo GitHub Actions (`sync/`) a cada 6 h ou pelo botão do painel.
+- Fonte de dados: a planilha de vendas, espelhada no D1 `pm3-eventos` pelo Worker
+  `pm3-eventos-vendas-sync` (repositório próprio); a plataforma lê de lá por HTTP.
 - Setup, operação, regras do programa e testes: **[`indicacao/LEIA-ME.md`](indicacao/LEIA-ME.md)**.
 - O site em si continua estático — nenhuma rota da landing page passa pela API.
 

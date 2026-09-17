@@ -1,7 +1,7 @@
 // Acesso ao D1 a partir das Functions. As tabelas de snapshot (indicadores,
 // compras, contagens em premios) são escritas pelo script sync/ — aqui só se
 // lê. O que as Functions escrevem: liberação de VIP, links mágicos e o
-// registro dos disparos manuais de sincronização.
+// (a gravação do snapshot está em snapshot.js).
 
 import { agoraISO } from './util.js';
 
@@ -116,23 +116,6 @@ export function ultimaSincronizacao(db) {
         ORDER BY id DESC LIMIT 1`
     )
     .first();
-}
-
-/** Último disparo manual (para a trava de intervalo do botão). */
-export function ultimoDisparo(db) {
-  return db
-    .prepare(
-      `SELECT id, origem, criado_em FROM sincronizacoes WHERE tipo = 'disparo'
-        ORDER BY id DESC LIMIT 1`
-    )
-    .first();
-}
-
-export async function registrarDisparo(db, adminEmail) {
-  await db
-    .prepare(`INSERT INTO sincronizacoes (tipo, origem, criado_em) VALUES ('disparo', ?, ?)`)
-    .bind(adminEmail, agoraISO())
-    .run();
 }
 
 // ---------------------------------------------------------------- links mágicos
