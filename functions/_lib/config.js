@@ -34,8 +34,37 @@ export const SESSAO_TTL_H = 12;
 export const LIMITE_LINKS_POR_EMAIL_HORA = 5;
 export const LIMITE_LINKS_POR_IP_HORA = 20;
 
-/** Tamanho máximo aceito no upload de planilha (bytes). */
-export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+/**
+ * Planilha de pedidos (Google Sheets). A planilha é multi-evento: só entram
+ * as linhas cujo `Evento` bate com este valor (comparação sem acento/caixa).
+ */
+export const EVENTO_PLANILHA = 'Pcamp 2026';
+
+/** `Modalidade` que libera a pessoa para indicar. */
+export const MODALIDADE_INDICADOR = 'Passaporte';
+
+/** `Modalidade` que, se a pessoa também tiver, a tira da lista de indicadores. */
+export const MODALIDADE_VIP = 'VIP';
+
+/** `Formato` cuja compra de Passaporte NÃO libera a pessoa para indicar (compra corporativa). */
+export const FORMATO_SEM_INDICACAO = 'B2B';
+
+/**
+ * Lote gravado pelo n8n quando o time libera o upgrade VIP de um indicador.
+ * Uma linha VIP com este lote (ou Categoria "Cortesia") NÃO exclui a pessoa
+ * como indicadora: ela ganhou o VIP indicando e o cupom continua ativo.
+ */
+export const LOTE_VIP_CORTESIA = 'VIP liberado por indicação - Cortesia';
+export const CATEGORIA_CORTESIA = 'Cortesia';
+
+/** Valor de `Número de Ingressos` que marca um pedido cancelado. */
+export const MARCA_CANCELADO = 'CANCELADO';
+
+/**
+ * Fonte dos pedidos: o Worker `pm3-eventos-vendas-sync` (D1 `pm3-eventos`),
+ * lido por HTTP com VENDAS_API_URL + VENDAS_API_TOKEN (secrets do Pages).
+ * Ver functions/_lib/vendas.js e indicacao/LEIA-ME.md.
+ */
 
 /**
  * Regulamento vigente do programa. A versão é gravada em cada aceite (tabela

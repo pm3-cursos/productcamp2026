@@ -1,15 +1,16 @@
 // Regras de negócio da conciliação. Tudo puro: recebe compras + indicadores
-// e devolve as contagens. É a única implementação das regras — o Worker
-// carrega os dados do D1, chama estas funções e grava o resultado.
+// e devolve as contagens. É a única implementação das regras — o script de
+// sincronização roda isto em Node e grava o resultado no D1; as Functions só
+// leem o que foi gravado.
 
 import { META_COMPRAS, TETO_VIP } from './config.js';
 
 /**
  * Uma compra conta para o indicador quando:
- *   1. o pagamento está aprovado;
- *   2. ela veio na última planilha (não foi cancelada/removida);
- *   3. o cupom casa com um indicador ativo;
- *   4. o comprador não é o próprio indicador.
+ *   1. o cupom é um e-mail que casa com um indicador ativo;
+ *   2. o comprador não é o próprio indicador.
+ * (Linhas canceladas e de outros eventos já ficaram de fora na leitura.)
+ * Cada compra vale `quantidade` ingressos.
  *
  * @param {object[]} compras
  * @param {object[]} indicadores
@@ -24,24 +25,14 @@ export function calcularContagens({ compras, indicadores }) {
 
   const porIndicador = new Map();
   for (const email of ativos.keys()) {
-    porIndicador.set(email, { email, compras: [], total: 0, receita: 0 });
+    porIndicador.set(email, { email, compras: [], total: 0, receita: 0, qualificou_em: null });
   }
 
   const cuponsOrfaos = new Map();
   let autoindicacoes = 0;
   let semCupom = 0;
-  let naoAprovadas = 0;
-  let ausentes = 0;
 
   for (const compra of compras || []) {
-    if (Number(compra.ausente) === 1) {
-      ausentes++;
-      continue;
-    }
-    if (Number(compra.aprovado) !== 1) {
-      naoAprovadas++;
-      continue;
-    }
     if (!compra.cupom_email) {
       semCupom++;
       continue;
@@ -57,15 +48,15 @@ export function calcularContagens({ compras, indicadores }) {
 
     const alvo = porIndicador.get(compra.cupom_email);
     alvo.compras.push(compra);
-    alvo.total++;
+    alvo.total += Number(compra.quantidade) || 1;
     alvo.receita += Number(compra.valor) || 0;
   }
 
   for (const registro of porIndicador.values()) {
-    registro.compras.sort((a, b) =>
-      String(a.data_compra || '').localeCompare(String(b.data_compra || ''))
-    );
+    registro.compras.sort(compararPorData);
     registro.qualificado = registro.total >= META_COMPRAS;
+    registro.qualificou_em = dataDeQualificacao(registro.compras);
+    registro.receita = Math.round(registro.receita * 100) / 100;
   }
 
   return {
@@ -74,45 +65,50 @@ export function calcularContagens({ compras, indicadores }) {
     diagnostico: {
       autoindicacoes,
       semCupom,
-      naoAprovadas,
-      ausentes,
       cuponsOrfaosDistintos: cuponsOrfaos.size,
       linhasComCupomOrfao: [...cuponsOrfaos.values()].reduce((a, b) => a + b, 0),
     },
   };
 }
 
+function compararPorData(a, b) {
+  return (
+    String(a.data_compra || '9999').localeCompare(String(b.data_compra || '9999')) ||
+    String(a.id_compra || '').localeCompare(String(b.id_compra || ''))
+  );
+}
+
 /**
- * Decide o `qualificou_em` de um indicador.
- * Grava o momento apenas na primeira vez que ele bate a meta. Um cancelamento
- * que derrube a contagem não apaga o histórico (o teto de 50 é por ordem de
- * chegada), e `vip_liberado` nunca é tocado aqui.
+ * Momento em que o indicador bateu a meta: a data da compra que fez a soma
+ * de ingressos chegar a META_COMPRAS. Derivada dos dados, então é a mesma em
+ * qualquer sincronização — é ela que ordena a fila dos 50 prêmios.
  *
- * @param {string|null} qualificouEmAtual
- * @param {number} total
- * @param {string} agora ISO
- * @returns {{qualificou_em: string|null, qualificouAgora: boolean}}
+ * @param {object[]} comprasOrdenadas já em ordem de data
+ * @returns {string|null}
  */
-export function resolverQualificacao(qualificouEmAtual, total, agora) {
-  if (qualificouEmAtual) return { qualificou_em: qualificouEmAtual, qualificouAgora: false };
-  if (total >= META_COMPRAS) return { qualificou_em: agora, qualificouAgora: true };
-  return { qualificou_em: null, qualificouAgora: false };
+export function dataDeQualificacao(comprasOrdenadas) {
+  let soma = 0;
+  for (const compra of comprasOrdenadas || []) {
+    soma += Number(compra.quantidade) || 1;
+    if (soma >= META_COMPRAS) return compra.data_compra || null;
+  }
+  return null;
 }
 
 /**
  * Fila do prêmio: ordem de chegada à meta, que define quem está dentro dos 50.
  * Empate no timestamp cai para mais compras e depois e-mail, para dar uma
- * ordem estável entre importações.
+ * ordem estável entre sincronizações.
  *
  * @param {object[]} premios registros com email, qualificou_em, compras_confirmadas
  * @returns {Map<string, number>} email -> posição na fila (1-based)
  */
 export function montarFilaVip(premios) {
   const qualificados = (premios || [])
-    .filter((p) => p.qualificou_em)
+    .filter((p) => p.qualificou_em || (p.compras_confirmadas || 0) >= META_COMPRAS)
     .sort(
       (a, b) =>
-        String(a.qualificou_em).localeCompare(String(b.qualificou_em)) ||
+        String(a.qualificou_em || '9999').localeCompare(String(b.qualificou_em || '9999')) ||
         (b.compras_confirmadas || 0) - (a.compras_confirmadas || 0) ||
         String(a.email).localeCompare(String(b.email))
     );
