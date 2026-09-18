@@ -542,6 +542,91 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   .coordinators-header {
     margin-bottom: 48px;
   }
+  /* Card Coordenador Nacional */
+  .coord-nacional-card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0;
+    background: var(--navy-card);
+    border: 1.5px solid rgba(223,12,120,0.25);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 40px;
+  }
+
+  .coord-nacional-photo-wrap {
+    position: relative;
+    overflow: hidden;
+    background: var(--navy-mid);
+    aspect-ratio: 3/4;
+  }
+
+  .coord-nacional-photo-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+
+  .coord-nacional-body {
+    padding: 28px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .coord-nacional-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(223,12,120,0.12);
+    border: 1px solid rgba(223,12,120,0.3);
+    color: var(--pink);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    width: fit-content;
+  }
+
+  .coord-nacional-badge svg {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+  }
+
+  .coord-nacional-name {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--white);
+  }
+
+  .coord-nacional-desc {
+    font-size: 13px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.65);
+  }
+
+  @media (max-width: 560px) {
+    .coord-nacional-card {
+      grid-template-columns: 1fr;
+    }
+    .coord-nacional-photo-wrap {
+      aspect-ratio: 4/3;
+    }
+    .coord-nacional-body {
+      padding: 20px 16px;
+    }
+    .coord-nacional-name {
+      font-size: 20px;
+    }
+  }
 
   .coordinators-grid {
     display: grid;
@@ -977,6 +1062,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <h2 class="section-title">Quem faz os Pockets acontecerem</h2>
       <p class="section-subtitle">Profissionais de produto de todo o Brasil que estão levando o PCamp para a sua cidade.</p>
     </div>
+    <!-- Coordenador Nacional -->
+    <div class="coord-nacional-card">
+      <div class="coord-nacional-photo-wrap">
+        <img src="assets/img/coordinators-pocket/frederico-oliveira.webp" alt="Frederico Oliveira" width="500" height="889">
+      </div>
+      <div class="coord-nacional-body">
+        <span class="coord-nacional-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+          Coordenador Nacional dos Pockets
+        </span>
+        <div class="coord-nacional-name">Frederico Oliveira</div>
+        <p class="coord-nacional-desc">Responsável por atuar como elo entre a PM3/Product Camp e os coordenadores locais dos Product Camp Pockets.</p>
+        <p class="coord-nacional-desc">Como Coordenador Nacional voluntário, o papel é apoiar a governança do programa, a aplicação das diretrizes institucionais e o desenvolvimento das comunidades locais, atuando no acompanhamento estratégico das praças ativas, no compartilhamento de boas práticas entre coordenadores e no fortalecimento da conexão entre os Pockets e o Product Camp.</p>
+      </div>
+    </div>
 
     <div class="coordinators-grid">
 
@@ -1142,17 +1242,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="coord-info">
           <div class="coord-name">Francisco Vieira</div>
           <div class="coord-location">Fortaleza/CE</div>
-        </div>
-      </div>
-
-      <!-- Frederico Oliveira -->
-      <div class="coord-card">
-        <div class="coord-photo-wrap">
-          <img src="assets/img/coordinators-pocket/frederico-oliveira.webp" alt="Frederico Oliveira" width="500" height="889" loading="lazy">
-        </div>
-        <div class="coord-info">
-          <div class="coord-name">Frederico Oliveira</div>
-          <div class="coord-location">Belo Horizonte/MG</div>
         </div>
       </div>
 
