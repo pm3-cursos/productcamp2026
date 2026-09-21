@@ -78,6 +78,20 @@ window.dataLayer = window.dataLayer || [];
     "name": "PM3",
     "url": "https://www.cursospm3.com.br"
   },
+  "performer": [
+    {
+      "@type": "Person",
+      "name": "Dan Olsen",
+      "jobTitle": "Product Management & AI Trainer",
+      "description": "Autor de The Lean Product Playbook"
+    },
+    {
+      "@type": "Person",
+      "name": "Mike Belsito",
+      "jobTitle": "Head of Product Evangelism",
+      "affiliation": { "@type": "Organization", "name": "Pendo" }
+    }
+  ],
   "offers": [
     {
       "@type": "Offer",
@@ -1524,7 +1538,8 @@ window.dataLayer = window.dataLayer || [];
     line-height: 1.55;
   }
 
-  @media (max-width: 1024px) {
+  /* abaixo de 1200px os dois cards lado a lado deixariam ~200px para o texto */
+  @media (max-width: 1200px) {
     .keynote-grid { grid-template-columns: 1fr; }
   }
 
@@ -1535,6 +1550,18 @@ window.dataLayer = window.dataLayer || [];
       padding: 32px 24px;
     }
     .keynote-bio { text-align: center; }
+    /* o título já quebra sozinho a 28px; a quebra forçada geraria uma 3ª linha solta */
+    .keynote .section-title br { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .keynote-card,
+    .keynote-photo img {
+      transition: none;
+    }
+
+    .keynote-card:hover { transform: none; }
+    .keynote-card:hover .keynote-photo img { transform: none; }
   }
 
   /* ── SPEAKERS ── */
