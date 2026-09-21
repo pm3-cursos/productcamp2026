@@ -1,8 +1,14 @@
 /**
- * PCamp 2026 — Countdown de virada de lote
+ * PCamp 2026 — Countdown de virada de lote + preço vigente do Passaporte
  * ----------------------------------------------------------------
  * Descobre sozinho qual lote está ativo agora pelo calendário embutido
- * (LOTES abaixo) e mostra a contagem regressiva até o fim dele.
+ * (LOTES abaixo) e faz duas coisas com ele:
+ *
+ *  1. Mostra a contagem regressiva até o fim do lote (o countdown).
+ *  2. Aplica o lote no card do Passaporte — badge "LOTE N", preço e a
+ *     oferta correspondente no JSON-LD de Event — quando a entrada do
+ *     calendário traz o preço (campo `passaporte`). Assim a virada de
+ *     lote acontece sozinha na data, sem depender de deploy.
  *
  * Uso: o destino é qualquer elemento com o atributo data-pcamp-countdown,
  * que já exista no HTML com `hidden`. O script preenche e revela. Havendo
@@ -22,7 +28,10 @@
  *    permanece oculto, sem "00:00:00" travado.
  *  - Na virada com a página aberta, se oculta sozinho. Não pula para o
  *    lote seguinte sem reload, de propósito: evita anunciar preço novo
- *    antes de a virada valer no checkout.
+ *    antes de a virada valer no checkout. O preço do card segue a mesma
+ *    regra: é aplicado uma vez, no carregamento.
+ *  - Lote ativo sem `passaporte` (ou nenhum lote ativo) → o card fica
+ *    como está no HTML, que é a base estática.
  *  - Pausa o relógio quando a aba sai de foco.
  *  - Sem dependências externas.
  */
@@ -30,15 +39,25 @@
   "use strict";
 
   // ---------------------------------------------------------------
-  // ÚNICO PONTO QUE PRECISA SER EDITADO QUANDO O CALENDÁRIO MUDAR
+  // ÚNICO PONTO QUE PRECISA SER EDITADO QUANDO O CALENDÁRIO OU O PREÇO MUDAR
   //
-  // ATENÇÃO: o lote também aparece FIXO no index.html, em dois lugares
-  // que este arquivo não controla e que precisam mudar junto, no mesmo
-  // deploy, senão a página se contradiz (countdown anunciando um lote e
-  // os cards vendendo outro):
-  //   1. os badges <span class="lote-badge">LOTE N</span> dos ingressos
-  //   2. o JSON-LD de Event → offers: "Ingresso Lote N", os preços e o
-  //      priceValidUntil, que deve receber a data de fim do lote ativo
+  // `passaporte` é o preço do ingresso Passaporte naquele lote, em reais,
+  // inteiro. Lotes já encerrados não precisam dele. Com o campo presente,
+  // a virada é automática: badge, preço e JSON-LD saem daqui.
+  //
+  // O index.html continua trazendo o lote vigente FIXO, como base estática
+  // (é o que crawler sem JS e o primeiro paint enxergam). Atualizar essa
+  // base a cada virada segue recomendado, mas deixou de ser urgente — se
+  // ficar para trás, o script corrige na hora. Os pontos fixos são:
+  //   1. o <span class="lote-badge" data-pcamp-lote-badge> do Passaporte
+  //   2. o <strong data-pcamp-preco> do Passaporte
+  //   3. o JSON-LD #pcamp-event-jsonld → offers[0]: "Ingresso Lote N",
+  //      price e priceValidUntil (data de fim do lote)
+  //   4. o llms.txt, que é texto puro e este script não alcança
+  //
+  // Quando o preço do lote empata com PASSAPORTE_PRECO_REFERENCIA (o
+  // "De R$ X por" riscado do card), o script esconde o "De ... por" para
+  // não anunciar desconto de zero.
   // ---------------------------------------------------------------
   var LOTES = [
     { id: "pre-venda",   label: "Pré-venda",   start: "2025-12-10T00:00:00-03:00", end: "2025-12-30T23:59:59-03:00" },
@@ -46,10 +65,13 @@
     { id: "lote-1",      label: "Lote 1",      start: "2026-06-17T00:00:00-03:00", end: "2026-07-17T23:59:59-03:00" },
     { id: "lote-2",      label: "Lote 2",      start: "2026-07-18T00:00:00-03:00", end: "2026-08-18T23:59:59-03:00" },
     { id: "lote-3",      label: "Lote 3",      start: "2026-08-19T00:00:00-03:00", end: "2026-09-18T23:59:59-03:00" },
-    { id: "lote-4",      label: "Lote 4",      start: "2026-09-19T00:00:00-03:00", end: "2026-10-15T23:59:59-03:00" },
-    { id: "lote-5",      label: "Lote 5",      start: "2026-10-16T00:00:00-03:00", end: "2026-11-03T23:59:59-03:00" },
-    { id: "last-minute", label: "Last Minute", start: "2026-11-04T00:00:00-03:00", end: "2026-11-24T23:59:59-03:00" }
+    { id: "lote-4",      label: "Lote 4",      start: "2026-09-19T00:00:00-03:00", end: "2026-10-15T23:59:59-03:00", passaporte: 1449 },
+    { id: "lote-5",      label: "Lote 5",      start: "2026-10-16T00:00:00-03:00", end: "2026-11-03T23:59:59-03:00", passaporte: 1549 },
+    { id: "last-minute", label: "Last Minute", start: "2026-11-04T00:00:00-03:00", end: "2026-11-24T23:59:59-03:00", passaporte: 1649 }
   ];
+
+  // Preço cheio de referência do Passaporte — o valor riscado no card.
+  var PASSAPORTE_PRECO_REFERENCIA = 1649;
 
   // Quantos dias antes do fim do lote o widget passa a aparecer.
   var VISIBLE_WINDOW_DAYS = 7;
@@ -71,6 +93,47 @@
     return String(n).padStart(2, "0");
   }
 
+  // 1549 → "R$ 1.549". Manual em vez de toLocaleString para não depender
+  // de dados de locale do navegador.
+  function formatBRL(n) {
+    return "R$ " + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  // "2026-10-15T23:59:59-03:00" → "2026-10-15" (formato do priceValidUntil).
+  function dateOnly(iso) {
+    return iso.slice(0, 10);
+  }
+
+  // Aplica o lote ativo no card do Passaporte e no JSON-LD. Só mexe no que
+  // encontra: se a marcação não existir (outra página, HTML antigo), não
+  // faz nada — e o HTML estático continua valendo.
+  function applyLoteToTickets(lote) {
+    if (typeof lote.passaporte !== "number") return;
+
+    var badge = document.querySelector("[data-pcamp-lote-badge]");
+    var price = document.querySelector("[data-pcamp-preco]");
+    var priceFrom = document.querySelector("[data-pcamp-preco-de]");
+
+    if (badge) badge.textContent = lote.label.toUpperCase();
+    if (price) price.textContent = formatBRL(lote.passaporte);
+    if (priceFrom) priceFrom.hidden = lote.passaporte >= PASSAPORTE_PRECO_REFERENCIA;
+
+    var ld = document.getElementById("pcamp-event-jsonld");
+    if (!ld) return;
+    try {
+      var data = JSON.parse(ld.textContent);
+      var offer = data.offers && data.offers[0];
+      if (!offer) return;
+      offer.name = "Ingresso " + lote.label;
+      offer.price = String(lote.passaporte);
+      offer.priceValidUntil = dateOnly(lote.end);
+      ld.textContent = JSON.stringify(data, null, 2);
+    } catch (e) {
+      // JSON-LD inválido no HTML: não é deste script consertar. O card já
+      // foi atualizado; o dado estruturado fica como está.
+    }
+  }
+
   function buildMarkup(container, label) {
     container.innerHTML =
       '<span class="pcc-label"></span>' +
@@ -86,11 +149,15 @@
   }
 
   function init() {
-    var containers = document.querySelectorAll(CONTAINER_SELECTOR);
-    if (!containers.length) return;
-
     var lote = findActiveLote(new Date());
     if (!lote) return;
+
+    // O preço vale em qualquer página com a marcação, mesmo fora da janela
+    // do countdown — por isso vem antes dos guards do relógio.
+    applyLoteToTickets(lote);
+
+    var containers = document.querySelectorAll(CONTAINER_SELECTOR);
+    if (!containers.length) return;
 
     var targetDate = new Date(lote.end);
     var windowStart = new Date(targetDate.getTime() - VISIBLE_WINDOW_DAYS * 86400000);

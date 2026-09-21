@@ -50,7 +50,7 @@ window.dataLayer = window.dataLayer || [];
 <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<script type="application/ld+json">
+<script type="application/ld+json" id="pcamp-event-jsonld">
 {
   "@context": "https://schema.org",
   "@type": "Event",
@@ -81,10 +81,10 @@ window.dataLayer = window.dataLayer || [];
   "offers": [
     {
       "@type": "Offer",
-      "name": "Ingresso Lote 3",
-      "price": "1349",
+      "name": "Ingresso Lote 4",
+      "price": "1449",
       "priceCurrency": "BRL",
-      "priceValidUntil": "2026-09-18",
+      "priceValidUntil": "2026-10-15",
       "availability": "https://schema.org/InStock",
       "url": "https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593"
     },
@@ -3523,11 +3523,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <!-- PASSAPORTE -->
         <div class="ticket-card featured featured--cyan">
           <div class="ticket-badge">Passaporte</div>
-          <span class="lote-badge">LOTE 3</span>
+          <!-- Lote e preço do Passaporte: o HTML traz o lote vigente no deploy
+               como base estática; assets/js/pcamp-countdown-lotes.js troca
+               badge, preço e JSON-LD sozinho quando um lote posterior do
+               calendário estiver ativo. -->
+          <span class="lote-badge" data-pcamp-lote-badge>LOTE 4</span>
           <div class="ticket-name">Passaporte</div>
           <div class="ticket-price">
-            De <s class="price-old">R$ 1.649</s> por
-            <strong>R$ 1.349</strong>
+            <span data-pcamp-preco-de>De <s class="price-old">R$ 1.649</s> por</span>
+            <strong data-pcamp-preco>R$ 1.449</strong>
           </div>
           <ul class="ticket-features">
             <li>Acesso aos 2 dias de evento</li>
