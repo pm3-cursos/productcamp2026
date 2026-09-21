@@ -58,6 +58,14 @@
   // Quando o preço do lote empata com PASSAPORTE_PRECO_REFERENCIA (o
   // "De R$ X por" riscado do card), o script esconde o "De ... por" para
   // não anunciar desconto de zero.
+  //
+  // O calendário TERMINA em 24/11/2026 de propósito: as vendas encerram
+  // nessa data e não há ingresso à venda entre 25/11 e o evento (08/12).
+  // Não estenda o Last Minute para "cobrir o buraco" — ele não é um buraco.
+  // Sem lote ativo o script não mexe em nada e o card fica como está no
+  // HTML, ainda anunciando preço e com o CTA de compra ativo. Em 25/11 é
+  // preciso um deploy manual trocando a seção de ingressos para vendas
+  // encerradas: preço, CTA, availability do JSON-LD e llms.txt.
   // ---------------------------------------------------------------
   var LOTES = [
     { id: "pre-venda",   label: "Pré-venda",   start: "2025-12-10T00:00:00-03:00", end: "2025-12-30T23:59:59-03:00" },
