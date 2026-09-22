@@ -83,7 +83,7 @@ export function listarComprasDoIndicador(db, cupomEmail) {
 
 // ---------------------------------------------------------------- prêmios
 
-export async function definirVip(db, { email, liberado, adminEmail, webhook }) {
+export async function definirVip(db, { email, liberado, adminEmail }) {
   const agora = agoraISO();
   await db.batch([
     db
@@ -97,10 +97,8 @@ export async function definirVip(db, { email, liberado, adminEmail, webhook }) {
       )
       .bind(email, liberado ? 1 : 0, liberado ? adminEmail : null, liberado ? agora : null),
     db
-      .prepare(
-        'INSERT INTO vip_log (email, liberado, admin_email, criado_em, webhook) VALUES (?, ?, ?, ?, ?)'
-      )
-      .bind(email, liberado ? 1 : 0, adminEmail, agora, webhook || null),
+      .prepare('INSERT INTO vip_log (email, liberado, admin_email, criado_em) VALUES (?, ?, ?, ?)')
+      .bind(email, liberado ? 1 : 0, adminEmail, agora),
   ]);
 }
 

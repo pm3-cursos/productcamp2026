@@ -6,7 +6,7 @@
 //   - só linhas do evento configurado (`Evento` == EVENTO_PLANILHA);
 //   - `Número de Ingressos` = CANCELADO tira a linha de tudo;
 //   - indicador = tem compra Passaporte (não B2B) e nenhuma compra VIP (exceto a
-//     cortesia gravada pelo n8n quando o próprio prêmio é liberado);
+//     cortesia lançada na planilha quando o próprio prêmio é liberado);
 //   - indicação = `Cupom` é um e-mail; a contagem acontece na reconciliação.
 
 import {

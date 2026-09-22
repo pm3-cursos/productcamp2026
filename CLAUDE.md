@@ -154,7 +154,7 @@ O que não pode ser esquecido ao tocar nessa parte:
   sincronização (`functions/_lib/sincronizacao.js`) grava um snapshot completo
   em `pcamp-indicacao` e **nunca toca em `premios.vip_liberado`** — o teste de
   `gravarSnapshot` garante isso.
-- **Nenhum segredo no código.** Tokens do Worker de vendas, do callback e do n8n
+- **Nenhum segredo no código.** Tokens do Worker de vendas e do callback
   vivem nos secrets do Pages. Nada do Google existe neste repositório.
 - **Arquivos internos respondem 404 em produção** (`tests/`, `indicacao/schema*.sql`,
   `indicacao/LEIA-ME.md`) por Functions listadas no `_routes.json` — o Pages

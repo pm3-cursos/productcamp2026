@@ -15,7 +15,6 @@ const { mapearColunas, lerCompras, derivarIndicadores, lerPlanilha, idDaLinha } 
 const { calcularContagens, dataDeQualificacao, montarFilaVip, montarRanking, dentroDoTeto } = await lib('reconciliacao.js');
 const { criarSessao, lerSessao, ehAdmin, cookieSessao } = await lib('session.js');
 const { META_COMPRAS, TETO_VIP, ADMINS, mensagemWhatsApp, TEXTO_VIP_BANNER, TEXTO_VIP_CUPOM_ATIVO, LOTE_VIP_CORTESIA } = await lib('config.js');
-const { montarAvisoVip } = await lib('webhook.js');
 const { parseDelimitado, detectarSeparador } = await modulo('tests/csv.mjs');
 const { montarSnapshot, gravarSnapshot } = await lib('snapshot.js');
 const { pedidosParaMatriz, pedidoParaLinha, CABECALHO } = await lib('vendas.js');
@@ -179,7 +178,7 @@ await teste('indicador = Passaporte sem VIP; VIP de cortesia não exclui', () =>
   assert.equal(marina.nome_completo, 'Marina Castro');
 });
 
-await teste('lote de cortesia é o texto exato combinado com o n8n', () => {
+await teste('lote de cortesia é o texto exato que o time lança na planilha', () => {
   assert.equal(LOTE_VIP_CORTESIA, 'VIP liberado por indicação - Cortesia');
 });
 
@@ -324,26 +323,20 @@ await teste('faltando coluna, o snapshot não gera nada', () => {
   assert.equal(snap.compras.length, 0);
 });
 
-// ---------------------------------------------------------------- webhook
-await teste('aviso ao n8n tem exatamente as colunas da planilha', () => {
-  const corpo = montarAvisoVip({ nome: 'Marina Castro', email: 'marina.castro@email.com', quando: '16/09/2026 10:00' });
-  assert.deepEqual(corpo, {
+// ---------------------------------------------------------------- cortesia
+await teste('a linha de cortesia lançada na planilha é lida como cortesia e mantém o indicador', () => {
+  const corpo = {
     'Data do Pedido': '16/09/2026 10:00',
-    Nome: 'Marina Castro',
-    'E-mail': 'marina.castro@email.com',
-    Lote: 'VIP liberado por indicação - Cortesia',
+    Nome: 'Rafael Antunes',
+    'E-mail': 'rafael.antunes@email.com',
+    Lote: LOTE_VIP_CORTESIA,
     'Número de Ingressos': 1,
     'Valor por ingresso': 0,
     'Valor total do pedido': 0,
-    Cupom: '',
     Categoria: 'Cortesia',
     Formato: 'B2C',
     Modalidade: 'VIP',
-  });
-});
-
-await teste('a linha que o n8n grava é lida de volta como cortesia e mantém o indicador', () => {
-  const corpo = montarAvisoVip({ nome: 'Rafael Antunes', email: 'rafael.antunes@email.com', quando: '16/09/2026 10:00' });
+  };
   const linha = CAB.map((coluna) => {
     if (coluna in corpo) return String(corpo[coluna]);
     if (coluna === 'Evento') return 'Pcamp 2026';

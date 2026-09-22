@@ -357,15 +357,6 @@ async function alternarVip(email, liberar, confirmado) {
     return;
   }
 
-  const webhook = resultado.dados.webhook;
-  if (liberar && webhook && webhook.status !== 'ok') {
-    avisoPainel(
-      webhook.status === 'nao_configurado'
-        ? 'VIP liberado, mas o aviso ao n8n não está configurado (N8N_VIP_WEBHOOK_URL). Registre a cortesia na planilha manualmente.'
-        : `VIP liberado, mas o aviso ao n8n falhou (${webhook.detalhe}). Registre a cortesia na planilha manualmente.`
-    );
-  }
-
   estado.comprasPorEmail.delete(email);
   await carregarPainel();
 }

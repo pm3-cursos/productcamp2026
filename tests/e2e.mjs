@@ -6,7 +6,6 @@
 //        SESSION_SECRET=um-segredo-local-de-32-caracteres-ou-mais
 //        MAIL_PROVIDER=console
 //        MOSTRAR_LINK=1
-//        N8N_VIP_WEBHOOK_URL=http://127.0.0.1:8799/vip   (para testar o aviso ao n8n)
 //        VENDAS_API_URL=http://127.0.0.1:8798             (Worker de vendas falso, que este teste sobe)
 //        VENDAS_API_TOKEN=token-vendas-local
 //        SYNC_CALLBACK_TOKEN=token-callback-local
@@ -48,7 +47,6 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BASE = process.env.BASE_URL || 'http://127.0.0.1:8788';
 const SEGREDO = process.env.SESSION_SECRET || 'um-segredo-local-de-32-caracteres-ou-mais';
-const PORTA_N8N = 8799;
 const PORTA_VENDAS = 8798;
 const TOKEN_VENDAS = process.env.VENDAS_API_TOKEN || 'token-vendas-local';
 const TOKEN_CALLBACK = process.env.SYNC_CALLBACK_TOKEN || 'token-callback-local';
@@ -128,19 +126,6 @@ async function sincronizar(fixture, origem) {
   return r.status === 200 && r.dados.ok === true;
 }
 
-// n8n falso: guarda o último corpo recebido.
-const recebidos = [];
-const n8n = http.createServer((pedido, resposta) => {
-  let corpo = '';
-  pedido.on('data', (c) => { corpo += c; });
-  pedido.on('end', () => {
-    recebidos.push({ url: pedido.url, corpo: JSON.parse(corpo || '{}') });
-    resposta.writeHead(200, { 'Content-Type': 'application/json' });
-    resposta.end('{"ok":true}');
-  });
-});
-await new Promise((resolve) => n8n.listen(PORTA_N8N, '127.0.0.1', resolve));
-
 try {
   const fixture = 'tests/fixtures/planilha-pedidos.csv';
 
@@ -178,21 +163,13 @@ try {
   checa('contagens idênticas', painel2.dados.kpis.compras_confirmadas === 4 && painel2.dados.total === 7, JSON.stringify(painel2.dados.kpis));
   checa('última sincronização é a nova', painel2.dados.ultima_sincronizacao.sync_id !== sync.sync_id);
 
-  console.log('\n== 3. liberar VIP manualmente + aviso ao n8n ==');
+  console.log('\n== 3. liberar VIP manualmente ==');
   let r = await jsonPost('/api/admin/vip', { email: 'rafael.antunes@email.com', liberado: true }, cookieAdmin);
   checa('VIP negado para quem não qualificou', r.status === 409 && r.dados.erro === 'nao_qualificado', JSON.stringify(r.dados));
 
   r = await jsonPost('/api/admin/vip', { email: 'marina.castro@email.com', liberado: true }, cookieAdmin);
   checa('VIP liberado para quem qualificou', r.status === 200 && r.dados.vip_liberado === true, JSON.stringify(r.dados));
   checa('registra quem liberou', r.dados.liberado_por === 'eventos@pm3.com.br', String(r.dados.liberado_por));
-  if (r.dados.webhook && r.dados.webhook.status === 'nao_configurado') {
-    console.log('  (aviso ao n8n não testado: defina N8N_VIP_WEBHOOK_URL=http://127.0.0.1:8799/vip no .dev.vars)');
-  } else {
-    checa('aviso ao n8n entregue', r.dados.webhook && r.dados.webhook.status === 'ok', JSON.stringify(r.dados.webhook));
-    const aviso = recebidos[recebidos.length - 1];
-    checa('n8n recebeu o corpo com as colunas da planilha', aviso && aviso.corpo['E-mail'] === 'marina.castro@email.com' && aviso.corpo.Lote === 'VIP liberado por indicação - Cortesia' && aviso.corpo.Modalidade === 'VIP' && aviso.corpo['Número de Ingressos'] === 1, JSON.stringify(aviso));
-    checa('Data do Pedido no formato da planilha', aviso && /^\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}$/.test(aviso.corpo['Data do Pedido']), aviso && aviso.corpo['Data do Pedido']);
-  }
 
   console.log('\n== 4. a sincronização não mexe na marcação manual ==');
   checa('terceira sincronização ok', await sincronizar(fixture, 'teste-e2e-3'));
@@ -202,7 +179,7 @@ try {
   checa('liberado_por preservado', marina3.liberado_por === 'eventos@pm3.com.br');
   checa('KPI vip liberados = 1', painel3.dados.kpis.vip_liberados === 1);
 
-  console.log('\n== 5. cortesia gravada pelo n8n mantém a indicadora ==');
+  console.log('\n== 5. cortesia lançada na planilha mantém a indicadora ==');
   const comCortesia = path.join(raiz, 'tests/fixtures/.tmp-com-cortesia.csv');
   const linhas = fs.readFileSync(path.join(raiz, fixture), 'utf8').trimEnd().split(/\r?\n/);
   linhas.push('20/08/2026 10:00;Rafael;Antunes;rafael.antunes@email.com;;VIP liberado por indicação - Cortesia;1;0;0;;Cortesia;B2C;VIP;;;;;;20/08/2026;Pcamp 2026;2026');
@@ -327,7 +304,6 @@ try {
   r = await req('/api/auth/sair', { method: 'POST', headers: { Cookie: cookieIndicador } });
   checa('sair apaga o cookie', r.status === 200 && /Max-Age=0/.test(r.headers.get('set-cookie') || ''), r.headers.get('set-cookie'));
 } finally {
-  n8n.close();
   vendas.close();
 }
 

@@ -50,7 +50,7 @@ export const MODALIDADE_VIP = 'VIP';
 export const FORMATO_SEM_INDICACAO = 'B2B';
 
 /**
- * Lote gravado pelo n8n quando o time libera o upgrade VIP de um indicador.
+ * Lote que o time lança na planilha ao liberar o upgrade VIP de um indicador.
  * Uma linha VIP com este lote (ou Categoria "Cortesia") NÃO exclui a pessoa
  * como indicadora: ela ganhou o VIP indicando e o cupom continua ativo.
  */

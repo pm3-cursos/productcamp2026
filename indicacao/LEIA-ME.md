@@ -19,8 +19,6 @@ Google Sheets ──(6/6 h)──► Worker pm3-eventos-vendas-sync ──► D1
                                         ▼                                         │ (token só de leitura)
                      Pages Functions da indicação ─── regras ──► D1 pcamp-indicacao ──► telas
                        /api/sync/callback · /api/admin/sincronizar (botão)
-                                        │
-                        liberou VIP ──► webhook do n8n ──► linha de cortesia na planilha
 ```
 
 Por que HTTP e não binding: o site vive na conta Cloudflare do
@@ -38,7 +36,7 @@ Roda no mesmo projeto do Cloudflare Pages do site, sem build:
 | `indicacao/` | As telas (HTML/CSS/JS estáticos, sem framework) |
 | `indicacao/app.css` | Tokens e componentes — os mesmos do design system do site |
 | `functions/api/` | A API (Cloudflare Pages Functions) |
-| `functions/_lib/` | Regras de negócio, leitura da planilha, sessão, e-mail, webhook |
+| `functions/_lib/` | Regras de negócio, leitura da planilha, sessão, e-mail |
 | `functions/indicacao/*/[_middleware.js]` | Portões de acesso das páginas logadas |
 | `functions/_lib/vendas.js` | Cliente HTTP do Worker de vendas; pedidos → matriz que `planilha.js` lê |
 | `functions/_lib/snapshot.js` | Regras aplicadas → snapshot gravado no D1 (`gravarSnapshot`) |
@@ -110,7 +108,7 @@ O que a plataforma lê:
 | `Nome`, `Sobrenome` | Nome na tela e no ranking (o ranking mostra só `Nome`) |
 | `Data do Pedido` | Ordena as indicações e define quem bateu a meta primeiro |
 | `Valor total do pedido`, `Valor por ingresso` | Receita no painel |
-| `Lote`, `Categoria` | Reconhecem a cortesia gravada pelo n8n (abaixo) |
+| `Lote`, `Categoria` | Reconhecem a linha de cortesia do VIP (seção E) |
 
 Obrigatórias: `E-mail`, `Cupom`, `Modalidade`, `Evento`, `Número de Ingressos`.
 Sem elas a sincronização para e diz qual falta. Nomes alternativos aceitos
@@ -142,8 +140,8 @@ indicadores que fecham a meta no mesmo dia desempatam por total e e-mail.
 5. Cada compra vale `Número de Ingressos`. A meta é **3 ingressos indicados**.
 6. `qualificou_em` é a **data da compra** que fez a soma chegar a 3 — derivada
    dos dados, igual em qualquer sincronização. É ela que ordena a fila dos 50.
-7. A liberação do VIP é **manual**, no painel. Ao liberar, a plataforma avisa
-   o n8n (webhook), que grava na planilha a linha de cortesia. Na próxima
+7. A liberação do VIP é **manual**, no painel. Depois de liberar, o time lança
+   a linha de cortesia na planilha de pedidos (ver seção E). Na próxima
    sincronização essa linha é lida como cortesia (regra 2) e a pessoa continua
    indicando.
 8. Quem já tem ingresso VIP não entra como indicador e, por isso, não tem cupom.
@@ -182,7 +180,7 @@ de lá:
 > o binding `DB`, as variáveis de e-mail e o `SESSION_SECRET`, só no ambiente
 > Production. Ao publicar esta versão (pedidos → D1), falta: rodar o
 > `schema-reset.sql` + `schema.sql` de novo e criar os secrets novos do Pages
-> (`VENDAS_API_*`, `SYNC_CALLBACK_TOKEN`, `N8N_*`).
+> (`VENDAS_API_*`, `SYNC_CALLBACK_TOKEN`).
 
 > ⚠️ **Confira a conta antes de rodar qualquer comando do Wrangler.** O projeto
 > `productcamp2026` fica na conta da Cloudflare `7023d597cae5b2533647b58f8c05b290`
@@ -232,8 +230,6 @@ preview, crie um banco separado (`pcamp-indicacao-preview`).
 | `MAIL_PROVIDER` | Texto | `resend` ou `sendgrid` |
 | `MAIL_FROM` | Texto | `Product Camp 2026 <eventos@pm3.com.br>` — tem que terminar em `@pm3.com.br` (domínio verificado no Resend; o DMARC é estrito) |
 | `RESEND_API_KEY` / `SENDGRID_API_KEY` | Secret | Conforme o provedor |
-| `N8N_VIP_WEBHOOK_URL` | Secret | URL do webhook do n8n que grava a cortesia na planilha |
-| `N8N_VIP_WEBHOOK_TOKEN` | Secret | Opcional — vai como `Authorization: Bearer` se o webhook exigir |
 | `VENDAS_API_URL` | Texto | URL do Worker de vendas (passo A) |
 | `VENDAS_API_TOKEN` | Secret | O `READ_TOKEN` do Worker — só leitura |
 | `SYNC_CALLBACK_TOKEN` | Secret | O que o Worker manda em `Authorization: Bearer` ao chamar `/api/sync/callback` (`openssl rand -base64 32`) |
@@ -258,31 +254,25 @@ Se o `CALLBACK_URL` não estiver configurado no Worker, nada quebra: os pedidos
 continuam sendo espelhados a cada 6 h e o painel atualiza quando alguém clica
 **Atualizar dados**. O callback só tira o clique do caminho.
 
-### E. O webhook do n8n
+### E. A linha de cortesia na planilha
 
-Ao liberar um VIP, a plataforma faz `POST` em `N8N_VIP_WEBHOOK_URL` com este
-JSON (as chaves são as colunas da planilha):
+A plataforma não grava nada na planilha. Depois de liberar um VIP no painel,
+o time lança a linha da cortesia na aba de pedidos, com estes valores:
 
-```json
-{
-  "Data do Pedido": "16/09/2026 14:05",
-  "Nome": "Marina Castro",
-  "E-mail": "marina.castro@email.com",
-  "Lote": "VIP liberado por indicação - Cortesia",
-  "Número de Ingressos": 1,
-  "Valor por ingresso": 0,
-  "Valor total do pedido": 0,
-  "Cupom": "",
-  "Categoria": "Cortesia",
-  "Formato": "B2C",
-  "Modalidade": "VIP"
-}
-```
+| Coluna | Valor |
+| --- | --- |
+| Data do Pedido | data da liberação |
+| Nome, E-mail | os do indicador |
+| Lote | `VIP liberado por indicação - Cortesia` |
+| Número de Ingressos | 1 |
+| Valor por ingresso, Valor total do pedido | 0 |
+| Categoria | `Cortesia` |
+| Formato | `B2C` |
+| Modalidade | `VIP` |
+| Evento | `Pcamp 2026` |
 
-O n8n deve gravar a linha na mesma aba de pedidos, com `Evento` = `Pcamp 2026`.
-Se o webhook falhar, o VIP fica liberado mesmo assim, o painel mostra o aviso e
-o resultado fica em `vip_log.webhook` — nesse caso o time preenche a linha à
-mão.
+É o `Lote` (ou a `Categoria`) que faz a leitura tratar a linha como cortesia:
+a pessoa ganha o VIP e continua indicando.
 
 ---
 
@@ -362,8 +352,8 @@ cada pessoa leu.
 
 Detalhes que valem saber:
 
-- Nenhum segredo fica no código: o token de leitura do Worker de vendas, o do
-  callback e o do n8n vivem nos secrets do Pages; a chave do Google só existe
+- Nenhum segredo fica no código: o token de leitura do Worker de vendas e o do
+  callback vivem nos secrets do Pages; a chave do Google só existe
   no Worker. O navegador nunca fala com o Google nem com o Worker.
 - Arquivos internos do repositório (`tests/`, `indicacao/schema*.sql`,
   `indicacao/LEIA-ME.md`) respondem 404 em produção, por Functions listadas no
@@ -379,7 +369,6 @@ cat > .dev.vars <<'EOF'
 SESSION_SECRET=um-segredo-local-de-32-caracteres-ou-mais
 MAIL_PROVIDER=console
 MOSTRAR_LINK=1
-N8N_VIP_WEBHOOK_URL=http://127.0.0.1:8799/vip
 VENDAS_API_URL=http://127.0.0.1:8798        # Worker de vendas falso que o e2e sobe
 VENDAS_API_TOKEN=token-vendas-local
 SYNC_CALLBACK_TOKEN=token-callback-local
@@ -422,8 +411,8 @@ node tests/run.mjs
 Cobrem a leitura da planilha (colunas, evento, cancelado, cupom que é e-mail),
 quem é indicador (Passaporte × VIP × cortesia), a contagem por ingressos, a
 data de qualificação, a fila dos 50, o ranking, a conversão de `pedidos` em
-planilha, a gravação do snapshot (nunca toca em `vip_liberado`), o corpo do
-webhook e o controle de acesso.
+planilha, a gravação do snapshot (nunca toca em `vip_liberado`), a leitura da linha de
+cortesia e o controle de acesso.
 
 **Ponta a ponta** — precisa do `wrangler pages dev` rodando (instruções no topo
 de `tests/e2e.mjs`):
@@ -434,7 +423,7 @@ node tests/e2e.mjs
 
 Sobe um Worker de vendas falso servindo a fixture, sincroniza pela API (botão
 e callback), confere o painel, sincroniza de novo para provar idempotência,
-libera VIP (com um n8n falso local que confere o JSON), prova que a
+libera VIP, prova que a
 sincronização preserva a marcação, simula cancelamento e cortesia, faz login
 por link mágico e testa o isolamento entre os perfis. Rode antes de qualquer
 PR que toque em `functions/`.
@@ -445,5 +434,5 @@ PR que toque em `functions/`.
 
 - Nenhuma integração direta com a API da Sympla — a planilha é a fonte.
 - A plataforma não emite nem troca o ingresso na Sympla. Liberar o VIP aqui é
-  o **registro da decisão** (e o aviso ao n8n); a troca do ingresso é feita à
-  parte pelo time.
+  o **registro da decisão**; a troca do ingresso e a linha de cortesia na
+  planilha são feitas à parte pelo time.
