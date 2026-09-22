@@ -2109,6 +2109,9 @@ window.dataLayer = window.dataLayer || [];
     width: 44px;
   }
 
+  /* logos em duas linhas (Fala aí, PMM) — um pouco mais altas para o texto não encolher */
+  .sponsor-logo.logo-stacked img { height: 44px; }
+
   /* realização — logo PM3 maior */
   .sponsors-realizacao .sponsor-logo { height: 88px; padding: 24px 40px; }
   .sponsors-realizacao .sponsor-logo img { height: 44px; max-width: 180px; }
@@ -3773,7 +3776,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ║                                                              ║
   ║  1. Coloque o logo em assets/img/sponsors/                   ║
   ║  2. Cole o bloco abaixo dentro da .sponsors-cota-logos da    ║
-  ║     cota correta (ou do tier Apoio / Realização).            ║
+  ║     cota correta (ou do tier Comunidades / Apoio /           ║
+  ║     Realização).                                             ║
   ║                                                              ║
   ║  <a href="URL" target="_blank" class="sponsor-logo">         ║
   ║    <img src="assets/img/sponsors/empresa.svg"                ║
@@ -3888,6 +3892,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </div>
         </div>
 
+      </div>
+    </div>
+
+    <!-- COMUNIDADES -->
+    <div class="sponsors-tier">
+      <div class="sponsors-tier-label">Comunidades</div>
+      <div class="sponsors-logos">
+        <a href="https://vagasux.com.br/" target="_blank" class="sponsor-logo">
+          <img src="assets/img/sponsors/vagas-ux.webp" width="400" height="160" loading="lazy" alt="Vagas UX">
+        </a>
+        <a href="https://www.linkedin.com/company/fala-ai-pmm/" target="_blank" class="sponsor-logo logo-stacked">
+          <img src="assets/img/sponsors/fala-ai-pmm.webp" width="298" height="160" loading="lazy" alt="Fala aí, PMM">
+        </a>
+        <a href="https://www.meninadeux.com/" target="_blank" class="sponsor-logo">
+          <img src="assets/img/sponsors/menina-de-ux.webp" width="472" height="120" loading="lazy" alt="Menina de UX">
+        </a>
       </div>
     </div>
 
