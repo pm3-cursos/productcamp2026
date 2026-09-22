@@ -897,9 +897,10 @@ window.dataLayer = window.dataLayer || [];
 
   /* ── GRADE DE PALESTRANTES ──
      auto-fill com mínimo de 200px: no container de 1160px fecha exatamente
-     5 colunas, e os 10 cards (6 palestrantes + um "Em breve" por trilha)
-     preenchem 2 fileiras cheias. Palestrante novo entra antes dos "Em breve"
-     e a grade se reacomoda sozinha — nada de largura fixa para manter. */
+     5 colunas. São 26 cards hoje (22 palestrantes + um "Em breve" por trilha),
+     então a última fileira fica incompleta — e tudo bem. Palestrante novo
+     entra antes dos "Em breve" e a grade se reacomoda sozinha: nada de largura
+     fixa para manter. */
   .track-speakers {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -968,6 +969,7 @@ window.dataLayer = window.dataLayer || [];
     flex-direction: column;
     gap: 6px;
     padding: 14px 16px 18px;
+    margin-top: auto;
   }
 
   /* trilha da pessoa — ciano, o acento de "palestrante" no site */
@@ -997,10 +999,10 @@ window.dataLayer = window.dataLayer || [];
      Um por trilha, todos no fim da grade: sinaliza que ainda vem gente e em
      qual trilha. É decorativo (aria-hidden), sem conteúdo indexável.
      Fica OCULTO por padrão e só aparece a partir de 1160px — abaixo disso a
-     grade cai para 3 ou 2 colunas e os 4 placeholders viravam duas telas de
-     rolagem sem informação nenhuma. Com eles escondidos, a grade fecha
-     fileiras cheias em todos os tamanhos: 5×2 no desktop, 3×2 no tablet e
-     2×3 no celular. */
+     grade cai para 3 ou 2 colunas e os 4 placeholders viram uma tela extra de
+     rolagem sem informação nenhuma. Com 22 palestrantes confirmados, no
+     celular (2 colunas) a grade fecha em 11 fileiras cheias; no desktop e no
+     tablet a última fileira sobra incompleta. */
   .track-card--soon {
     display: none;
     background: transparent;
@@ -3152,7 +3154,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <article class="track-card" role="listitem">
         <span class="track-card-company">Gran</span>
         <div class="track-card-photo">
-          <img src="assets/img/speakers/sp-camila-meneghetti.webp" width="400" height="400" alt="Foto de Camila Meneghetti, Senior Product Manager na Gran" loading="lazy">
+          <img src="assets/img/speakers/sp-camila-meneghetti.webp" width="400" height="400" alt="Foto de Camila Meneghetti, Senior PM na Gran" loading="lazy">
         </div>
         <div class="track-card-info">
           <span class="track-card-track">Product Management</span>
@@ -3249,7 +3251,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <article class="track-card" role="listitem">
         <span class="track-card-company">EBANX</span>
         <div class="track-card-photo">
-          <img src="assets/img/speakers/sp-quezia-miyazaki.webp" width="400" height="400" alt="Foto de Quezia Mara Miyazaki Frois de Paula, Head of Product na EBANX" loading="lazy">
+          <img src="assets/img/speakers/sp-quezia-miyazaki.webp" width="400" height="400" alt="Foto de Quezia Mara Miyazaki Frois de Paula, Head of Product (GPM) na EBANX" loading="lazy">
         </div>
         <div class="track-card-info">
           <span class="track-card-track">Product Management</span>
