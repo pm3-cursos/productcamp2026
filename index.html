@@ -78,6 +78,20 @@ window.dataLayer = window.dataLayer || [];
     "name": "PM3",
     "url": "https://www.cursospm3.com.br"
   },
+  "performer": [
+    {
+      "@type": "Person",
+      "name": "Dan Olsen",
+      "jobTitle": "Product Management & AI Trainer",
+      "description": "Autor de The Lean Product Playbook"
+    },
+    {
+      "@type": "Person",
+      "name": "Mike Belsito",
+      "jobTitle": "Head of Product Evangelism",
+      "affiliation": { "@type": "Organization", "name": "Pendo" }
+    }
+  ],
   "offers": [
     {
       "@type": "Offer",
@@ -1388,25 +1402,28 @@ window.dataLayer = window.dataLayer || [];
     .track-card:hover .track-card-photo img { transform: none; }
   }
 
-  /* ── KEYNOTE (primeiro keynote confirmado) ── */
+  /* ── KEYNOTES INTERNACIONAIS ── */
   .keynote { background: var(--navy); }
 
+  /* um card por keynote, lado a lado no desktop */
   .keynote-grid {
     display: grid;
-    grid-template-columns: minmax(0, 360px) 1fr;
-    gap: 40px;
-    align-items: start;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px;
+    align-items: stretch;
     margin-top: 48px;
   }
 
-  /* card do palestrante — versão ampliada do speaker-card */
+  /* card do palestrante: perfil à esquerda, bio + credenciais à direita */
   .keynote-card {
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
     border-radius: 16px;
-    padding: 32px 32px;
-    text-align: center;
-    position: relative;
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 28px;
+    align-items: start;
     transition: border-color 0.25s, transform 0.25s;
   }
 
@@ -1415,19 +1432,7 @@ window.dataLayer = window.dataLayer || [];
     transform: translateY(-4px);
   }
 
-  /* rótulo de contexto acima da foto (mesma pílula do speaker-company) */
-  .keynote-company {
-    display: inline-block;
-    background: white;
-    border-radius: 100px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    color: #111;
-    letter-spacing: 0.01em;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-    margin-bottom: 24px;
-  }
+  .keynote-profile { text-align: center; }
 
   /* foto circular ampliada */
   .keynote-photo {
@@ -1436,7 +1441,7 @@ window.dataLayer = window.dataLayer || [];
     border-radius: 50%;
     overflow: hidden;
     margin: 0 auto 24px;
-    border: 1px solid var(--navy-border);
+    border: 2px solid var(--pink);
     background: var(--navy);
   }
 
@@ -1450,13 +1455,20 @@ window.dataLayer = window.dataLayer || [];
 
   .keynote-card:hover .keynote-photo img { transform: scale(1.04); }
 
+  /* nome na pílula branca (mesma pílula do speaker-company, um pouco maior) */
   .keynote-name {
+    display: inline-block;
+    background: white;
+    border-radius: 100px;
+    padding: 10px 22px;
     font-family: var(--font-display);
-    font-size: 24px;
+    font-size: 17px;
     font-weight: 600;
-    color: var(--white);
+    color: #111;
     line-height: 1.2;
-    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    margin-bottom: 16px;
   }
 
   .keynote-role {
@@ -1465,64 +1477,34 @@ window.dataLayer = window.dataLayer || [];
     color: var(--pink);
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin-bottom: 16px;
-  }
-
-  /* selo de destaque */
-  .keynote-seal {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--pink-muted);
-    border: 1px solid rgba(223,12,120,0.2);
-    color: var(--pink-light);
-    border-radius: 100px;
-    padding: 8px 16px;
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
+    line-height: 1.6;
   }
 
   /* coluna direita: bio + credenciais */
   .keynote-bio {
-    font-size: 17px;
+    font-size: 15px;
     color: var(--white-70);
     line-height: 1.7;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
   }
 
   .keynote-bio strong { color: var(--white); font-weight: 600; }
 
-  .keynote-creds-title {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--white-40);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-  }
-
   .keynote-creds {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 
   .cred-card {
-    background: var(--navy-card);
-    border: 1px solid var(--navy-border);
-    border-radius: 16px;
-    padding: 24px;
-    transition: border-color 0.25s, transform 0.25s;
-  }
-
-  .cred-card:hover {
-    border-color: rgba(223,12,120,0.4);
-    transform: translateY(-4px);
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
   }
 
   /* chip de ícone — mesmo padrão do .stat-icon */
   .cred-icon {
+    flex-shrink: 0;
     width: 40px; height: 40px;
     border-radius: 8px;
     background: var(--pink-muted);
@@ -1530,7 +1512,6 @@ window.dataLayer = window.dataLayer || [];
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 16px;
   }
 
   .cred-icon svg {
@@ -1542,15 +1523,13 @@ window.dataLayer = window.dataLayer || [];
     stroke-linejoin: round;
   }
 
-  /* min-height mantém os títulos alinhados na mesma altura entre os 3 cards */
   .cred-title {
     font-family: var(--font-display);
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--white);
-    line-height: 1.25;
-    margin-bottom: 8px;
-    min-height: 40px;
+    line-height: 1.3;
+    margin-bottom: 4px;
   }
 
   .cred-desc {
@@ -1559,14 +1538,30 @@ window.dataLayer = window.dataLayer || [];
     line-height: 1.55;
   }
 
-  @media (max-width: 1024px) {
-    .keynote-grid { grid-template-columns: 1fr; gap: 32px; }
-    .keynote-card { max-width: 420px; }
+  /* abaixo de 1200px os dois cards lado a lado deixariam ~200px para o texto */
+  @media (max-width: 1200px) {
+    .keynote-grid { grid-template-columns: 1fr; }
   }
 
-  @media (max-width: 768px) {
-    .keynote-creds { grid-template-columns: 1fr; }
-    .cred-title { min-height: 0; }
+  @media (max-width: 640px) {
+    .keynote-card {
+      grid-template-columns: 1fr;
+      gap: 28px;
+      padding: 32px 24px;
+    }
+    .keynote-bio { text-align: center; }
+    /* o título já quebra sozinho a 28px; a quebra forçada geraria uma 3ª linha solta */
+    .keynote .section-title br { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .keynote-card,
+    .keynote-photo img {
+      transition: none;
+    }
+
+    .keynote-card:hover { transform: none; }
+    .keynote-card:hover .keynote-photo img { transform: none; }
   }
 
   /* ── SPEAKERS ── */
@@ -2913,53 +2908,104 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </section>
 
 
-<!-- KEYNOTE -->
+<!-- KEYNOTES -->
 <section class="keynote" id="keynote">
   <div class="container">
-    <div class="section-label">Primeiro keynote confirmado</div>
-    <h2 class="section-title">Mike Belsito é o primeiro keynote<br>confirmado nos palcos do Product Camp 2026</h2>
+    <div class="section-label">Keynotes internacionais</div>
+    <h2 class="section-title">Dan Olsen e Mike Belsito estão<br>confirmados no Pcamp 2026</h2>
 
     <div class="keynote-grid">
-      <!-- card do palestrante (versão ampliada do speaker-card) -->
-      <div class="keynote-card">
-        <span class="keynote-company">Pendo &amp; Mind the Product</span>
-        <div class="keynote-photo">
-          <img src="assets/img/speakers/sp-mike.webp" width="360" height="360" alt="Foto de Mike Belsito, Head of Product Evangelism na Pendo" loading="lazy">
-        </div>
-        <div class="keynote-name">Mike Belsito</div>
-        <div class="keynote-role">Head of Product Evangelism</div>
-        <span class="keynote-seal">🎤 Keynote internacional</span>
-      </div>
 
-      <!-- bio + credenciais -->
-      <div class="keynote-body">
-        <p class="keynote-bio">Cofundador do <strong>Product Collective</strong>, casa da Industry: The Product Conference. Mike passou mais de dez anos liderando duas das comunidades mais respeitadas do PM global, hoje unidas sob a <strong>Pendo</strong>.</p>
+      <!-- Dan Olsen -->
+      <article class="keynote-card">
+        <div class="keynote-profile">
+          <div class="keynote-photo">
+            <img src="assets/img/speakers/sp-dan-olsen.webp" width="360" height="360" alt="Foto de Dan Olsen, autor de The Lean Product Playbook" loading="lazy">
+          </div>
+          <h3 class="keynote-name">Dan Olsen</h3>
+          <div class="keynote-role">Product Management &amp; AI Trainer</div>
+        </div>
 
-        <div class="keynote-creds-title">Por que ele é referência</div>
-        <div class="keynote-creds">
-          <div class="cred-card">
-            <div class="cred-icon">
-              <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <div class="keynote-body">
+          <p class="keynote-bio">Autor do best-seller <strong>The Lean Product Playbook</strong> e MBA por <strong>Stanford</strong>, Dan já ajudou equipes de produto de empresas como <strong>Facebook, Amazon e Microsoft</strong> a construir produtos que os clientes realmente amam.</p>
+
+          <div class="keynote-creds">
+            <div class="cred-card">
+              <div class="cred-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+              </div>
+              <div>
+                <div class="cred-title">Autor best-seller</div>
+                <p class="cred-desc"><em>The Lean Product Playbook</em> é referência global em Product Management e Lean Startup.</p>
+              </div>
             </div>
-            <div class="cred-title">Top 40 Influenciador</div>
-            <p class="cred-desc">Eleito diversas vezes um dos maiores nomes globais em Product Management.</p>
-          </div>
-          <div class="cred-card">
-            <div class="cred-icon">
-              <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+            <div class="cred-card">
+              <div class="cred-icon">
+                <svg viewBox="0 0 24 24"><path d="M22 10L12 5 2 10l10 5 10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              </div>
+              <div>
+                <div class="cred-title">Stanford MBA</div>
+                <p class="cred-desc">Base técnica forte e expertise em produto, UX, analytics e marketing.</p>
+              </div>
             </div>
-            <div class="cred-title">Autor best-seller</div>
-            <p class="cred-desc"><em>Startup Seed Funding for the Rest of Us</em> é um dos livros mais vendidos da Amazon e mais um novo título a caminho pela Wiley.</p>
-          </div>
-          <div class="cred-card">
-            <div class="cred-icon">
-              <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><path d="M12 19v4M8 23h8"/></svg>
+            <div class="cred-card">
+              <div class="cred-icon">
+                <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"/></svg>
+              </div>
+              <div>
+                <div class="cred-title">Clientes de peso global</div>
+                <p class="cred-desc">Facebook, Microsoft, Amazon, Walmart, Uber, Nike e Taco Bell.</p>
+              </div>
             </div>
-            <div class="cred-title">Voz do Rocketship.FM</div>
-            <p class="cred-desc">Co-apresentador de um dos principais podcasts sobre startups do mercado.</p>
           </div>
         </div>
-      </div>
+      </article>
+
+      <!-- Mike Belsito -->
+      <article class="keynote-card">
+        <div class="keynote-profile">
+          <div class="keynote-photo">
+            <img src="assets/img/speakers/sp-mike.webp" width="360" height="360" alt="Foto de Mike Belsito, Head of Product Evangelism na Pendo" loading="lazy">
+          </div>
+          <h3 class="keynote-name">Mike Belsito</h3>
+          <div class="keynote-role">Head of Product Evangelism</div>
+        </div>
+
+        <div class="keynote-body">
+          <p class="keynote-bio">Cofundador do <strong>Product Collective</strong>, casa da Industry: The Product Conference. Mike passou mais de dez anos liderando duas das comunidades mais respeitadas do PM global, hoje unidas sob a <strong>Pendo</strong>.</p>
+
+          <div class="keynote-creds">
+            <div class="cred-card">
+              <div class="cred-icon">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div>
+                <div class="cred-title">Top 40 Influenciador</div>
+                <p class="cred-desc">Eleito diversas vezes um dos maiores nomes globais em Product Management.</p>
+              </div>
+            </div>
+            <div class="cred-card">
+              <div class="cred-icon">
+                <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+              </div>
+              <div>
+                <div class="cred-title">Autor best-seller</div>
+                <p class="cred-desc"><em>Startup Seed Funding for the Rest of Us</em> é um dos livros mais vendidos da Amazon e mais um novo título a caminho pela Wiley.</p>
+              </div>
+            </div>
+            <div class="cred-card">
+              <div class="cred-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><path d="M12 19v4M8 23h8"/></svg>
+              </div>
+              <div>
+                <div class="cred-title">Voz do Rocketship.FM</div>
+                <p class="cred-desc">Co-apresentador de um dos principais podcasts sobre startups do mercado.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
     </div>
   </div>
 </section>
