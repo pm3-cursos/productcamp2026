@@ -104,9 +104,7 @@ window.dataLayer = window.dataLayer || [];
     },
     {
       "@type": "Offer",
-      "name": "Ingresso VIP — Esgotado",
-      "price": "2149",
-      "priceCurrency": "BRL",
+      "name": "Ingresso VIP",
       "availability": "https://schema.org/SoldOut",
       "url": "https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593"
     }
@@ -453,11 +451,12 @@ window.dataLayer = window.dataLayer || [];
     box-shadow: 0 8px 24px rgba(24,206,244,0.35);
   }
 
-  /* Botão de ingresso esgotado: não é link, não reage ao hover */
+  /* Botão de ingresso esgotado: não é link, não reage ao hover.
+     Texto em --white-70 (~6.6:1 sobre o card) para seguir legível. */
   .btn-primary.btn-esgotado,
   .btn-primary.btn-esgotado:hover {
     background: var(--white-10);
-    color: var(--white-40);
+    color: var(--white-70);
     transform: none;
     box-shadow: none;
     cursor: not-allowed;
@@ -2562,6 +2561,11 @@ window.dataLayer = window.dataLayer || [];
     font-size: 11px; font-weight: 600; padding: 3px 8px;
     border-radius: 100px; letter-spacing: 0.06em; margin-bottom: 8px;
   }
+  /* Selo de esgotado: neutro, para não ler como lote ativo (o ciano é do lote vigente) */
+  .lote-badge--esgotado {
+    background: transparent; color: var(--white-70);
+    box-shadow: inset 0 0 0 1px var(--white-40);
+  }
   .price-old { color: var(--white-40); font-weight: 400; }
   .ticket-badge--vip { background: linear-gradient(90deg, var(--pink), #f55fa0); }
   .btn-block { width: 100%; justify-content: center; }
@@ -3507,7 +3511,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
              muda a pedido explícito. -->
         <div class="ticket-card featured">
           <div class="ticket-badge ticket-badge--vip">VIP</div>
-          <span class="lote-badge">ESGOTADO</span>
+          <span class="lote-badge lote-badge--esgotado">ESGOTADO</span>
           <div class="ticket-name ticket-name--sem-preco">VIP</div>
           <ul class="ticket-features">
             <li>Todos os benefícios do Passaporte</li>
@@ -3523,7 +3527,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <li>Welcome coffee</li>
             <li>Snacks e bebidas</li>
           </ul>
-          <span class="btn-primary btn-block btn-esgotado" aria-disabled="true">
+          <span class="btn-primary btn-block btn-esgotado">
             Esgotado
           </span>
           <p class="ticket-note">*Sujeito a lotação</p>
