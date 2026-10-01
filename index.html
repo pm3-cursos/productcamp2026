@@ -104,10 +104,10 @@ window.dataLayer = window.dataLayer || [];
     },
     {
       "@type": "Offer",
-      "name": "Ingresso VIP — Últimos ingressos",
+      "name": "Ingresso VIP — Esgotado",
       "price": "2149",
       "priceCurrency": "BRL",
-      "availability": "https://schema.org/LimitedAvailability",
+      "availability": "https://schema.org/SoldOut",
       "url": "https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593"
     }
   ]
@@ -451,6 +451,16 @@ window.dataLayer = window.dataLayer || [];
   .btn-primary.btn-cyan:hover {
     background: #4fdaf7;
     box-shadow: 0 8px 24px rgba(24,206,244,0.35);
+  }
+
+  /* Botão de ingresso esgotado: não é link, não reage ao hover */
+  .btn-primary.btn-esgotado,
+  .btn-primary.btn-esgotado:hover {
+    background: var(--white-10);
+    color: var(--white-40);
+    transform: none;
+    box-shadow: none;
+    cursor: not-allowed;
   }
 
   .btn-secondary {
@@ -1807,6 +1817,11 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 600;
     margin-bottom: 4px;
     letter-spacing: -0.02em;
+  }
+
+  /* Card sem bloco de preço (ingresso esgotado): repõe o respiro do .ticket-price */
+  .ticket-name--sem-preco {
+    margin-bottom: 24px;
   }
 
   .ticket-price {
@@ -3487,14 +3502,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </a>
         </div>
 
-        <!-- VIP -->
+        <!-- VIP — ESGOTADO. Não alterar nas viradas de lote: este card (e o
+             offers[1] do JSON-LD) fica fora do pcamp-countdown-lotes.js e só
+             muda a pedido explícito. -->
         <div class="ticket-card featured">
           <div class="ticket-badge ticket-badge--vip">VIP</div>
-          <span class="lote-badge">ÚLTIMOS INGRESSOS</span>
-          <div class="ticket-name">VIP</div>
-          <div class="ticket-price">
-            <strong>R$ 2.149</strong>
-          </div>
+          <span class="lote-badge">ESGOTADO</span>
+          <div class="ticket-name ticket-name--sem-preco">VIP</div>
           <ul class="ticket-features">
             <li>Todos os benefícios do Passaporte</li>
             <li>KIT exclusivo de participante</li>
@@ -3509,9 +3523,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <li>Welcome coffee</li>
             <li>Snacks e bebidas</li>
           </ul>
-          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-primary btn-block">
-            Garantir VIP
-          </a>
+          <span class="btn-primary btn-block btn-esgotado" aria-disabled="true">
+            Esgotado
+          </span>
           <p class="ticket-note">*Sujeito a lotação</p>
         </div>
 
