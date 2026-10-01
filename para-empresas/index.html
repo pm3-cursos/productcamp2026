@@ -105,11 +105,6 @@ window.dataLayer = window.dataLayer || [];
         },
         {
           "@type": "Question",
-          "name": "O desconto de grupo vale para as duas modalidades de ingressos?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Sim. O desconto progressivo se aplica ao Passaporte e ao VIP." }
-        },
-        {
-          "@type": "Question",
           "name": "Existe parcelamento para compras em grupo?",
           "acceptedAnswer": { "@type": "Answer", "text": "Sim, para grupos a partir de 5 ingressos o parcelamento pode ser realizado via cartão de crédito corporativo em até 6x sem juros. Aceitamos também os métodos de pagamento de PIX e transferência bancária." }
         },
@@ -258,12 +253,11 @@ window.dataLayer = window.dataLayer || [];
   .benefit-card p{font-size:14.5px; color:var(--white-70); line-height:1.65;}
 
   /* ══ INGRESSOS ══ */
-  .tickets-grid{display:grid; grid-template-columns:1fr 1fr; gap:22px;}
+  /* Um card só (o VIP esgotou): largura limitada para não esticar no desktop */
+  .tickets-grid{display:grid; grid-template-columns:1fr; max-width:560px;}
   .ticket-card{background:var(--navy-card); border:1px solid var(--navy-border); border-radius:18px; padding:34px 30px; display:flex; flex-direction:column;}
-  .ticket-card.is-vip{background:linear-gradient(165deg, var(--navy-card), rgba(223,12,120,.16)); border-color:rgba(223,12,120,.4);}
   .ticket-name{font-family:var(--font-display); font-size:23px; font-weight:600; letter-spacing:-.02em; margin-bottom:6px;}
   .ticket-sub{font-size:14px; color:var(--white-70); margin-bottom:22px;}
-  .ticket-plus{color:var(--pink-light); font-weight:600; font-size:13.5px; margin-bottom:10px;}
   .ticket-list{list-style:none; margin-bottom:28px; flex:1;}
   .ticket-list li{display:flex; gap:10px; align-items:flex-start; color:var(--white-70); font-size:14.5px; padding:9px 0; border-bottom:1px solid var(--navy-border);}
   .ticket-list li:last-child{border-bottom:none;}
@@ -348,7 +342,6 @@ window.dataLayer = window.dataLayer || [];
     .stats-grid{grid-template-columns:repeat(2,1fr);}
     .stat-item:nth-child(3)::before{display:none;}
     .stat-item:nth-child(3), .stat-item:nth-child(4){border-top:1px solid var(--navy-border);}
-    .tickets-grid{grid-template-columns:1fr;}
   }
   @media (max-width:680px){
     :root{--section-pad:60px;}
@@ -562,13 +555,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </section>
 
-  <!-- ════════ MODALIDADES DE INGRESSOS ════════ -->
+  <!-- ════════ INGRESSO ════════
+       Só o Passaporte: o VIP esgotou e saiu da oferta para grupos. -->
   <section id="ingressos">
     <div class="container">
       <div class="section-head fade-in">
-        <span class="section-label">Modalidades de ingressos</span>
+        <span class="section-label">Ingresso</span>
         <h2 class="section-title">O ingresso certo para o seu time com até 20% OFF</h2>
-        <p class="section-lead">Duas modalidades disponíveis, para você escolher de acordo com o perfil e necessidades da sua equipe.</p>
+        <p class="section-lead">O Passaporte dá ao seu time acesso completo aos dois dias de evento, com desconto progressivo para grupos.</p>
       </div>
       <div class="tickets-grid fade-in">
         <article class="ticket-card">
@@ -583,21 +577,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <li>Gravações das palestras</li>
           </ul>
           <a href="#inscricao" class="btn-primary btn-block">Levar meu time de Passaporte &rarr;</a>
-        </article>
-        <article class="ticket-card is-vip">
-          <h3 class="ticket-name">VIP</h3>
-          <p class="ticket-sub">A experiência mais premium do PCamp</p>
-          <p class="ticket-plus">Todos os benefícios do Passaporte +</p>
-          <ul class="ticket-list">
-            <li>KIT exclusivo de participante</li>
-            <li>Credenciamento prioritário</li>
-            <li>Entrada prioritária nas salas</li>
-            <li>Acesso ao espaço VIP exclusivo</li>
-            <li>Contato direto com palestrantes</li>
-            <li>Espaço de coworking e massagem</li>
-            <li>Welcome coffee, snacks e bebidas</li>
-          </ul>
-          <a href="#inscricao" class="btn-primary btn-block">Levar meu time de VIP &rarr;</a>
         </article>
       </div>
     </div>
@@ -678,13 +657,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <svg class="faq-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
           </summary>
           <p>De acordo com o Decreto Municipal de São Paulo Nº 53.151/2012 – Art. 37, os bilhetes, ingressos ou entradas utilizadas para acesso ao evento passam a ser considerados documentos fiscais para os efeitos de legislação tributária do Município de São Paulo, sendo assim, o próprio ingresso será utilizado como documento comprobatório, tanto para pessoa física quanto para pessoa jurídica.</p>
-        </details>
-        <details class="faq-item">
-          <summary>
-            O desconto de grupo vale para as duas modalidades de ingressos?
-            <svg class="faq-chevron" viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-          </summary>
-          <p>Sim. O desconto progressivo se aplica ao Passaporte e ao VIP.</p>
         </details>
         <details class="faq-item">
           <summary>
