@@ -1294,6 +1294,19 @@ window.dataLayer = window.dataLayer || [];
     line-height: 1.35;
   }
 
+  /* "Insider PM3": tag discreta numa linha extra, com o acento ciano do site */
+  .coord-mini-tag {
+    align-self: flex-start;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--cyan);
+    border: 1px solid var(--navy-border);
+    border-radius: 999px;
+    padding: 2px 8px;
+    line-height: 1.3;
+  }
+
   /* ── RESPONSIVIDADE ── */
   @media (max-width: 768px) {
     .tracks-header { margin-bottom: 28px; }
@@ -1317,16 +1330,16 @@ window.dataLayer = window.dataLayer || [];
   }
 
   /* ── ABAS COMO CHIPS (até 900px) ──
-     A régua horizontal precisa de ~845px para caber as 4 trilhas. Abaixo disso
-     a última ("Liderança & Negócios") saía da tela e ainda dava rolagem
-     horizontal na página. Viram chips numa grade: as 4 trilhas ficam TODAS
+     A régua horizontal precisa de ~1015px para caber as 5 abas. Abaixo disso
+     a última saía da tela e ainda dava rolagem
+     horizontal na página. Viram chips numa grade: as 5 abas ficam TODAS
      visíveis e clicáveis, sem rolagem lateral e sem corte.
      grid-auto-rows: 1fr iguala a altura dos chips quando um nome quebra em
      duas linhas. */
-  @media (max-width: 900px) {
+  @media (max-width: 1100px) {
     .track-tabs {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       grid-auto-rows: 1fr;
       gap: 8px;
       border-bottom: none;
@@ -1376,6 +1389,8 @@ window.dataLayer = window.dataLayer || [];
     /* No celular os chips passam para 2×2: em 4 colunas eles ficariam com
        ~80px e todo nome de trilha quebraria em três linhas. */
     .track-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    /* 5 abas em 2 colunas: a última ocupa a linha inteira */
+    .track-tab:last-child { grid-column: 1 / -1; }
     .track-tab { font-size: 13px; }
 
     .track-panel-desc { font-size: 14px; }
@@ -3257,7 +3272,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="gc-label">Coordenadora Geral de Conteúdo do PCAMP</span>
         <h3 class="gc-name">Priscila Lugão</h3>
         <div class="gc-meta"><span class="gc-company">Med Review</span><span class="gc-title">Product Coordinator</span></div>
-        <p class="gc-desc">É ela quem costura as quatro trilhas em uma só experiência: da definição dos temas à curadoria dos palestrantes, garantindo conteúdo aplicável e conectado com o que o mercado de produto vive hoje.</p>
+        <p class="gc-desc">É ela quem costura as trilhas e salas em uma só experiência: da definição dos temas à curadoria dos palestrantes, garantindo conteúdo aplicável e conectado com o que o mercado de produto vive hoje.</p>
       </div>
     </div>
 
@@ -3269,6 +3284,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <button class="track-tab" type="button" role="tab" id="tab-trilha-building" aria-controls="painel-trilha-building" aria-selected="false" tabindex="-1">Building &amp; Automation</button>
         <button class="track-tab" type="button" role="tab" id="tab-trilha-marketing" aria-controls="painel-trilha-marketing" aria-selected="false" tabindex="-1">Marketing &amp; Design</button>
         <button class="track-tab" type="button" role="tab" id="tab-trilha-lideranca" aria-controls="painel-trilha-lideranca" aria-selected="false" tabindex="-1">Liderança &amp; Negócios</button>
+        <button class="track-tab" type="button" role="tab" id="tab-trilha-sala-pm3" aria-controls="painel-trilha-sala-pm3" aria-selected="false" tabindex="-1">Sala PM3</button>
       </div>
 
       <!-- TRILHA 1: PRODUCT MANAGEMENT -->
@@ -3385,6 +3401,38 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <span class="coord-mini-label">Coordenação</span>
               <div class="coord-mini-name">Fernanda Faria</div>
               <span class="coord-mini-role">Nubank — Product Manager</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+      <!-- SALA PM3 -->
+      <div class="track-panel" role="tabpanel" id="painel-trilha-sala-pm3" aria-labelledby="tab-trilha-sala-pm3" tabindex="0" hidden>
+        <p class="track-panel-desc">Do conhecimento ao resultado: conteúdo prático da escola de quem faz Produto Digital, com frameworks, cases reais e IA aplicada para você sair do PCamp pronto para transformar produto em impacto no negócio.</p>
+        <div class="track-coords">
+
+          <article class="coord-mini">
+            <div class="coord-mini-photo">
+              <img src="assets/img/coordinators/carolina_orlando.webp" width="400" height="400" alt="Foto de Carolina Orlando, Product Marketing Lead na Frota 162" loading="lazy">
+            </div>
+            <div class="coord-mini-info">
+              <span class="coord-mini-label">Coordenação</span>
+              <div class="coord-mini-name">Carolina Orlando</div>
+              <span class="coord-mini-role">Frota 162 — Product Marketing Lead</span>
+              <span class="coord-mini-tag">Insider PM3</span>
+            </div>
+          </article>
+
+          <article class="coord-mini">
+            <div class="coord-mini-photo">
+              <img src="assets/img/coordinators/leticia_ribeiro.webp" width="400" height="400" alt="Foto de Letícia Ribeiro, Senior Product Manager na Elo" loading="lazy">
+            </div>
+            <div class="coord-mini-info">
+              <span class="coord-mini-label">Coordenação</span>
+              <div class="coord-mini-name">Letícia Ribeiro</div>
+              <span class="coord-mini-role">Elo — Senior Product Manager</span>
+              <span class="coord-mini-tag">Insider PM3</span>
             </div>
           </article>
 
