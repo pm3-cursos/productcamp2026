@@ -906,8 +906,8 @@ window.dataLayer = window.dataLayer || [];
      1. GRADE DE PALESTRANTES — uma grade só, sem fileira que rola para o lado.
         Cada card carrega o nome da trilha, então a pessoa aparece uma vez e a
         trilha continua legível sem precisar de 4 fileiras separadas.
-     2. COORDENAÇÃO — painel da coordenação geral + abas das 4 trilhas, onde
-        cada aba abre a descrição da trilha e quem coordena.
+     2. COORDENAÇÃO — painel da coordenação geral + abas das 4 trilhas e da
+        Sala PM3, onde cada aba abre a descrição e quem coordena.
      A paleta é a do site: o mockup usa amarelo neon como acento único, que
      aqui vira CIANO (palestrante) e ROSA (coordenação) — a mesma semântica de
      cor já usada no resto da página. */
@@ -1172,11 +1172,11 @@ window.dataLayer = window.dataLayer || [];
 
   /* ── ABAS DAS TRILHAS ──
      Cada aba abre a descrição da trilha e quem coordena. Todo o conteúdo das
-     4 trilhas está no HTML; o JS só troca o atributo hidden. */
+     5 abas (4 trilhas + Sala PM3) está no HTML; o JS só troca o atributo hidden. */
   .track-tabs-wrap { margin-top: 48px; }
 
   /* Régua horizontal com sublinhado na aba ativa. No mobile ela vira uma grade
-     2×2 de chips (ver @media 640px): as 4 trilhas precisam ficar TODAS visíveis
+     de chips (ver @media 1100px e 640px): as 5 abas precisam ficar TODAS visíveis
      e clicáveis, e numa régua que rola as duas últimas ficavam fora da tela. */
   .track-tabs {
     display: flex;
@@ -1297,7 +1297,7 @@ window.dataLayer = window.dataLayer || [];
   /* "Insider PM3": tag discreta numa linha extra, com o acento ciano do site */
   .coord-mini-tag {
     align-self: flex-start;
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.04em;
     color: var(--cyan);
@@ -1329,10 +1329,9 @@ window.dataLayer = window.dataLayer || [];
     .track-tabs-wrap { margin-top: 36px; }
   }
 
-  /* ── ABAS COMO CHIPS (até 900px) ──
+  /* ── ABAS COMO CHIPS (até 1100px) ──
      A régua horizontal precisa de ~1015px para caber as 5 abas. Abaixo disso
-     a última saía da tela e ainda dava rolagem
-     horizontal na página. Viram chips numa grade: as 5 abas ficam TODAS
+     a última saía da tela e ainda dava rolagem horizontal na página. Viram chips numa grade: as 5 abas ficam TODAS
      visíveis e clicáveis, sem rolagem lateral e sem corte.
      grid-auto-rows: 1fr iguala a altura dos chips quando um nome quebra em
      duas linhas. */
@@ -1369,6 +1368,15 @@ window.dataLayer = window.dataLayer || [];
     .track-panel { padding-top: 24px; }
   }
 
+  /* Tablet (641–900px): 5 chips numa linha ficariam com ~120px e os nomes
+     longos quebrariam em 3 linhas. Grade de 6 colunas: 3 chips em cima
+     (2 colunas cada) e 2 embaixo (3 colunas cada). */
+  @media (min-width: 641px) and (max-width: 900px) {
+    .track-tabs { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .track-tab { grid-column: span 2; }
+    .track-tab:nth-child(n+4) { grid-column: span 3; }
+  }
+
   @media (max-width: 640px) {
     /* 2 colunas fixas: com auto-fill a grade cairia para 1 coluna e a dobra
        ficaria com 10 cards empilhados */
@@ -1386,8 +1394,8 @@ window.dataLayer = window.dataLayer || [];
     .track-card-name { font-size: 14px; }
     .track-card-role { font-size: 11.5px; }
 
-    /* No celular os chips passam para 2×2: em 4 colunas eles ficariam com
-       ~80px e todo nome de trilha quebraria em três linhas. */
+    /* No celular os chips passam para 2 colunas (2+2+1): em mais colunas eles
+       ficariam com ~80px e todo nome de trilha quebraria em três linhas. */
     .track-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     /* 5 abas em 2 colunas: a última ocupa a linha inteira */
     .track-tab:last-child { grid-column: 1 / -1; }
@@ -2956,7 +2964,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="container">
     <div class="tracks-header">
       <div class="section-label">Trilhas de conteúdo</div>
-      <h2 class="section-title">+60 palestras em<br>4 trilhas de conhecimento</h2>
+      <h2 class="section-title">+60 palestras em<br>4 trilhas e a Sala PM3</h2>
       <p class="section-subtitle">Aprendizado na prática com os maiores nomes do mercado em um só lugar.</p>
     </div>
 
@@ -3276,7 +3284,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
 
-    <!-- Abas das 4 trilhas: descrição + quem coordena. Todo o conteúdo está no
+    <!-- Abas das 4 trilhas e da Sala PM3: descrição + quem coordena. Todo o conteúdo está no
          HTML; o JS do fim da página só troca o atributo hidden dos painéis. -->
     <div class="track-tabs-wrap">
       <div class="track-tabs" role="tablist" aria-label="Trilhas de conteúdo">
@@ -4175,7 +4183,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
   // ─────────────────────────────────────────
   // Trilhas: abas de coordenação (descrição + quem coordena)
-  // Os 4 painéis já vêm no HTML; aqui só trocamos o atributo hidden.
+  // Os 5 painéis já vêm no HTML; aqui só trocamos o atributo hidden.
   // Sem JS, o primeiro painel continua visível — nada some da página.
   // ─────────────────────────────────────────
   (function () {
@@ -4199,7 +4207,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       if (opts && opts.focus) tabs[index].focus();
       // garante a aba escolhida à vista (só rola se ela estiver fora da tela —
-      // no mobile as 4 cabem na grade 2×2, então normalmente não rola nada)
+      // no mobile as 5 cabem na grade de chips, então normalmente não rola nada)
       if (opts && opts.reveal) tabs[index].scrollIntoView({ block: 'nearest', inline: 'nearest' });
     }
 
