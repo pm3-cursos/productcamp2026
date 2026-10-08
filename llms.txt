@@ -26,5 +26,6 @@ O Product Camp reúne os maiores nomes do mercado em quatro trilhas de conteúdo
 - Datas: 08 e 09 de dezembro de 2026
 - Local: Rua Rocha, 217 — Bela Vista, São Paulo (SP), Brasil
 - Formato: presencial
+- Agenda geral: Dia 1 (terça, 08/12) — credenciamento 7h30–9h30, abertura oficial 9h30, palestras a partir das 10h, almoço 11h35–13h35, encerramento 18h e happy hour 18h15–19h45 (só no dia 1). Dia 2 (quarta, 09/12) — credenciamento 8h–9h30, palestras a partir das 10h, almoço 11h35–13h35, encerramento do PCamp 2026 18h–18h20. Grade por palco e trilha em breve.
 - Trilhas: Product Management, Building & Automation, Liderança & Negócios, Marketing & Design
 - Sala PM3: conteúdo prático da PM3 (frameworks, cases reais e IA aplicada)
