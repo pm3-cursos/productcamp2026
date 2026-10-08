@@ -1596,6 +1596,152 @@ window.dataLayer = window.dataLayer || [];
     .keynote-card:hover .keynote-photo img { transform: none; }
   }
 
+  /* ── AGENDA ──
+     Horários gerais dos dois dias. Fundo --navy para alternar com as seções
+     vizinhas (coordenação e venue são --navy-mid). Card no mesmo padrão do
+     .track-card: --navy-card, borda --navy-border, raio 16px.
+     Horário em CIANO (informação); o ROSA aparece só no destaque do happy
+     hour — branco sobre --pink dá 4,7:1, acima do mínimo de 4,5:1.
+     scroll-margin-top = altura do nav fixo (64px), para a âncora #agenda. */
+  .agenda-section {
+    background: var(--navy);
+    scroll-margin-top: 64px;
+  }
+
+  .agenda-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .agenda-header .section-title { margin-bottom: 12px; }
+
+  /* dois cards lado a lado; o stretch padrão do grid deixa os dois com a
+     mesma altura */
+  .agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .agenda-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    padding: 28px 32px 32px;
+  }
+
+  .agenda-card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--navy-border);
+  }
+
+  .agenda-day {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .agenda-date {
+    font-size: 15px;
+    color: var(--white-70);
+  }
+
+  .agenda-list { list-style: none; }
+
+  /* flex-wrap: horário (largura fixa) e descrição dividem a linha enquanto
+     couberem; em tela estreita, a descrição desce para baixo do horário
+     sozinha, sem media query e sem rolagem lateral */
+  .agenda-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 16px;
+    padding: 14px 0;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .agenda-item + .agenda-item { border-top: 1px solid var(--navy-border); }
+
+  .agenda-time {
+    flex: 0 0 7.5rem;
+    font-weight: 600;
+    color: var(--cyan);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .agenda-desc {
+    flex: 1 1 10rem;
+    min-width: 0;
+    color: var(--white);
+  }
+
+  .agenda-desc strong { font-weight: 600; }
+
+  /* happy hour: a linha vira uma faixa rosa que avança um pouco sobre o
+     padding do card, para o texto continuar alinhado com as outras linhas */
+  .agenda-item--highlight {
+    margin: 4px -16px 0;
+    padding: 14px 16px;
+    background: var(--pink);
+    border-radius: 10px;
+  }
+
+  .agenda-item + .agenda-item--highlight { border-top-color: transparent; }
+
+  .agenda-item--highlight .agenda-time { color: var(--white); }
+
+  .agenda-item--highlight .agenda-desc {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 12px;
+    font-weight: 600;
+  }
+
+  .agenda-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    border: 1px solid var(--white-70);
+    border-radius: 100px;
+    padding: 6px 10px;
+    white-space: nowrap;
+  }
+
+  /* margin-top:auto empurra a nota para o pé do card, alinhada com o fim
+     do card do Dia 1. --white-70 (não --white-40) para manter 4,5:1. */
+  .agenda-note {
+    margin-top: auto;
+    padding-top: 20px;
+    font-size: 14px;
+    color: var(--white-70);
+  }
+
+  @media (max-width: 900px) {
+    .agenda-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 560px) {
+    .agenda-header { margin-bottom: 32px; }
+    .agenda-card { padding: 24px 20px 24px; }
+    .agenda-item--highlight { margin-inline: -12px; padding-inline: 12px; }
+  }
+
   /* ── VENUE ── */
   .venue-section { background: var(--navy-mid); }
 
@@ -2622,6 +2768,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <ul class="nav-links" id="navLinks">
       <li><a href="https://go.pm3.com.br/faq_pcamp_26" target="_blank">FAQ</a></li>
       <li><a href="#keynote">Speakers</a></li>
+      <li><a href="#agenda">Agenda</a></li>
       <li><a href="https://share.hsforms.com/2LipTQvz1Ryy8_JWxtYAgTgcy53x" target="_blank">Patrocine</a></li>
       <li><a href="/pocket">Pocket</a></li>
       <li><a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="nav-cta">Garantir ingresso</a></li>
@@ -3506,6 +3653,78 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         </div>
       </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- AGENDA -->
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  COMO EDITAR A AGENDA                                            ║
+  ║  Cada horário é um <li class="agenda-item"> com duas partes:     ║
+  ║                                                                  ║
+  ║  <li class="agenda-item">                                        ║
+  ║    <span class="agenda-time">10h</span>                          ║
+  ║    <span class="agenda-desc">Início das palestras</span>         ║
+  ║  </li>                                                           ║
+  ║                                                                  ║
+  ║  Destaque em negrito: <strong> dentro da .agenda-desc.           ║
+  ║  Linha em rosa: some .agenda-item--highlight ao <li>.            ║
+  ║                                                                  ║
+  ║  FASE 2 (agenda completa por dia): troque a <ul class=           ║
+  ║  "agenda-list"> do card por um link no componente do site, ex.:  ║
+  ║  <a href="/agenda/dia-1/" class="btn-secondary">Ver agenda do    ║
+  ║  Dia 1</a>. O cabeçalho do card (dia + data) continua igual.     ║
+  ║                                                                  ║
+  ║  O conteúdo fica no HTML, e não num array em JS, de propósito:   ║
+  ║  crawler sem JS e crawler de IA leem a agenda como texto, e a    ║
+  ║  seção não pisca nem desloca o layout ao carregar.               ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<section class="agenda-section" id="agenda" aria-labelledby="agenda-title">
+  <div class="container">
+    <div class="agenda-header">
+      <div class="section-label">Agenda</div>
+      <h2 class="section-title" id="agenda-title">Planeje seus dois dias de PCamp</h2>
+      <p class="section-subtitle section-subtitle--center">Centro de Convenções Frei Caneca · São&nbsp;Paulo</p>
+    </div>
+
+    <div class="agenda-grid">
+
+      <!-- DIA 1 -->
+      <article class="agenda-card" aria-labelledby="agenda-dia-1">
+        <header class="agenda-card-header">
+          <h3 class="agenda-day" id="agenda-dia-1">Dia 1</h3>
+          <time class="agenda-date" datetime="2026-12-08">Terça, 08 de dezembro</time>
+        </header>
+        <ul class="agenda-list">
+          <li class="agenda-item"><span class="agenda-time">7h30 – 9h30</span><span class="agenda-desc">Credenciamento</span></li>
+          <li class="agenda-item"><span class="agenda-time">9h30 – 10h</span><span class="agenda-desc"><strong>Abertura oficial do evento</strong></span></li>
+          <li class="agenda-item"><span class="agenda-time">10h</span><span class="agenda-desc">Início das palestras</span></li>
+          <li class="agenda-item"><span class="agenda-time">11h35 – 13h35</span><span class="agenda-desc">Almoço</span></li>
+          <li class="agenda-item"><span class="agenda-time">13h35</span><span class="agenda-desc">Retorno das palestras</span></li>
+          <li class="agenda-item"><span class="agenda-time">18h</span><span class="agenda-desc">Encerramento do 1º dia</span></li>
+          <li class="agenda-item agenda-item--highlight"><span class="agenda-time">18h15 – 19h45</span><span class="agenda-desc">Happy hour <span class="agenda-tag">Só no dia 1</span></span></li>
+        </ul>
+      </article>
+
+      <!-- DIA 2 -->
+      <article class="agenda-card" aria-labelledby="agenda-dia-2">
+        <header class="agenda-card-header">
+          <h3 class="agenda-day" id="agenda-dia-2">Dia 2</h3>
+          <time class="agenda-date" datetime="2026-12-09">Quarta, 09 de dezembro</time>
+        </header>
+        <ul class="agenda-list">
+          <li class="agenda-item"><span class="agenda-time">8h – 9h30</span><span class="agenda-desc">Credenciamento</span></li>
+          <li class="agenda-item"><span class="agenda-time">9h30 – 10h</span><span class="agenda-desc">Abertura das salas</span></li>
+          <li class="agenda-item"><span class="agenda-time">10h</span><span class="agenda-desc">Início das palestras</span></li>
+          <li class="agenda-item"><span class="agenda-time">11h35 – 13h35</span><span class="agenda-desc">Almoço</span></li>
+          <li class="agenda-item"><span class="agenda-time">13h35</span><span class="agenda-desc">Retorno das palestras</span></li>
+          <li class="agenda-item"><span class="agenda-time">18h – 18h20</span><span class="agenda-desc"><strong>Encerramento do PCamp 2026</strong></span></li>
+        </ul>
+        <p class="agenda-note">Grade por palco e trilha em breve.</p>
+      </article>
 
     </div>
   </div>
