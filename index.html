@@ -2167,6 +2167,14 @@ window.dataLayer = window.dataLayer || [];
   /* logos em duas linhas (Fala aí, PMM) — um pouco mais altas para o texto não encolher */
   .sponsor-logo.logo-stacked img { height: 44px; }
 
+  /* logos com símbolo grande ao lado do nome (Mulheres de Produto) — mais altos para o nome não sumir */
+  .sponsor-logo.logo-symbol { padding-block: 12px; }
+  .sponsor-logo.logo-symbol img { height: 56px; max-width: 180px; }
+
+  /* logos verticais (Produto Preto) — quase sem padding para o símbolo e o texto caberem no card */
+  .sponsor-logo.logo-tall { padding-block: 6px; }
+  .sponsor-logo.logo-tall img { height: 68px; }
+
   /* realização — logo PM3 maior */
   .sponsors-realizacao .sponsor-logo { height: 88px; padding: 24px 40px; }
   .sponsors-realizacao .sponsor-logo img { height: 44px; max-width: 180px; }
@@ -3965,6 +3973,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     { nome: 'MoEngage',  cota: 'gold',            logo: 'assets/img/sponsors/moengage.svg' }
     { nome: 'Pendo',     cota: 'silver',          logo: 'assets/img/sponsors/pendo_.avif'   }
     { nome: 'Afya',      cota: 'silver',          logo: 'assets/img/sponsors/afya.avif'     }
+    { nome: 'Stack',     cota: 'silver',          logo: 'assets/img/sponsors/stack.webp'    }
     { nome: 'grunn.ai',  cota: 'startup',         logo: 'assets/img/sponsors/grunn.webp'    }
 
   A hierarquia é 100% visual (tamanho de card + nº de colunas +
@@ -4036,6 +4045,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <a href="https://educacaomedica.afya.com.br/" target="_blank" class="sponsor-logo">
               <img src="assets/img/sponsors/afya.avif" width="512" height="209" loading="lazy" alt="Afya">
             </a>
+            <a href="https://stack.com.br/" target="_blank" class="sponsor-logo">
+              <img src="assets/img/sponsors/stack.webp" width="400" height="60" loading="lazy" alt="Stack">
+            </a>
           </div>
         </div>
 
@@ -4052,18 +4064,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
 
-    <!-- COMUNIDADES -->
+    <!-- COMUNIDADES — em ordem alfabética; ao incluir uma nova, mantenha a ordem -->
     <div class="sponsors-tier">
       <div class="sponsors-tier-label">Comunidades</div>
       <div class="sponsors-logos">
-        <a href="https://vagasux.com.br/" target="_blank" class="sponsor-logo">
-          <img src="assets/img/sponsors/vagas-ux.webp" width="400" height="160" loading="lazy" alt="Vagas UX">
+        <a href="https://www.linkedin.com/company/evoluindo-em-produtos/" target="_blank" class="sponsor-logo">
+          <img src="assets/img/sponsors/evoluindo-em-produtos.svg" width="283" height="83" loading="lazy" alt="Evoluindo em Produtos">
         </a>
         <a href="https://www.linkedin.com/company/fala-ai-pmm/" target="_blank" class="sponsor-logo logo-stacked">
           <img src="assets/img/sponsors/fala-ai-pmm.webp" width="298" height="160" loading="lazy" alt="Fala aí, PMM">
         </a>
         <a href="https://www.meninadeux.com/" target="_blank" class="sponsor-logo">
           <img src="assets/img/sponsors/menina-de-ux.webp" width="472" height="120" loading="lazy" alt="Menina de UX">
+        </a>
+        <a href="https://www.mulheresdeproduto.com/" target="_blank" class="sponsor-logo logo-symbol">
+          <img src="assets/img/sponsors/mulheres-de-produto.webp" width="400" height="181" loading="lazy" alt="Mulheres de Produto">
+        </a>
+        <a href="https://www.linkedin.com/company/produtopreto/" target="_blank" class="sponsor-logo logo-tall">
+          <img src="assets/img/sponsors/produto-preto.webp" width="159" height="240" loading="lazy" alt="Produto Preto">
+        </a>
+        <a href="https://vagasux.com.br/" target="_blank" class="sponsor-logo">
+          <img src="assets/img/sponsors/vagas-ux.webp" width="400" height="160" loading="lazy" alt="Vagas UX">
         </a>
       </div>
     </div>
