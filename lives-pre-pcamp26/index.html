@@ -242,6 +242,21 @@ window.dataLayer = window.dataLayer || [];
     .journey-track::before{display:none;}
     .journey-step{flex:0 0 calc(50% - 4px);}
   }
+  /* ── FAIXA DO SORTEIO (entre o hero e #live1) ──
+     Faixa fina em rosa para se destacar do navy das dobras vizinhas. O botão é
+     claro (e não o .btn-primary rosa) para não sumir sobre o fundo da faixa.
+     Desktop: frase à esquerda, botão à direita. Mobile: empilha, botão em largura total. */
+  .raffle-band{padding:30px 0; background:linear-gradient(100deg, var(--pink) 0%, #b80a63 100%);}
+  .raffle-inner{display:flex; align-items:center; justify-content:space-between; gap:32px;}
+  .raffle-text{font-family:var(--font-display); font-weight:600; font-size:clamp(16px,1.7vw,19px); line-height:1.45; letter-spacing:-.01em; max-width:68ch; text-wrap:pretty;}
+  .btn-light{display:inline-flex; align-items:center; justify-content:center; gap:8px; flex-shrink:0; background:var(--white); color:var(--navy); font-family:var(--font-body); font-weight:600; font-size:15px; padding:14px 26px; border-radius:10px; white-space:nowrap; transition:transform .15s, box-shadow .2s;}
+  .btn-light:hover{transform:translateY(-2px); box-shadow:0 8px 24px rgba(43,30,57,.35);}
+  .btn-light svg{flex-shrink:0;}
+  @media (max-width:760px){
+    .raffle-band{padding:28px 0;}
+    .raffle-inner{flex-direction:column; align-items:stretch; gap:20px;}
+    .btn-light{width:100%; white-space:normal; text-align:center;}
+  }
   /* ── SECTION GENERIC ── */
   .section-alt{background:var(--navy-mid);}
   .section-label{display:inline-flex; align-items:center; gap:8px; font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--pink); margin-bottom:16px;}
@@ -354,7 +369,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="live-badge hero-badge">3ª de 3 lives gratuitas &middot; 28/10, 19h</span>
         <h1 class="hero-title">Live <span class="accent">Thinker &amp; Leader</span>: O que diferencia quem faz Produto e o que move a sua carreira</h1>
         <p class="hero-subtitle">O Product Camp acontece em dezembro, mas você pode antecipar seus aprendizados. Convidamos experts da área de Produto e os nossos coordenadores de trilhas para levantar discussões sob quatro perspectivas em que profissionais da nova era de produto devem atuar: usuário, construtor, pensador e líder.</p>
-        <p class="hero-note"><strong>Inscreva-se gratuitamente</strong> para ter acesso às lives e gravações.</p>
+        <p class="hero-note"><strong>Inscreva-se</strong> para ter acesso à live e participar do sorteio de 3 mentorias individuais de carreira</p>
         <span class="hero-rule"></span>
         <!-- jornada: 3 lives + destino final.
              .past = live que já aconteceu (apagada); .next = a live da vez (em destaque).
@@ -459,6 +474,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </script>
         </div>
       </div>
+    </div>
+  </section>
+  <!-- ============ FAIXA — SORTEIO DE MENTORIAS ============ -->
+  <section class="raffle-band" aria-label="Sorteio de mentorias de carreira">
+    <div class="container raffle-inner">
+      <p class="raffle-text">O Product Camp é um evento com foco em networking e, para dar início à sua jornada, vamos sortear 3 mentorias individuais de carreira durante a Live Thinker &amp; Leader</p>
+      <a href="#inscricao" class="btn-light">
+        Quero concorrer às mentorias
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
     </div>
   </section>
   <!-- ============ DOBRA 2 — LIVE 1 (H2) ============ -->
