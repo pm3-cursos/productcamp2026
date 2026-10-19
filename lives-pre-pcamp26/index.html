@@ -283,9 +283,10 @@ window.dataLayer = window.dataLayer || [];
   .meta-label{font-size:11px; color:var(--white-40); text-transform:uppercase; letter-spacing:.08em; display:block; margin-bottom:2px;}
   .meta-value{font-size:14px; font-weight:600; color:var(--white);}
   /* agenda — os dois painéis de conteúdo, um embaixo do outro: cada painel tem
-     título, descritivo longo e DOIS palestrantes, então ocupa a largura inteira.
-     Dentro do painel os palestrantes ficam lado a lado (grade de 2 colunas) e
-     colam no rodapé (margin-top:auto) para alinharem entre os painéis. */
+     título, descritivo longo e dois ou três palestrantes, então ocupa a largura
+     inteira. Dentro do painel os palestrantes ficam lado a lado (grade de 2
+     colunas; 3 no painel com trio, via .agenda-speakers--trio) e colam no rodapé
+     (margin-top:auto) para alinharem entre os painéis. */
   .agenda-stack{display:grid; grid-template-columns:1fr; gap:14px; margin-bottom:36px;}
   .agenda-block{display:flex; flex-direction:column; background:var(--navy-mid); border:1px solid var(--navy-border); border-radius:14px; padding:24px 26px;}
   .agenda-kicker{display:inline-flex; align-self:flex-start; align-items:center; gap:8px; font-size:11px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--cyan); margin-bottom:14px;}
@@ -296,7 +297,14 @@ window.dataLayer = window.dataLayer || [];
   .agenda-title{font-size:17px; font-weight:600; font-style:italic; line-height:1.4; margin-bottom:12px; text-wrap:pretty;}
   .agenda-desc{font-size:14.5px; color:var(--white-70); line-height:1.65; margin-bottom:24px;}
   .agenda-speakers{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px 26px; margin-top:auto;}
+  .agenda-speakers--trio{grid-template-columns:repeat(3,minmax(0,1fr));}
   .agenda-speaker{display:flex; align-items:center; gap:14px; min-width:0;}
+  /* No tablet, três colunas deixam pouco espaço ao lado da foto: o cargo quebraria
+     palavra a palavra. Aqui a foto sobe para cima do nome; abaixo de 760px a grade
+     vira uma coluna só (regra de .agenda-speakers no media de 760px). */
+  @media (min-width:761px) and (max-width:960px){
+    .agenda-speakers--trio .agenda-speaker{flex-direction:column; align-items:flex-start; gap:12px;}
+  }
   .agenda-avatar{width:72px; height:72px; border-radius:50%; object-fit:cover; object-position:top center; background:var(--pink-muted); border:2px solid rgba(223,12,120,.3); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:600; font-size:18px; color:var(--pink-light); flex-shrink:0;}
   .agenda-speaker-name{font-size:14.5px; font-weight:600; margin-bottom:2px;}
   .agenda-speaker-role{font-size:12.5px; color:var(--white-70); line-height:1.45;}
@@ -538,7 +546,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <span class="agenda-kicker">Painel de conteúdo II</span>
             <h3 class="agenda-title">Crescer, mudar ou especializar? O que os dados dizem sobre carreira em Produto</h3>
             <p class="agenda-desc">Mais da metade das pessoas de Produto pensa em mudar de emprego nos próximos seis meses. Ao mesmo tempo, o desejo mais citado é crescer onde já está. Especialização e liderança empatam como próximo passo desejado, mas o mercado ainda não paga as duas trilhas do mesmo jeito. Neste painel, partimos do Panorama do Mercado de Produto 2026 para falar sobre o que trava e o que acelera uma carreira em Produto: promoção, aumento, ladder, remuneração e as escolhas que ninguém te ensina a fazer.</p>
-            <div class="agenda-speakers">
+            <div class="agenda-speakers agenda-speakers--trio">
               <div class="agenda-speaker">
                 <img class="agenda-avatar" src="/assets/img/lives-pcamp/gleizy-bodart.webp" alt="Gleizy Bodart, Group Product Manager de AI Products &amp; Marketing na Blip" width="72" height="72" loading="lazy">
                 <div>
@@ -551,6 +559,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <div>
                   <div class="agenda-speaker-name">Luisa Manfredini</div>
                   <div class="agenda-speaker-role">Head of Product no iFood</div>
+                </div>
+              </div>
+              <div class="agenda-speaker">
+                <img class="agenda-avatar" src="/assets/img/lives-pcamp/laura-taglione.webp" alt="Laura Taglione, Gerente de Carreira de Produto no Itaú" width="72" height="72" loading="lazy">
+                <div>
+                  <div class="agenda-speaker-name">Laura Taglione</div>
+                  <div class="agenda-speaker-role">Gerente de Carreira de Produto no Itaú</div>
                 </div>
               </div>
             </div>
