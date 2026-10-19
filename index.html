@@ -205,6 +205,11 @@ window.dataLayer = window.dataLayer || [];
     text-align: center;
   }
 
+  /* Fora do lote em que o texto vale, o script de lotes esconde a faixa e
+     marca o <html> com .sem-topbar (vence o @media acima pela especificidade). */
+  .topbar[hidden] { display: none; }
+  :root.sem-topbar { --topbar-h: 0px; }
+
   .topbar strong { font-weight: 600; }
 
   .topbar-cta {
@@ -2804,6 +2809,11 @@ window.dataLayer = window.dataLayer || [];
   .ticket-badge--vip { background: linear-gradient(90deg, var(--pink), #f55fa0); }
   .btn-block { width: 100%; justify-content: center; }
   .btn-nowrap { flex-shrink: 0; white-space: nowrap; }
+  /* O CTA do hero não quebra linha: a 320px, o padding padrão estouraria a
+     largura útil. */
+  @media (max-width: 370px) {
+    .hero-actions .btn-primary { padding: 16px 20px; }
+  }
   .vip-intro {
     font-size: 13px; font-weight: 600; color: var(--white-70);
     margin: 4px 0 8px; padding-left: 2px;
@@ -2823,9 +2833,10 @@ window.dataLayer = window.dataLayer || [];
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<!-- FAIXA DE URGÊNCIA — texto fixo: revisar na virada para o Last Minute (04/11),
-     quando o "último lote" deixa de valer. -->
-<a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=topbar&utm_content=sympla" target="_blank" class="topbar">
+<!-- FAIXA DE URGÊNCIA — data-pcamp-topbar lista os lotes em que o texto vale;
+     fora deles, assets/js/pcamp-countdown-lotes.js esconde a faixa sozinho.
+     Na virada para o Last Minute (04/11), trocar ou remover no deploy. -->
+<a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=topbar&utm_content=sympla" target="_blank" class="topbar" data-pcamp-topbar="lote-5">
   <span><strong>VIP esgotado.</strong> Passaporte no último lote. <span class="topbar-cta"><span aria-hidden="true">→</span> Garantir o meu</span></span>
 </a>
 

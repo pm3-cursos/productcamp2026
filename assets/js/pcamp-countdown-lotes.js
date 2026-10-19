@@ -139,6 +139,19 @@
     }
   }
 
+  // A faixa do topo da home (data-pcamp-topbar) lista os ids de lote em que
+  // o texto dela vale. Fora deles — ou sem lote ativo, depois de 24/11 — o
+  // script a esconde e zera --topbar-h, para o nav e o hero subirem juntos.
+  // O texto em si continua manual: o deploy da virada troca ou remove a faixa.
+  function applyTopbar(lote) {
+    var topbar = document.querySelector("[data-pcamp-topbar]");
+    if (!topbar) return;
+    var ids = topbar.getAttribute("data-pcamp-topbar").split(" ");
+    if (lote && ids.indexOf(lote.id) !== -1) return;
+    topbar.hidden = true;
+    document.documentElement.classList.add("sem-topbar");
+  }
+
   function buildMarkup(container, label) {
     container.innerHTML =
       '<span class="pcc-label"></span>' +
@@ -155,6 +168,7 @@
 
   function init() {
     var lote = findActiveLote(new Date());
+    applyTopbar(lote);
     if (!lote) return;
 
     // O preço vale em qualquer página com a marcação, mesmo fora da janela
