@@ -55,9 +55,11 @@
   //      price e priceValidUntil (data de fim do lote)
   //   4. o llms.txt, que é texto puro e este script não alcança
   //
-  // Quando o preço do lote empata com PASSAPORTE_PRECO_REFERENCIA (o
-  // "De R$ X por" riscado do card), o script esconde o "De ... por" para
-  // não anunciar desconto de zero.
+  // `label` vira o selo do card (em caixa alta), o nome da oferta no JSON-LD
+  // e o texto do countdown — o Lote 5 é comunicado como "Último Lote".
+  //
+  // O card não tem mais preço riscado ("De R$ X por"): saiu junto com o
+  // último lote, e o Last Minute já é o preço cheio.
   //
   // O calendário TERMINA em 24/11/2026 de propósito: as vendas encerram
   // nessa data e não há ingresso à venda entre 25/11 e o evento (08/12).
@@ -74,12 +76,9 @@
     { id: "lote-2",      label: "Lote 2",      start: "2026-07-18T00:00:00-03:00", end: "2026-08-18T23:59:59-03:00" },
     { id: "lote-3",      label: "Lote 3",      start: "2026-08-19T00:00:00-03:00", end: "2026-09-18T23:59:59-03:00" },
     { id: "lote-4",      label: "Lote 4",      start: "2026-09-19T00:00:00-03:00", end: "2026-10-15T23:59:59-03:00", passaporte: 1449 },
-    { id: "lote-5",      label: "Lote 5",      start: "2026-10-16T00:00:00-03:00", end: "2026-11-03T23:59:59-03:00", passaporte: 1549 },
+    { id: "lote-5",      label: "Último Lote", start: "2026-10-16T00:00:00-03:00", end: "2026-11-03T23:59:59-03:00", passaporte: 1549 },
     { id: "last-minute", label: "Last Minute", start: "2026-11-04T00:00:00-03:00", end: "2026-11-24T23:59:59-03:00", passaporte: 1649 }
   ];
-
-  // Preço cheio de referência do Passaporte — o valor riscado no card.
-  var PASSAPORTE_PRECO_REFERENCIA = 1649;
 
   // Quantos dias antes do fim do lote o widget passa a aparecer.
   var VISIBLE_WINDOW_DAYS = 7;
@@ -120,11 +119,9 @@
 
     var badge = document.querySelector("[data-pcamp-lote-badge]");
     var price = document.querySelector("[data-pcamp-preco]");
-    var priceFrom = document.querySelector("[data-pcamp-preco-de]");
 
     if (badge) badge.textContent = lote.label.toUpperCase();
     if (price) price.textContent = formatBRL(lote.passaporte);
-    if (priceFrom) priceFrom.hidden = lote.passaporte >= PASSAPORTE_PRECO_REFERENCIA;
 
     var ld = document.getElementById("pcamp-event-jsonld");
     if (!ld) return;
