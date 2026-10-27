@@ -76,8 +76,8 @@
     { id: "lote-2",      label: "Lote 2",      start: "2026-07-18T00:00:00-03:00", end: "2026-08-18T23:59:59-03:00" },
     { id: "lote-3",      label: "Lote 3",      start: "2026-08-19T00:00:00-03:00", end: "2026-09-18T23:59:59-03:00" },
     { id: "lote-4",      label: "Lote 4",      start: "2026-09-19T00:00:00-03:00", end: "2026-10-15T23:59:59-03:00", passaporte: 1449 },
-    { id: "lote-5",      label: "Último Lote", start: "2026-10-16T00:00:00-03:00", end: "2026-11-03T23:59:59-03:00", passaporte: 1549 },
-    { id: "last-minute", label: "Last Minute", start: "2026-11-04T00:00:00-03:00", end: "2026-11-24T23:59:59-03:00", passaporte: 1649 }
+    { id: "lote-5",      label: "Último Lote", start: "2026-10-16T00:00:00-03:00", end: "2026-11-06T23:59:59-03:00", passaporte: 1549 },
+    { id: "last-minute", label: "Last Minute", start: "2026-11-07T00:00:00-03:00", end: "2026-11-24T23:59:59-03:00", passaporte: 1649 }
   ];
 
   // Quantos dias antes do fim do lote o widget passa a aparecer.
