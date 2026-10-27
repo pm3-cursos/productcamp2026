@@ -982,9 +982,8 @@ window.dataLayer = window.dataLayer || [];
 
   /* ── GRADE DE PALESTRANTES ──
      auto-fill com mínimo de 200px: no container de 1160px fecha exatamente
-     5 colunas, e os 10 cards (6 palestrantes + um "Em breve" por trilha)
-     preenchem 2 fileiras cheias. Palestrante novo entra antes dos "Em breve"
-     e a grade se reacomoda sozinha — nada de largura fixa para manter. */
+     5 colunas. Palestrante novo entra antes dos "Em breve" e a grade se
+     reacomoda sozinha — nada de largura fixa para manter. */
   .track-speakers {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -1045,6 +1044,11 @@ window.dataLayer = window.dataLayer || [];
 
   .track-card:hover .track-card-photo img { transform: scale(1.04); }
 
+  /* Foto quadrada com o rosto deslocado para a direita: o corte 4:5
+     centralizado cortaria o rosto na borda. Encostar o corte à direita
+     resolve sem refazer o arquivo. */
+  .track-card-photo--right img { object-position: top right; }
+
   /* margin-top:auto encosta o bloco de texto na base: cards da mesma fileira
      têm alturas de conteúdo diferentes, e assim o respiro sobra no meio, não
      embaixo do cargo. */
@@ -1083,9 +1087,7 @@ window.dataLayer = window.dataLayer || [];
      qual trilha. É decorativo (aria-hidden), sem conteúdo indexável.
      Fica OCULTO por padrão e só aparece a partir de 1160px — abaixo disso a
      grade cai para 3 ou 2 colunas e os 4 placeholders viravam duas telas de
-     rolagem sem informação nenhuma. Com eles escondidos, a grade fecha
-     fileiras cheias em todos os tamanhos: 5×2 no desktop, 3×2 no tablet e
-     2×3 no celular. */
+     rolagem sem informação nenhuma. */
   .track-card--soon {
     display: none;
     background: transparent;
@@ -3181,9 +3183,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ║  a altura fica reservada e as fotos seguem alinhadas. Nunca use  ║
   ║  placeholder nem "ex-empresa".                                   ║
   ║                                                                  ║
-  ║  A grade é auto-fill: não há largura fixa para ajustar. Com 10   ║
-  ║  cards ela fecha 2 fileiras cheias de 5 no desktop; ao chegar a  ║
-  ║  11, a 3ª fileira começa sozinha.                                ║
+  ║  A grade é auto-fill: não há largura fixa para ajustar. A última ║
+  ║  fileira pode ficar incompleta conforme o total, e isso é        ║
+  ║  esperado: não esconda nem duplique card para fechá-la.          ║
+  ║                                                                  ║
+  ║  A foto é cortada em 4:5 a partir do topo e do centro. Rosto     ║
+  ║  muito à direita na foto quadrada? Use .track-card-photo--right  ║
+  ║  na div da foto em vez de recortar o arquivo.                    ║
   ║                                                                  ║
   ║  COORDENAÇÃO fica nas abas, mais abaixo (.track-panel): cada     ║
   ║  trilha tem sua descrição e seus cards .coord-mini.              ║
@@ -3551,7 +3557,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <article class="track-card" role="listitem">
         <span class="track-card-company">Itaú</span>
-        <div class="track-card-photo">
+        <div class="track-card-photo track-card-photo--right">
           <img src="assets/img/speakers/sp-andre-palma.webp" width="400" height="400" alt="Foto de André Palma, Diretor de Tecnologia e Operações no Itaú" loading="lazy">
         </div>
         <div class="track-card-info">
