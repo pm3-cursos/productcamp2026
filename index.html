@@ -56,18 +56,18 @@ window.dataLayer = window.dataLayer || [];
   "@type": "Event",
   "name": "Product Camp 2026",
   "description": "O maior evento de produto da América Latina. Conferência para profissionais de Produto, IA, liderança, marketing e tecnologia.",
-  "startDate": "2026-12-08T09:00:00-03:00",
-  "endDate": "2026-12-09T18:00:00-03:00",
+  "startDate": "2026-12-08T07:30:00-03:00",
+  "endDate": "2026-12-09T18:20:00-03:00",
   "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
   "eventStatus": "https://schema.org/EventScheduled",
   "image": "https://www.productcamp.com.br/assets/img/og-image.png",
   "url": "https://www.productcamp.com.br/",
   "location": {
     "@type": "Place",
-    "name": "São Paulo, SP",
+    "name": "Centro de Convenções Frei Caneca",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Rua Rocha, 217 — Bela Vista",
+      "streetAddress": "Rua Frei Caneca, 569, 4º e 5º andares — Bela Vista",
       "addressLocality": "São Paulo",
       "addressRegion": "SP",
       "addressCountry": "BR"
@@ -95,10 +95,10 @@ window.dataLayer = window.dataLayer || [];
   "offers": [
     {
       "@type": "Offer",
-      "name": "Ingresso Lote 4",
-      "price": "1449",
+      "name": "Ingresso Último Lote",
+      "price": "1549",
       "priceCurrency": "BRL",
-      "priceValidUntil": "2026-10-15",
+      "priceValidUntil": "2026-11-06",
       "availability": "https://schema.org/InStock",
       "url": "https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593"
     },
@@ -170,10 +170,72 @@ window.dataLayer = window.dataLayer || [];
     padding: 0 24px;
   }
 
+  /* ── FAIXA DE URGÊNCIA (acima do nav) ──
+     Fixa no topo, com o nav fixo logo abaixo: os dois rolam juntos.
+     Altura fixa por breakpoint (e não automática) porque o nav, o hero, o
+     menu mobile e as âncoras precisam saber o quanto descontar. As variáveis
+     ficam aqui, e não no bloco de tokens do :root, porque são de layout desta
+     página — o bloco de tokens é copiado valor a valor para as outras.
+     Fundo --pink com texto branco: 4,7:1. Sem hover em --pink-light, que cai
+     para 3,8:1 — o hover só reforça o sublinhado do CTA. */
+  :root {
+    --topbar-h: 44px;
+    --header-h: calc(64px + var(--topbar-h));
+  }
+
+  /* A 13px o texto cabe em uma linha até ~365px de largura; abaixo disso
+     quebra em duas e a faixa cresce para não apertar. */
+  @media (max-width: 370px) {
+    :root { --topbar-h: 56px; }
+  }
+
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 101;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--topbar-h);
+    padding: 0 16px;
+    background: var(--pink);
+    color: var(--white);
+    font-size: 14px;
+    line-height: 1.35;
+    text-align: center;
+  }
+
+  /* Fora do lote em que o texto vale, o script de lotes esconde a faixa e
+     marca o <html> com .sem-topbar (vence o @media acima pela especificidade). */
+  .topbar[hidden] { display: none; }
+  :root.sem-topbar { --topbar-h: 0px; }
+
+  .topbar strong { font-weight: 600; }
+
+  .topbar-cta {
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+  }
+
+  .topbar:hover .topbar-cta { text-decoration-thickness: 2px; }
+
+  .topbar:focus-visible {
+    outline: 2px solid var(--white);
+    outline-offset: -4px;
+  }
+
+  @media (max-width: 560px) {
+    .topbar { font-size: 13px; }
+  }
+
+  #keynote, #agenda, #ingressos26 { scroll-margin-top: var(--header-h); }
+
   /* ── NAV ── */
   nav {
     position: fixed;
-    top: 0; left: 0; right: 0;
+    top: var(--topbar-h); left: 0; right: 0;
     z-index: 100;
     background: rgba(43,30,57,0.0);
     backdrop-filter: blur(0px);
@@ -247,7 +309,7 @@ window.dataLayer = window.dataLayer || [];
     align-items: center;
     position: relative;
     overflow: hidden;
-    padding-top: 64px;
+    padding-top: var(--header-h);
     background-image: url('assets/img/bg/hero-bg.webp');
     background-size: cover;
     background-position: center right;
@@ -906,8 +968,8 @@ window.dataLayer = window.dataLayer || [];
      1. GRADE DE PALESTRANTES — uma grade só, sem fileira que rola para o lado.
         Cada card carrega o nome da trilha, então a pessoa aparece uma vez e a
         trilha continua legível sem precisar de 4 fileiras separadas.
-     2. COORDENAÇÃO — painel da coordenação geral + abas das 4 trilhas, onde
-        cada aba abre a descrição da trilha e quem coordena.
+     2. COORDENAÇÃO — painel da coordenação geral + abas das 4 trilhas e da
+        Sala PM3, onde cada aba abre a descrição e quem coordena.
      A paleta é a do site: o mockup usa amarelo neon como acento único, que
      aqui vira CIANO (palestrante) e ROSA (coordenação) — a mesma semântica de
      cor já usada no resto da página. */
@@ -920,9 +982,8 @@ window.dataLayer = window.dataLayer || [];
 
   /* ── GRADE DE PALESTRANTES ──
      auto-fill com mínimo de 200px: no container de 1160px fecha exatamente
-     5 colunas, e os 10 cards (6 palestrantes + um "Em breve" por trilha)
-     preenchem 2 fileiras cheias. Palestrante novo entra antes dos "Em breve"
-     e a grade se reacomoda sozinha — nada de largura fixa para manter. */
+     5 colunas. Palestrante novo entra antes dos "Em breve" e a grade se
+     reacomoda sozinha — nada de largura fixa para manter. */
   .track-speakers {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -983,6 +1044,11 @@ window.dataLayer = window.dataLayer || [];
 
   .track-card:hover .track-card-photo img { transform: scale(1.04); }
 
+  /* Foto quadrada com o rosto deslocado para a direita: o corte 4:5
+     centralizado cortaria o rosto na borda. Encostar o corte à direita
+     resolve sem refazer o arquivo. */
+  .track-card-photo--right img { object-position: top right; }
+
   /* margin-top:auto encosta o bloco de texto na base: cards da mesma fileira
      têm alturas de conteúdo diferentes, e assim o respiro sobra no meio, não
      embaixo do cargo. */
@@ -1021,9 +1087,7 @@ window.dataLayer = window.dataLayer || [];
      qual trilha. É decorativo (aria-hidden), sem conteúdo indexável.
      Fica OCULTO por padrão e só aparece a partir de 1160px — abaixo disso a
      grade cai para 3 ou 2 colunas e os 4 placeholders viravam duas telas de
-     rolagem sem informação nenhuma. Com eles escondidos, a grade fecha
-     fileiras cheias em todos os tamanhos: 5×2 no desktop, 3×2 no tablet e
-     2×3 no celular. */
+     rolagem sem informação nenhuma. */
   .track-card--soon {
     display: none;
     background: transparent;
@@ -1172,11 +1236,11 @@ window.dataLayer = window.dataLayer || [];
 
   /* ── ABAS DAS TRILHAS ──
      Cada aba abre a descrição da trilha e quem coordena. Todo o conteúdo das
-     4 trilhas está no HTML; o JS só troca o atributo hidden. */
+     5 abas (4 trilhas + Sala PM3) está no HTML; o JS só troca o atributo hidden. */
   .track-tabs-wrap { margin-top: 48px; }
 
   /* Régua horizontal com sublinhado na aba ativa. No mobile ela vira uma grade
-     2×2 de chips (ver @media 640px): as 4 trilhas precisam ficar TODAS visíveis
+     de chips (ver @media 1100px e 640px): as 5 abas precisam ficar TODAS visíveis
      e clicáveis, e numa régua que rola as duas últimas ficavam fora da tela. */
   .track-tabs {
     display: flex;
@@ -1294,6 +1358,19 @@ window.dataLayer = window.dataLayer || [];
     line-height: 1.35;
   }
 
+  /* "Insider PM3": tag discreta numa linha extra, com o acento ciano do site */
+  .coord-mini-tag {
+    align-self: flex-start;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--cyan);
+    border: 1px solid var(--navy-border);
+    border-radius: 999px;
+    padding: 2px 8px;
+    line-height: 1.3;
+  }
+
   /* ── RESPONSIVIDADE ── */
   @media (max-width: 768px) {
     .tracks-header { margin-bottom: 28px; }
@@ -1316,17 +1393,16 @@ window.dataLayer = window.dataLayer || [];
     .track-tabs-wrap { margin-top: 36px; }
   }
 
-  /* ── ABAS COMO CHIPS (até 900px) ──
-     A régua horizontal precisa de ~845px para caber as 4 trilhas. Abaixo disso
-     a última ("Liderança & Negócios") saía da tela e ainda dava rolagem
-     horizontal na página. Viram chips numa grade: as 4 trilhas ficam TODAS
+  /* ── ABAS COMO CHIPS (até 1100px) ──
+     A régua horizontal precisa de ~1015px para caber as 5 abas. Abaixo disso
+     a última saía da tela e ainda dava rolagem horizontal na página. Viram chips numa grade: as 5 abas ficam TODAS
      visíveis e clicáveis, sem rolagem lateral e sem corte.
      grid-auto-rows: 1fr iguala a altura dos chips quando um nome quebra em
      duas linhas. */
-  @media (max-width: 900px) {
+  @media (max-width: 1100px) {
     .track-tabs {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       grid-auto-rows: 1fr;
       gap: 8px;
       border-bottom: none;
@@ -1356,6 +1432,15 @@ window.dataLayer = window.dataLayer || [];
     .track-panel { padding-top: 24px; }
   }
 
+  /* Tablet (641–900px): 5 chips numa linha ficariam com ~120px e os nomes
+     longos quebrariam em 3 linhas. Grade de 6 colunas: 3 chips em cima
+     (2 colunas cada) e 2 embaixo (3 colunas cada). */
+  @media (min-width: 641px) and (max-width: 900px) {
+    .track-tabs { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+    .track-tab { grid-column: span 2; }
+    .track-tab:nth-child(n+4) { grid-column: span 3; }
+  }
+
   @media (max-width: 640px) {
     /* 2 colunas fixas: com auto-fill a grade cairia para 1 coluna e a dobra
        ficaria com 10 cards empilhados */
@@ -1373,9 +1458,11 @@ window.dataLayer = window.dataLayer || [];
     .track-card-name { font-size: 14px; }
     .track-card-role { font-size: 11.5px; }
 
-    /* No celular os chips passam para 2×2: em 4 colunas eles ficariam com
-       ~80px e todo nome de trilha quebraria em três linhas. */
+    /* No celular os chips passam para 2 colunas (2+2+1): em mais colunas eles
+       ficariam com ~80px e todo nome de trilha quebraria em três linhas. */
     .track-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    /* 5 abas em 2 colunas: a última ocupa a linha inteira */
+    .track-tab:last-child { grid-column: 1 / -1; }
     .track-tab { font-size: 13px; }
 
     .track-panel-desc { font-size: 14px; }
@@ -1571,6 +1658,151 @@ window.dataLayer = window.dataLayer || [];
 
     .keynote-card:hover { transform: none; }
     .keynote-card:hover .keynote-photo img { transform: none; }
+  }
+
+  /* ── AGENDA ──
+     Horários gerais dos dois dias. Fundo --navy para alternar com as seções
+     vizinhas (coordenação e venue são --navy-mid). Card no mesmo padrão do
+     .track-card: --navy-card, borda --navy-border, raio 16px.
+     Horário em CIANO (informação); o ROSA aparece só no destaque do happy
+     hour — branco sobre --pink dá 4,7:1, acima do mínimo de 4,5:1.
+     O scroll-margin-top da âncora #agenda fica junto da faixa do topo. */
+  .agenda-section {
+    background: var(--navy);
+  }
+
+  .agenda-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .agenda-header .section-title { margin-bottom: 12px; }
+
+  /* dois cards lado a lado; o stretch padrão do grid deixa os dois com a
+     mesma altura */
+  .agenda-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .agenda-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--navy-card);
+    border: 1px solid var(--navy-border);
+    border-radius: 16px;
+    padding: 28px 32px 32px;
+  }
+
+  .agenda-card-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--navy-border);
+  }
+
+  .agenda-day {
+    font-family: var(--font-display);
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+
+  .agenda-date {
+    font-size: 15px;
+    color: var(--white-70);
+  }
+
+  .agenda-list { list-style: none; }
+
+  /* flex-wrap: horário (largura fixa) e descrição dividem a linha enquanto
+     couberem; em tela estreita, a descrição desce para baixo do horário
+     sozinha, sem media query e sem rolagem lateral */
+  .agenda-item {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 16px;
+    padding: 14px 0;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .agenda-item + .agenda-item { border-top: 1px solid var(--navy-border); }
+
+  .agenda-time {
+    flex: 0 0 7.5rem;
+    font-weight: 600;
+    color: var(--cyan);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+
+  .agenda-desc {
+    flex: 1 1 10rem;
+    min-width: 0;
+    color: var(--white);
+  }
+
+  .agenda-desc strong { font-weight: 600; }
+
+  /* happy hour: a linha vira uma faixa rosa que avança um pouco sobre o
+     padding do card, para o texto continuar alinhado com as outras linhas */
+  .agenda-item--highlight {
+    margin: 4px -16px 0;
+    padding: 14px 16px;
+    background: var(--pink);
+    border-radius: 10px;
+  }
+
+  .agenda-item + .agenda-item--highlight { border-top-color: transparent; }
+
+  .agenda-item--highlight .agenda-time { color: var(--white); }
+
+  .agenda-item--highlight .agenda-desc {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px 12px;
+    font-weight: 600;
+  }
+
+  .agenda-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    border: 1px solid var(--white-70);
+    border-radius: 100px;
+    padding: 6px 10px;
+    white-space: nowrap;
+  }
+
+  /* margin-top:auto empurra a nota para o pé do card, alinhada com o fim
+     do card do Dia 1. --white-70 (não --white-40) para manter 4,5:1. */
+  .agenda-note {
+    margin-top: auto;
+    padding-top: 20px;
+    font-size: 14px;
+    color: var(--white-70);
+  }
+
+  @media (max-width: 900px) {
+    .agenda-grid { grid-template-columns: 1fr; }
+  }
+
+  @media (max-width: 560px) {
+    .agenda-header { margin-bottom: 32px; }
+    .agenda-card { padding: 24px 20px 24px; }
+    .agenda-item--highlight { margin-inline: -12px; padding-inline: 12px; }
   }
 
   /* ── VENUE ── */
@@ -1995,8 +2227,16 @@ window.dataLayer = window.dataLayer || [];
     width: 44px;
   }
 
-  /* logos em duas linhas (Fala aí, PMM; Mulheres de Produto) — um pouco mais altas para o texto não encolher */
+  /* logos em duas linhas (Fala aí, PMM) — um pouco mais altas para o texto não encolher */
   .sponsor-logo.logo-stacked img { height: 44px; }
+
+  /* logos com símbolo grande ao lado do nome (Mulheres de Produto) — mais altos para o nome não sumir */
+  .sponsor-logo.logo-symbol { padding-block: 12px; }
+  .sponsor-logo.logo-symbol img { height: 56px; max-width: 180px; }
+
+  /* logos verticais (Produto Preto) — quase sem padding para o símbolo e o texto caberem no card */
+  .sponsor-logo.logo-tall { padding-block: 6px; }
+  .sponsor-logo.logo-tall img { height: 68px; }
 
   /* realização — logo PM3 maior */
   .sponsors-realizacao .sponsor-logo { height: 88px; padding: 24px 40px; }
@@ -2304,6 +2544,8 @@ window.dataLayer = window.dataLayer || [];
       display: flex;
       flex-direction: column;
       position: fixed;
+      /* Relativo ao nav, não à janela: o backdrop-filter do nav o torna o
+         bloco de contenção deste fixed. Por isso não soma a faixa do topo. */
       top: 64px; left: 0; right: 0;
       background: var(--navy-card);
       border-bottom: 1px solid var(--navy-border);
@@ -2566,10 +2808,14 @@ window.dataLayer = window.dataLayer || [];
     background: transparent; color: var(--white-70);
     box-shadow: inset 0 0 0 1px var(--white-40);
   }
-  .price-old { color: var(--white-40); font-weight: 400; }
   .ticket-badge--vip { background: linear-gradient(90deg, var(--pink), #f55fa0); }
   .btn-block { width: 100%; justify-content: center; }
   .btn-nowrap { flex-shrink: 0; white-space: nowrap; }
+  /* O CTA do hero não quebra linha: a 320px, o padding padrão estouraria a
+     largura útil. */
+  @media (max-width: 370px) {
+    .hero-actions .btn-primary { padding: 16px 20px; }
+  }
   .vip-intro {
     font-size: 13px; font-weight: 600; color: var(--white-70);
     margin: 4px 0 8px; padding-left: 2px;
@@ -2589,6 +2835,13 @@ window.dataLayer = window.dataLayer || [];
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
+<!-- FAIXA DE URGÊNCIA — data-pcamp-topbar lista os lotes em que o texto vale;
+     fora deles, assets/js/pcamp-countdown-lotes.js esconde a faixa sozinho.
+     Na virada para o Last Minute (07/11), trocar ou remover no deploy. -->
+<a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=topbar&utm_content=sympla" target="_blank" class="topbar" data-pcamp-topbar="lote-5">
+  <span><strong>VIP esgotado.</strong> Passaporte no último lote. <span class="topbar-cta"><span aria-hidden="true">→</span> Garantir o meu</span></span>
+</a>
+
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
@@ -2599,6 +2852,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <ul class="nav-links" id="navLinks">
       <li><a href="https://go.pm3.com.br/faq_pcamp_26" target="_blank">FAQ</a></li>
       <li><a href="#keynote">Speakers</a></li>
+      <li><a href="#agenda">Agenda</a></li>
       <li><a href="https://share.hsforms.com/2LipTQvz1Ryy8_JWxtYAgTgcy53x" target="_blank">Patrocine</a></li>
       <li><a href="/pocket">Pocket</a></li>
       <li><a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="nav-cta">Garantir ingresso</a></li>
@@ -2631,8 +2885,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </p>
       <span class="hero-rule"></span>
       <div class="hero-actions">
-        <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="btn-primary">
-          Garantir ingresso
+        <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="btn-primary btn-nowrap">
+          <span aria-hidden="true">🔥</span> Garantir último lote
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -2929,9 +3183,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ║  a altura fica reservada e as fotos seguem alinhadas. Nunca use  ║
   ║  placeholder nem "ex-empresa".                                   ║
   ║                                                                  ║
-  ║  A grade é auto-fill: não há largura fixa para ajustar. Com 10   ║
-  ║  cards ela fecha 2 fileiras cheias de 5 no desktop; ao chegar a  ║
-  ║  11, a 3ª fileira começa sozinha.                                ║
+  ║  A grade é auto-fill: não há largura fixa para ajustar. A última ║
+  ║  fileira pode ficar incompleta conforme o total, e isso é        ║
+  ║  esperado: não esconda nem duplique card para fechá-la.          ║
+  ║                                                                  ║
+  ║  A foto é cortada em 4:5 a partir do topo e do centro. Rosto     ║
+  ║  muito à direita na foto quadrada? Use .track-card-photo--right  ║
+  ║  na div da foto em vez de recortar o arquivo.                    ║
   ║                                                                  ║
   ║  COORDENAÇÃO fica nas abas, mais abaixo (.track-panel): cada     ║
   ║  trilha tem sua descrição e seus cards .coord-mini.              ║
@@ -2941,7 +3199,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="container">
     <div class="tracks-header">
       <div class="section-label">Trilhas de conteúdo</div>
-      <h2 class="section-title">+60 palestras em<br>4 trilhas de conhecimento</h2>
+      <h2 class="section-title">+60 palestras em<br>4 trilhas e a Sala PM3</h2>
       <p class="section-subtitle">Aprendizado na prática com os maiores nomes do mercado em um só lugar.</p>
     </div>
 
@@ -2950,12 +3208,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <article class="track-card" role="listitem">
         <span class="track-card-company">ClickBus</span>
         <div class="track-card-photo">
-          <img src="assets/img/speakers/sp-caio-tozzini.webp" width="400" height="400" alt="Foto de Caio Tozzini, Sr. Director of Product Management na ClickBus" loading="lazy">
+          <img src="assets/img/speakers/sp-caio-tozzini.webp" width="400" height="400" alt="Foto de Caio Tozzini, Chief Product Officer na ClickBus" loading="lazy">
         </div>
         <div class="track-card-info">
           <span class="track-card-track">Product Management</span>
           <div class="track-card-name">Caio Tozzini</div>
-          <span class="track-card-role">Sr. Director of Product Management</span>
+          <span class="track-card-role">CPO</span>
         </div>
       </article>
 
@@ -3201,6 +3459,210 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </article>
 
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Casa de Produto</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-daiany-correa.webp" width="400" height="400" alt="Foto de Daiany Corrêa, Group Product Manager e Founder na Casa de Produto" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Product Management</span>
+          <div class="track-card-name">Daiany Corrêa</div>
+          <span class="track-card-role">GPM &amp; Founder</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Flutter</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-gabriel-pinheiro.webp" width="400" height="400" alt="Foto de Gabriel Pinheiro, Design Manager na Flutter" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Marketing &amp; Design</span>
+          <div class="track-card-name">Gabriel Pinheiro</div>
+          <span class="track-card-role">Design Manager</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">iFood</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-bruno-amaral.webp" width="400" height="400" alt="Foto de Bruno Amaral, AI Product Manager no iFood" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Product Management</span>
+          <div class="track-card-name">Bruno Amaral</div>
+          <span class="track-card-role">AI Product Manager</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">AWS</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-felipe-barreiros.webp" width="400" height="400" alt="Foto de Felipe Barreiros, Sr. Product Engineer na AWS" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Product Management</span>
+          <div class="track-card-name">Felipe Barreiros</div>
+          <span class="track-card-role">Sr. Product Engineer</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Pipefy</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-adrianno-esnarriaga.webp" width="400" height="400" alt="Foto de Adrianno Esnarriaga, Staff Product Manager na Pipefy" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Building &amp; Automation</span>
+          <div class="track-card-name">Adrianno Esnarriaga</div>
+          <span class="track-card-role">Staff Product Manager</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Nubank</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-paulo-sellos.webp" width="400" height="400" alt="Foto de Paulo Sellos, Staff Product Manager no Nubank" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Liderança &amp; Negócios</span>
+          <div class="track-card-name">Paulo Sellos</div>
+          <span class="track-card-role">Staff Product Manager</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Netbiis</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-bianca-maia.webp" width="400" height="400" alt="Foto de Bianca Maia, Product and Innovation Manager na Netbiis" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Marketing &amp; Design</span>
+          <div class="track-card-name">Bianca Maia</div>
+          <span class="track-card-role">Product and Innovation Manager</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Livework</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-luis-alt.webp" width="400" height="400" alt="Foto de Luis Alt, sócio-fundador da Livework" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Marketing &amp; Design</span>
+          <div class="track-card-name">Luis Alt</div>
+          <span class="track-card-role">Sócio-fundador</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Itaú</span>
+        <div class="track-card-photo track-card-photo--right">
+          <img src="assets/img/speakers/sp-andre-palma.webp" width="400" height="400" alt="Foto de André Palma, Diretor de Tecnologia e Operações no Itaú" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Liderança &amp; Negócios</span>
+          <div class="track-card-name">André Palma</div>
+          <span class="track-card-role">Diretor de Tecnologia e Operações</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Itaú</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-andre-salles.webp" width="400" height="400" alt="Foto de André Salles de Azevedo, Superintendente de Marketing no Itaú" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Marketing &amp; Design</span>
+          <div class="track-card-name">André Salles de Azevedo</div>
+          <span class="track-card-role">Superintendente de Marketing</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Itaú</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-juliana-sartorelli.webp" width="400" height="400" alt="Foto de Juliana Ewers Sartorelli, Head de Design de Conteúdo, Inteligência Artificial e Knowledge Bases no Itaú" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Marketing &amp; Design</span>
+          <div class="track-card-name">Juliana Ewers Sartorelli</div>
+          <span class="track-card-role">Head de Design de Conteúdo, IA e Knowledge Bases</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Itaú</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-thais-cirenza.webp" width="400" height="400" alt="Foto de Thais Cirenza, Head de Product Operations e Business Transformation no Itaú" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Liderança &amp; Negócios</span>
+          <div class="track-card-name">Thais Cirenza</div>
+          <span class="track-card-role">Head de Product Operations e Business Transformation</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Xikota Design</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-thiago-xikota.webp" width="400" height="400" alt="Foto de Thiago Xikota, Forward Deployed Product Designer na Xikota Design" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Marketing &amp; Design</span>
+          <div class="track-card-name">Thiago Xikota</div>
+          <span class="track-card-role">Forward Deployed Product Designer</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">CAIXA</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-camila-mascarenhas.webp" width="400" height="400" alt="Foto de Camila Mascarenhas, Service Designer na CAIXA Econômica Federal" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Marketing &amp; Design</span>
+          <div class="track-card-name">Camila Mascarenhas</div>
+          <span class="track-card-role">Service Designer</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Itaú</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-amanda-appel.webp" width="400" height="400" alt="Foto de Amanda Appel, Head of Product Operations no Itaú" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Marketing &amp; Design</span>
+          <div class="track-card-name">Amanda Appel</div>
+          <span class="track-card-role">Head of Product Operations</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Itaú</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-claudia-furniel.webp" width="400" height="400" alt="Foto de Claudia Furniel, Superintendente de Research no Itaú" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Building &amp; Automation</span>
+          <div class="track-card-name">Claudia Furniel</div>
+          <span class="track-card-role">Superintendente de Research</span>
+        </div>
+      </article>
+
+      <article class="track-card" role="listitem">
+        <span class="track-card-company">Itaú</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-fayner-costa.webp" width="400" height="400" alt="Foto de Fayner Costa, Head of GenAI Digital Products &amp; Strategy no Itaú" loading="lazy">
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Product Management</span>
+          <div class="track-card-name">Fayner Costa</div>
+          <span class="track-card-role">Head of GenAI Digital Products &amp; Strategy</span>
+        </div>
+      </article>
+
       <!-- Um "Em breve" por trilha, fechando a grade: sinaliza que ainda vem
            gente e em qual trilha. São decorativos (aria-hidden) — ao confirmar
            um palestrante, adicione o card real ANTES deles. -->
@@ -3257,11 +3719,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span class="gc-label">Coordenadora Geral de Conteúdo do PCAMP</span>
         <h3 class="gc-name">Priscila Lugão</h3>
         <div class="gc-meta"><span class="gc-company">Med Review</span><span class="gc-title">Product Coordinator</span></div>
-        <p class="gc-desc">É ela quem costura as quatro trilhas em uma só experiência: da definição dos temas à curadoria dos palestrantes, garantindo conteúdo aplicável e conectado com o que o mercado de produto vive hoje.</p>
+        <p class="gc-desc">É ela quem costura as trilhas e salas em uma só experiência: da definição dos temas à curadoria dos palestrantes, garantindo conteúdo aplicável e conectado com o que o mercado de produto vive hoje.</p>
       </div>
     </div>
 
-    <!-- Abas das 4 trilhas: descrição + quem coordena. Todo o conteúdo está no
+    <!-- Abas das 4 trilhas e da Sala PM3: descrição + quem coordena. Todo o conteúdo está no
          HTML; o JS do fim da página só troca o atributo hidden dos painéis. -->
     <div class="track-tabs-wrap">
       <div class="track-tabs" role="tablist" aria-label="Trilhas de conteúdo">
@@ -3269,6 +3731,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <button class="track-tab" type="button" role="tab" id="tab-trilha-building" aria-controls="painel-trilha-building" aria-selected="false" tabindex="-1">Building &amp; Automation</button>
         <button class="track-tab" type="button" role="tab" id="tab-trilha-marketing" aria-controls="painel-trilha-marketing" aria-selected="false" tabindex="-1">Marketing &amp; Design</button>
         <button class="track-tab" type="button" role="tab" id="tab-trilha-lideranca" aria-controls="painel-trilha-lideranca" aria-selected="false" tabindex="-1">Liderança &amp; Negócios</button>
+        <button class="track-tab" type="button" role="tab" id="tab-trilha-sala-pm3" aria-controls="painel-trilha-sala-pm3" aria-selected="false" tabindex="-1">Sala PM3</button>
       </div>
 
       <!-- TRILHA 1: PRODUCT MANAGEMENT -->
@@ -3391,6 +3854,110 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
       </div>
 
+      <!-- SALA PM3 -->
+      <div class="track-panel" role="tabpanel" id="painel-trilha-sala-pm3" aria-labelledby="tab-trilha-sala-pm3" tabindex="0" hidden>
+        <p class="track-panel-desc">Do conhecimento ao resultado: conteúdo prático da escola de quem faz Produto Digital, com frameworks, cases reais e IA aplicada para você sair do PCamp pronto para transformar produto em impacto no negócio.</p>
+        <div class="track-coords">
+
+          <article class="coord-mini">
+            <div class="coord-mini-photo">
+              <img src="assets/img/coordinators/carolina_orlando.webp" width="400" height="400" alt="Foto de Carolina Orlando, Product Marketing Lead na Frota 162" loading="lazy">
+            </div>
+            <div class="coord-mini-info">
+              <span class="coord-mini-label">Coordenação</span>
+              <div class="coord-mini-name">Carolina Orlando</div>
+              <span class="coord-mini-role">Frota 162 — Product Marketing Lead</span>
+              <span class="coord-mini-tag">Insider PM3</span>
+            </div>
+          </article>
+
+          <article class="coord-mini">
+            <div class="coord-mini-photo">
+              <img src="assets/img/coordinators/leticia_ribeiro.webp" width="400" height="400" alt="Foto de Letícia Ribeiro, Senior Product Manager na Elo" loading="lazy">
+            </div>
+            <div class="coord-mini-info">
+              <span class="coord-mini-label">Coordenação</span>
+              <div class="coord-mini-name">Letícia Ribeiro</div>
+              <span class="coord-mini-role">Elo — Senior Product Manager</span>
+              <span class="coord-mini-tag">Insider PM3</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- AGENDA -->
+<!--
+  ╔══════════════════════════════════════════════════════════════════╗
+  ║  COMO EDITAR A AGENDA                                            ║
+  ║  Cada horário é um <li class="agenda-item"> com duas partes:     ║
+  ║                                                                  ║
+  ║  <li class="agenda-item">                                        ║
+  ║    <span class="agenda-time">10h</span>                          ║
+  ║    <span class="agenda-desc">Início das palestras</span>         ║
+  ║  </li>                                                           ║
+  ║                                                                  ║
+  ║  Destaque em negrito: <strong> dentro da .agenda-desc.           ║
+  ║  Linha em rosa: some .agenda-item--highlight ao <li>.            ║
+  ║                                                                  ║
+  ║  FASE 2 (agenda completa por dia): troque a <ul class=           ║
+  ║  "agenda-list"> do card por um link no componente do site, ex.:  ║
+  ║  <a href="/agenda/dia-1/" class="btn-secondary">Ver agenda do    ║
+  ║  Dia 1</a>. O cabeçalho do card (dia + data) continua igual.     ║
+  ║                                                                  ║
+  ║  O conteúdo fica no HTML, e não num array em JS, de propósito:   ║
+  ║  crawler sem JS e crawler de IA leem a agenda como texto, e a    ║
+  ║  seção não pisca nem desloca o layout ao carregar.               ║
+  ╚══════════════════════════════════════════════════════════════════╝
+-->
+<section class="agenda-section" id="agenda" aria-labelledby="agenda-title">
+  <div class="container">
+    <div class="agenda-header">
+      <div class="section-label">Agenda</div>
+      <h2 class="section-title" id="agenda-title">Planeje seus dois dias de PCamp</h2>
+      <p class="section-subtitle section-subtitle--center">Centro de Convenções Frei Caneca · São&nbsp;Paulo</p>
+    </div>
+
+    <div class="agenda-grid">
+
+      <!-- DIA 1 -->
+      <article class="agenda-card" aria-labelledby="agenda-dia-1">
+        <header class="agenda-card-header">
+          <h3 class="agenda-day" id="agenda-dia-1">Dia 1</h3>
+          <time class="agenda-date" datetime="2026-12-08">Terça, 08 de dezembro</time>
+        </header>
+        <ul class="agenda-list">
+          <li class="agenda-item"><span class="agenda-time">7h30 – 9h30</span><span class="agenda-desc">Credenciamento</span></li>
+          <li class="agenda-item"><span class="agenda-time">9h30 – 10h</span><span class="agenda-desc"><strong>Abertura oficial do evento</strong></span></li>
+          <li class="agenda-item"><span class="agenda-time">10h</span><span class="agenda-desc">Início das palestras</span></li>
+          <li class="agenda-item"><span class="agenda-time">11h35 – 13h35</span><span class="agenda-desc">Almoço</span></li>
+          <li class="agenda-item"><span class="agenda-time">13h35</span><span class="agenda-desc">Retorno das palestras</span></li>
+          <li class="agenda-item"><span class="agenda-time">18h</span><span class="agenda-desc">Encerramento do 1º dia</span></li>
+          <li class="agenda-item agenda-item--highlight"><span class="agenda-time">18h15 – 19h45</span><span class="agenda-desc">Happy hour <span class="agenda-tag">Só no dia 1</span></span></li>
+        </ul>
+      </article>
+
+      <!-- DIA 2 -->
+      <article class="agenda-card" aria-labelledby="agenda-dia-2">
+        <header class="agenda-card-header">
+          <h3 class="agenda-day" id="agenda-dia-2">Dia 2</h3>
+          <time class="agenda-date" datetime="2026-12-09">Quarta, 09 de dezembro</time>
+        </header>
+        <ul class="agenda-list">
+          <li class="agenda-item"><span class="agenda-time">8h – 9h30</span><span class="agenda-desc">Credenciamento</span></li>
+          <li class="agenda-item"><span class="agenda-time">9h30 – 10h</span><span class="agenda-desc">Abertura das salas</span></li>
+          <li class="agenda-item"><span class="agenda-time">10h</span><span class="agenda-desc">Início das palestras</span></li>
+          <li class="agenda-item"><span class="agenda-time">11h35 – 13h35</span><span class="agenda-desc">Almoço</span></li>
+          <li class="agenda-item"><span class="agenda-time">13h35</span><span class="agenda-desc">Retorno das palestras</span></li>
+          <li class="agenda-item"><span class="agenda-time">18h – 18h20</span><span class="agenda-desc"><strong>Encerramento do PCamp 2026</strong></span></li>
+        </ul>
+        <p class="agenda-note">Grade por palco e trilha em breve.</p>
+      </article>
+
     </div>
   </div>
 </section>
@@ -3487,11 +4054,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                como base estática; assets/js/pcamp-countdown-lotes.js troca
                badge, preço e JSON-LD sozinho quando um lote posterior do
                calendário estiver ativo. -->
-          <span class="lote-badge" data-pcamp-lote-badge>LOTE 4</span>
+          <span class="lote-badge" data-pcamp-lote-badge>ÚLTIMO LOTE</span>
           <div class="ticket-name">Passaporte</div>
           <div class="ticket-price">
-            <span data-pcamp-preco-de>De <s class="price-old">R$ 1.649</s> por</span>
-            <strong data-pcamp-preco>R$ 1.449</strong>
+            <strong data-pcamp-preco>R$ 1.549</strong>
           </div>
           <ul class="ticket-features">
             <li>Acesso aos 2 dias de evento</li>
@@ -3592,10 +4158,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     { nome: 'Mixpanel',  cota: 'gold',            logo: 'assets/img/sponsors/mixpanel_.svg' }
     { nome: 'CleverTap', cota: 'gold',            logo: 'assets/img/sponsors/clevertap.avif'}
     { nome: 'MoEngage',  cota: 'gold',            logo: 'assets/img/sponsors/moengage.svg' }
-    { nome: 'Miro',      cota: 'gold',            logo: 'assets/img/sponsors/miro.svg'      }
+    { nome: 'Miro',      cota: 'gold',            logo: 'assets/img/sponsors/miro.webp'     }
     { nome: 'Pendo',     cota: 'silver',          logo: 'assets/img/sponsors/pendo_.avif'   }
     { nome: 'Afya',      cota: 'silver',          logo: 'assets/img/sponsors/afya.avif'     }
+    { nome: 'Stack',     cota: 'silver',          logo: 'assets/img/sponsors/stack.webp'    }
+    { nome: 'Wingify',   cota: 'silver',          logo: 'assets/img/sponsors/wingify.webp'  }
     { nome: 'grunn.ai',  cota: 'startup',         logo: 'assets/img/sponsors/grunn.webp'    }
+    { nome: 'PM na Gringa', cota: 'startup',      logo: 'assets/img/sponsors/pm-na-gringa.webp' }
 
   A hierarquia é 100% visual (tamanho de card + nº de colunas +
   espaçamento entre grupos). O nome da cota aparece SÓ no
@@ -3654,7 +4223,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <img src="assets/img/sponsors/moengage.svg" width="160" height="25" loading="lazy" alt="MoEngage">
             </a>
             <a href="https://miro.com/pt/" target="_blank" class="sponsor-logo">
-              <img src="assets/img/sponsors/miro.svg" width="703" height="258" loading="lazy" alt="Miro">
+              <img src="assets/img/sponsors/miro.webp" width="400" height="125" loading="lazy" alt="Miro">
             </a>
           </div>
         </div>
@@ -3669,6 +4238,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <a href="https://educacaomedica.afya.com.br/" target="_blank" class="sponsor-logo">
               <img src="assets/img/sponsors/afya.avif" width="512" height="209" loading="lazy" alt="Afya">
             </a>
+            <a href="https://stack.com.br/" target="_blank" class="sponsor-logo">
+              <img src="assets/img/sponsors/stack.webp" width="400" height="60" loading="lazy" alt="Stack">
+            </a>
+            <a href="https://wingify.com/br/" target="_blank" class="sponsor-logo">
+              <img src="assets/img/sponsors/wingify.webp" width="400" height="124" loading="lazy" alt="Wingify">
+            </a>
           </div>
         </div>
 
@@ -3679,18 +4254,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <a href="https://grunn.ai/" target="_blank" class="sponsor-logo">
               <img src="assets/img/sponsors/grunn.webp" width="512" height="102" loading="lazy" alt="grunn.ai">
             </a>
+            <a href="https://pmnagringa.com/" target="_blank" class="sponsor-logo">
+              <img src="assets/img/sponsors/pm-na-gringa.webp" width="400" height="66" loading="lazy" alt="PM na Gringa">
+            </a>
           </div>
         </div>
 
       </div>
     </div>
 
-    <!-- COMUNIDADES -->
+    <!-- COMUNIDADES — em ordem alfabética; ao incluir uma nova, mantenha a ordem -->
     <div class="sponsors-tier">
       <div class="sponsors-tier-label">Comunidades</div>
       <div class="sponsors-logos">
-        <a href="https://vagasux.com.br/" target="_blank" class="sponsor-logo">
-          <img src="assets/img/sponsors/vagas-ux.webp" width="400" height="160" loading="lazy" alt="Vagas UX">
+        <a href="https://www.linkedin.com/company/evoluindo-em-produtos/" target="_blank" class="sponsor-logo">
+          <img src="assets/img/sponsors/evoluindo-em-produtos.svg" width="283" height="83" loading="lazy" alt="Evoluindo em Produtos">
         </a>
         <a href="https://www.linkedin.com/company/fala-ai-pmm/" target="_blank" class="sponsor-logo logo-stacked">
           <img src="assets/img/sponsors/fala-ai-pmm.webp" width="298" height="160" loading="lazy" alt="Fala aí, PMM">
@@ -3698,8 +4276,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <a href="https://www.meninadeux.com/" target="_blank" class="sponsor-logo">
           <img src="assets/img/sponsors/menina-de-ux.webp" width="472" height="120" loading="lazy" alt="Menina de UX">
         </a>
-        <a href="https://www.mulheresdeproduto.com/" target="_blank" class="sponsor-logo logo-stacked">
-          <img src="assets/img/sponsors/mulheres-de-produto.webp" width="265" height="120" loading="lazy" alt="Mulheres de Produto">
+        <a href="https://www.mulheresdeproduto.com/" target="_blank" class="sponsor-logo logo-symbol">
+          <img src="assets/img/sponsors/mulheres-de-produto.webp" width="400" height="181" loading="lazy" alt="Mulheres de Produto">
+        </a>
+        <a href="https://www.linkedin.com/company/produtopreto/" target="_blank" class="sponsor-logo logo-tall">
+          <img src="assets/img/sponsors/produto-preto.webp" width="159" height="240" loading="lazy" alt="Produto Preto">
+        </a>
+        <a href="https://vagasux.com.br/" target="_blank" class="sponsor-logo">
+          <img src="assets/img/sponsors/vagas-ux.webp" width="400" height="160" loading="lazy" alt="Vagas UX">
         </a>
       </div>
     </div>
@@ -4134,7 +4718,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <script>
   // ─────────────────────────────────────────
   // Trilhas: abas de coordenação (descrição + quem coordena)
-  // Os 4 painéis já vêm no HTML; aqui só trocamos o atributo hidden.
+  // Os 5 painéis já vêm no HTML; aqui só trocamos o atributo hidden.
   // Sem JS, o primeiro painel continua visível — nada some da página.
   // ─────────────────────────────────────────
   (function () {
@@ -4158,7 +4742,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       if (opts && opts.focus) tabs[index].focus();
       // garante a aba escolhida à vista (só rola se ela estiver fora da tela —
-      // no mobile as 4 cabem na grade 2×2, então normalmente não rola nada)
+      // no mobile as 5 cabem na grade de chips, então normalmente não rola nada)
       if (opts && opts.reveal) tabs[index].scrollIntoView({ block: 'nearest', inline: 'nearest' });
     }
 
