@@ -1664,8 +1664,9 @@ window.dataLayer = window.dataLayer || [];
      Horários gerais dos dois dias. Fundo --navy para alternar com as seções
      vizinhas (coordenação e venue são --navy-mid). Card no mesmo padrão do
      .track-card: --navy-card, borda --navy-border, raio 16px.
-     Horário em CIANO (informação); o ROSA aparece só no destaque do happy
-     hour — branco sobre --pink dá 4,7:1, acima do mínimo de 4,5:1.
+     Horário em CIANO (informação). Todas as linhas têm o mesmo visual,
+     inclusive o happy hour: um destaque em rosa parecia botão e fazia o
+     evento parecer terminar às 18h.
      O scroll-margin-top da âncora #agenda fica junto da faixa do topo. */
   .agenda-section {
     background: var(--navy);
@@ -1752,37 +1753,15 @@ window.dataLayer = window.dataLayer || [];
 
   .agenda-desc strong { font-weight: 600; }
 
-  /* happy hour: a linha vira uma faixa rosa que avança um pouco sobre o
-     padding do card, para o texto continuar alinhado com as outras linhas */
-  .agenda-item--highlight {
-    margin: 4px -16px 0;
-    padding: 14px 16px;
-    background: var(--pink);
-    border-radius: 10px;
-  }
-
-  .agenda-item + .agenda-item--highlight { border-top-color: transparent; }
-
-  .agenda-item--highlight .agenda-time { color: var(--white); }
-
-  .agenda-item--highlight .agenda-desc {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 6px 12px;
-    font-weight: 600;
-  }
-
+  /* observação curta ao lado da descrição (ex.: "Só no dia 1" no happy
+     hour). Texto simples, sem borda nem fundo: com cara de pílula ela lia
+     como botão e tirava a linha do ritmo das demais. */
   .agenda-tag {
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    line-height: 1;
-    border: 1px solid var(--white-70);
-    border-radius: 100px;
-    padding: 6px 10px;
+    color: var(--white-70);
     white-space: nowrap;
   }
 
@@ -1802,7 +1781,6 @@ window.dataLayer = window.dataLayer || [];
   @media (max-width: 560px) {
     .agenda-header { margin-bottom: 32px; }
     .agenda-card { padding: 24px 20px 24px; }
-    .agenda-item--highlight { margin-inline: -12px; padding-inline: 12px; }
   }
 
   /* ── VENUE ── */
@@ -3902,7 +3880,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ║  </li>                                                           ║
   ║                                                                  ║
   ║  Destaque em negrito: <strong> dentro da .agenda-desc.           ║
-  ║  Linha em rosa: some .agenda-item--highlight ao <li>.            ║
+  ║  Observação curta: <span class="agenda-tag"> na .agenda-desc.    ║
+  ║  Todas as linhas têm o mesmo visual — sem destaque colorido.     ║
   ║                                                                  ║
   ║  FASE 2 (agenda completa por dia): troque a <ul class=           ║
   ║  "agenda-list"> do card por um link no componente do site, ex.:  ║
@@ -3931,13 +3910,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <time class="agenda-date" datetime="2026-12-08">Terça, 08 de dezembro</time>
         </header>
         <ul class="agenda-list">
-          <li class="agenda-item"><span class="agenda-time">7h30 – 9h30</span><span class="agenda-desc">Credenciamento</span></li>
+          <li class="agenda-item"><span class="agenda-time">7h30</span><span class="agenda-desc">Credenciamento</span></li>
           <li class="agenda-item"><span class="agenda-time">9h30 – 10h</span><span class="agenda-desc"><strong>Abertura oficial do evento</strong></span></li>
           <li class="agenda-item"><span class="agenda-time">10h</span><span class="agenda-desc">Início das palestras</span></li>
-          <li class="agenda-item"><span class="agenda-time">11h35 – 13h35</span><span class="agenda-desc">Almoço</span></li>
+          <li class="agenda-item"><span class="agenda-time">11h35 – 13h35</span><span class="agenda-desc">Intervalo para almoço</span></li>
           <li class="agenda-item"><span class="agenda-time">13h35</span><span class="agenda-desc">Retorno das palestras</span></li>
-          <li class="agenda-item"><span class="agenda-time">18h</span><span class="agenda-desc">Encerramento do 1º dia</span></li>
-          <li class="agenda-item agenda-item--highlight"><span class="agenda-time">18h15 – 19h45</span><span class="agenda-desc">Happy hour <span class="agenda-tag">Só no dia 1</span></span></li>
+          <li class="agenda-item"><span class="agenda-time">18h15 – 19h45</span><span class="agenda-desc">Happy hour <span class="agenda-tag">Só no dia 1</span></span></li>
         </ul>
       </article>
 
@@ -3948,10 +3926,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <time class="agenda-date" datetime="2026-12-09">Quarta, 09 de dezembro</time>
         </header>
         <ul class="agenda-list">
-          <li class="agenda-item"><span class="agenda-time">8h – 9h30</span><span class="agenda-desc">Credenciamento</span></li>
+          <li class="agenda-item"><span class="agenda-time">8h</span><span class="agenda-desc">Credenciamento</span></li>
           <li class="agenda-item"><span class="agenda-time">9h30 – 10h</span><span class="agenda-desc">Abertura das salas</span></li>
           <li class="agenda-item"><span class="agenda-time">10h</span><span class="agenda-desc">Início das palestras</span></li>
-          <li class="agenda-item"><span class="agenda-time">11h35 – 13h35</span><span class="agenda-desc">Almoço</span></li>
+          <li class="agenda-item"><span class="agenda-time">11h35 – 13h35</span><span class="agenda-desc">Intervalo para almoço</span></li>
           <li class="agenda-item"><span class="agenda-time">13h35</span><span class="agenda-desc">Retorno das palestras</span></li>
           <li class="agenda-item"><span class="agenda-time">18h – 18h20</span><span class="agenda-desc"><strong>Encerramento do PCamp 2026</strong></span></li>
         </ul>
