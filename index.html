@@ -95,10 +95,10 @@ window.dataLayer = window.dataLayer || [];
   "offers": [
     {
       "@type": "Offer",
-      "name": "Ingresso Último Lote",
-      "price": "1549",
+      "name": "Ingresso Last Minute",
+      "price": "1649",
       "priceCurrency": "BRL",
-      "priceValidUntil": "2026-11-06",
+      "priceValidUntil": "2026-11-24",
       "availability": "https://schema.org/InStock",
       "url": "https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593"
     },
@@ -2261,6 +2261,22 @@ window.dataLayer = window.dataLayer || [];
   .sponsor-logo.logo-tall { padding-block: 6px; }
   .sponsor-logo.logo-tall img { height: 68px; }
 
+  /* Comunidades — cards iguais, 4 por linha; a sobra fica centralizada (hoje, 4 + 3).
+     Vem depois dos modificadores de logo para o max-width valer sobre eles. */
+  .sponsors-logos--comunidades { max-width: 880px; margin-inline: auto; }
+  .sponsors-logos--comunidades .sponsor-logo {
+    flex: 0 0 calc(25% - 12px);
+    min-width: 0;
+    padding-inline: 16px;
+  }
+  .sponsors-logos--comunidades .sponsor-logo img { max-width: 100%; }
+
+  /* mobile — 4 por linha não cabe: 2 por linha, com a sobra centralizada */
+  @media (max-width: 640px) {
+    .sponsors-logos--comunidades { gap: 12px; }
+    .sponsors-logos--comunidades .sponsor-logo { flex-basis: calc(50% - 6px); }
+  }
+
   /* realização — logo PM3 maior */
   .sponsors-realizacao .sponsor-logo { height: 88px; padding: 24px 40px; }
   .sponsors-realizacao .sponsor-logo img { height: 44px; max-width: 180px; }
@@ -2860,9 +2876,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <!-- FAIXA DE URGÊNCIA — data-pcamp-topbar lista os lotes em que o texto vale;
      fora deles, assets/js/pcamp-countdown-lotes.js esconde a faixa sozinho.
-     Na virada para o Last Minute (07/11), trocar ou remover no deploy. -->
-<a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=topbar&utm_content=sympla" target="_blank" class="topbar" data-pcamp-topbar="lote-5">
-  <span><strong>VIP esgotado.</strong> Passaporte no último lote. <span class="topbar-cta"><span aria-hidden="true">→</span> Garantir o meu</span></span>
+     Depois de 24/11 não há lote ativo: remover no deploy de vendas encerradas. -->
+<a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=topbar&utm_content=sympla" target="_blank" class="topbar" data-pcamp-topbar="last-minute">
+  <span><strong>VIP esgotado.</strong> Passaporte Last Minute até 24/11. <span class="topbar-cta"><span aria-hidden="true">→</span> Garantir o meu</span></span>
 </a>
 
 <!-- NAV -->
@@ -2909,7 +2925,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <span class="hero-rule"></span>
       <div class="hero-actions">
         <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="btn-primary btn-nowrap">
-          <span aria-hidden="true">🔥</span> Garantir último lote
+          <span aria-hidden="true">🔥</span> Garantir ingresso
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -4045,10 +4061,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                como base estática; assets/js/pcamp-countdown-lotes.js troca
                badge, preço e JSON-LD sozinho quando um lote posterior do
                calendário estiver ativo. -->
-          <span class="lote-badge" data-pcamp-lote-badge>ÚLTIMO LOTE</span>
+          <span class="lote-badge" data-pcamp-lote-badge>LAST MINUTE</span>
           <div class="ticket-name">Passaporte</div>
           <div class="ticket-price">
-            <strong data-pcamp-preco>R$ 1.549</strong>
+            <strong data-pcamp-preco>R$ 1.649</strong>
           </div>
           <ul class="ticket-features">
             <li>Acesso aos 2 dias de evento</li>
@@ -4257,7 +4273,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- COMUNIDADES — em ordem alfabética; ao incluir uma nova, mantenha a ordem -->
     <div class="sponsors-tier">
       <div class="sponsors-tier-label">Comunidades</div>
-      <div class="sponsors-logos">
+      <div class="sponsors-logos sponsors-logos--comunidades">
+        <a href="https://www.linkedin.com/company/elas-que-lan%C3%A7am/" target="_blank" class="sponsor-logo logo-symbol">
+          <img src="assets/img/sponsors/elas-que-lancam.webp" width="480" height="169" loading="lazy" alt="Elas que Lançam">
+        </a>
         <a href="https://www.linkedin.com/company/evoluindo-em-produtos/" target="_blank" class="sponsor-logo">
           <img src="assets/img/sponsors/evoluindo-em-produtos.svg" width="283" height="83" loading="lazy" alt="Evoluindo em Produtos">
         </a>
