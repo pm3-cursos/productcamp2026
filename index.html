@@ -2216,6 +2216,22 @@ window.dataLayer = window.dataLayer || [];
   .sponsor-logo.logo-tall { padding-block: 6px; }
   .sponsor-logo.logo-tall img { height: 68px; }
 
+  /* Comunidades — cards iguais, 4 por linha; a sobra fica centralizada (hoje, 4 + 3).
+     Vem depois dos modificadores de logo para o max-width valer sobre eles. */
+  .sponsors-logos--comunidades { max-width: 880px; margin-inline: auto; }
+  .sponsors-logos--comunidades .sponsor-logo {
+    flex: 0 0 calc(25% - 12px);
+    min-width: 0;
+    padding-inline: 16px;
+  }
+  .sponsors-logos--comunidades .sponsor-logo img { max-width: 100%; }
+
+  /* mobile — 4 por linha não cabe: 2 por linha, com a sobra centralizada */
+  @media (max-width: 640px) {
+    .sponsors-logos--comunidades { gap: 12px; }
+    .sponsors-logos--comunidades .sponsor-logo { flex-basis: calc(50% - 6px); }
+  }
+
   /* realização — logo PM3 maior */
   .sponsors-realizacao .sponsor-logo { height: 88px; padding: 24px 40px; }
   .sponsors-realizacao .sponsor-logo img { height: 44px; max-width: 180px; }
@@ -4244,7 +4260,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- COMUNIDADES — em ordem alfabética; ao incluir uma nova, mantenha a ordem -->
     <div class="sponsors-tier">
       <div class="sponsors-tier-label">Comunidades</div>
-      <div class="sponsors-logos">
+      <div class="sponsors-logos sponsors-logos--comunidades">
+        <a href="https://www.linkedin.com/company/elas-que-lan%C3%A7am/" target="_blank" class="sponsor-logo logo-symbol">
+          <img src="assets/img/sponsors/elas-que-lancam.webp" width="480" height="169" loading="lazy" alt="Elas que Lançam">
+        </a>
         <a href="https://www.linkedin.com/company/evoluindo-em-produtos/" target="_blank" class="sponsor-logo">
           <img src="assets/img/sponsors/evoluindo-em-produtos.svg" width="283" height="83" loading="lazy" alt="Evoluindo em Produtos">
         </a>
