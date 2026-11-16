@@ -2357,6 +2357,8 @@ window.dataLayer = window.dataLayer || [];
     padding: 18px 22px;
   }
   .cota--startup .sponsor-logo img { height: 22px; max-width: 120px; }
+  /* símbolo mais alto que o nome (Prumo) — sem isso o nome fica menor que o dos vizinhos */
+  .cota--startup .sponsor-logo.logo-symbol img { height: 32px; max-width: 130px; }
 
   /* mobile — mantém a ordem da hierarquia, empilhando em 1–2 colunas */
   @media (max-width: 640px) {
@@ -4328,6 +4330,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     { nome: 'Wingify',   cota: 'silver',          logo: 'assets/img/sponsors/wingify.webp'  }
     { nome: 'grunn.ai',  cota: 'startup',         logo: 'assets/img/sponsors/grunn.webp'    }
     { nome: 'PM na Gringa', cota: 'startup',      logo: 'assets/img/sponsors/pm-na-gringa.webp' }
+    { nome: 'Prumo',     cota: 'startup',         logo: 'assets/img/sponsors/prumo.svg'     }
 
   A hierarquia é 100% visual (tamanho de card + nº de colunas +
   espaçamento entre grupos). O nome da cota aparece SÓ no
@@ -4419,6 +4422,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </a>
             <a href="https://pmnagringa.com/" target="_blank" class="sponsor-logo">
               <img src="assets/img/sponsors/pm-na-gringa.webp" width="400" height="66" loading="lazy" alt="PM na Gringa">
+            </a>
+            <a href="https://comuprumo.com/" target="_blank" rel="sponsored noopener" class="sponsor-logo logo-symbol">
+              <img src="assets/img/sponsors/prumo.svg" width="781" height="220" loading="lazy" alt="Prumo">
             </a>
           </div>
         </div>
