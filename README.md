@@ -202,7 +202,7 @@ coordenação (`.gc-panel`), logo acima das abas.
   <span class="track-card-company">Empresa</span>
   <div class="track-card-photo">
     <img src="assets/img/speakers/sp-nome.webp" width="400" height="400"
-         alt="Foto de Nome Completo, Cargo na Empresa" loading="lazy">
+         alt="Nome Completo, Cargo na Empresa" loading="lazy">
   </div>
   <div class="track-card-info">
     <span class="track-card-track">Nome da trilha</span>
@@ -222,7 +222,7 @@ mais abaixo:
 <article class="coord-mini">
   <div class="coord-mini-photo">
     <img src="assets/img/coordinators/nome.webp" width="400" height="400"
-         alt="Foto de Nome Completo, Cargo na Empresa" loading="lazy">
+         alt="Nome Completo, Cargo na Empresa" loading="lazy">
   </div>
   <div class="coord-mini-info">
     <span class="coord-mini-label">Coordenação</span>
