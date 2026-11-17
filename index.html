@@ -2357,6 +2357,8 @@ window.dataLayer = window.dataLayer || [];
     padding: 18px 22px;
   }
   .cota--startup .sponsor-logo img { height: 22px; max-width: 120px; }
+  /* símbolo mais alto que o nome (Prumo) — sem isso o nome fica menor que o dos vizinhos */
+  .cota--startup .sponsor-logo.logo-symbol img { height: 32px; max-width: 130px; }
 
   /* mobile — mantém a ordem da hierarquia, empilhando em 1–2 colunas */
   @media (max-width: 640px) {
@@ -4342,10 +4344,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ║     cota correta (ou do tier Comunidades / Apoio /           ║
   ║     Realização).                                             ║
   ║                                                              ║
-  ║  <a href="URL" target="_blank" class="sponsor-logo">         ║
+  ║  <a href="URL" target="_blank" rel="sponsored noopener"      ║
+  ║     class="sponsor-logo">                                    ║
   ║    <img src="assets/img/sponsors/empresa.svg"                ║
   ║         width="W" height="H" loading="lazy" alt="Empresa">   ║
   ║  </a>                                                        ║
+  ║                                                              ║
+  ║  rel="sponsored noopener" só nas cotas pagas (Content        ║
+  ║  Partner a Startup). Comunidades, Apoio e Realização         ║
+  ║  não são link pago: ficam só com target="_blank".            ║
   ╚══════════════════════════════════════════════════════════════╝
 
   MODELO DE DADOS — fonte da verdade do bloco "Patrocinadores".
@@ -4376,6 +4383,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     { nome: 'Wingify',   cota: 'silver',          logo: 'assets/img/sponsors/wingify.webp'  }
     { nome: 'grunn.ai',  cota: 'startup',         logo: 'assets/img/sponsors/grunn.webp'    }
     { nome: 'PM na Gringa', cota: 'startup',      logo: 'assets/img/sponsors/pm-na-gringa.webp' }
+    { nome: 'Prumo',     cota: 'startup',         logo: 'assets/img/sponsors/prumo.svg'     }
 
   A hierarquia é 100% visual (tamanho de card + nº de colunas +
   espaçamento entre grupos). O nome da cota aparece SÓ no
@@ -4399,10 +4407,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="sponsors-cota cota--content-partner">
           <div class="sponsors-cota-label">Content Partner</div>
           <div class="sponsors-cota-logos">
-            <a href="https://minders.io/pt-br/" target="_blank" class="sponsor-logo">
+            <a href="https://minders.io/pt-br/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
               <img src="assets/img/sponsors/minders.svg" width="266" height="91" loading="lazy" alt="Minders">
             </a>
-            <a href="https://www.itau.com.br/" target="_blank" class="sponsor-logo logo-square">
+            <a href="https://www.itau.com.br/" target="_blank" rel="sponsored noopener" class="sponsor-logo logo-square">
               <img src="assets/img/sponsors/itau.svg" width="512" height="512" loading="lazy" alt="Itaú">
             </a>
           </div>
@@ -4412,7 +4420,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="sponsors-cota cota--diamond">
           <div class="sponsors-cota-label">Diamond</div>
           <div class="sponsors-cota-logos">
-            <a href="https://replit.com/" target="_blank" class="sponsor-logo">
+            <a href="https://replit.com/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
               <img src="assets/img/sponsors/replit.svg" width="1122" height="319" loading="lazy" alt="Replit">
             </a>
           </div>
@@ -4422,15 +4430,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="sponsors-cota cota--gold">
           <div class="sponsors-cota-label">Gold</div>
           <div class="sponsors-cota-logos">
-            <a href="https://mixpanel.com/home/" target="_blank" class="sponsor-logo">
+            <a href="https://mixpanel.com/home/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
               <img src="assets/img/sponsors/mixpanel_.svg" width="270" height="91" loading="lazy" alt="Mixpanel">
             </a>
-            <a href="https://clevertap.com/pt/" target="_blank" class="sponsor-logo">
+            <a href="https://clevertap.com/pt/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
               <img src="assets/img/sponsors/clevertap.avif" width="468" height="172" loading="lazy" alt="CleverTap">
             </a>
             <!-- MoEngage — cota GOLD. A cota vem do grupo pai (.cota--gold),
                  não do card: não mover este <a> de lugar. -->
-            <a href="https://www.moengage.com/" target="_blank" class="sponsor-logo">
+            <a href="https://www.moengage.com/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
               <img src="assets/img/sponsors/moengage.svg" width="160" height="25" loading="lazy" alt="MoEngage">
             </a>
             <a href="https://miro.com/pt/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
@@ -4443,13 +4451,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="sponsors-cota cota--silver">
           <div class="sponsors-cota-label">Silver</div>
           <div class="sponsors-cota-logos">
-            <a href="https://www.pendo.io/" target="_blank" class="sponsor-logo">
+            <a href="https://www.pendo.io/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
               <img src="assets/img/sponsors/pendo_.avif" width="250" height="50" loading="lazy" alt="Pendo">
             </a>
-            <a href="https://educacaomedica.afya.com.br/" target="_blank" class="sponsor-logo">
+            <a href="https://educacaomedica.afya.com.br/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
               <img src="assets/img/sponsors/afya.avif" width="512" height="209" loading="lazy" alt="Afya">
             </a>
-            <a href="https://stack.com.br/" target="_blank" class="sponsor-logo">
+            <a href="https://stack.com.br/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
               <img src="assets/img/sponsors/stack.webp" width="400" height="60" loading="lazy" alt="Stack">
             </a>
             <a href="https://wingify.com/br/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
@@ -4462,11 +4470,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="sponsors-cota cota--startup">
           <div class="sponsors-cota-label">Startup</div>
           <div class="sponsors-cota-logos">
-            <a href="https://grunn.ai/" target="_blank" class="sponsor-logo">
+            <a href="https://grunn.ai/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
               <img src="assets/img/sponsors/grunn.webp" width="512" height="102" loading="lazy" alt="grunn.ai">
             </a>
-            <a href="https://pmnagringa.com/" target="_blank" class="sponsor-logo">
+            <a href="https://pmnagringa.com/" target="_blank" rel="sponsored noopener" class="sponsor-logo">
               <img src="assets/img/sponsors/pm-na-gringa.webp" width="400" height="66" loading="lazy" alt="PM na Gringa">
+            </a>
+            <a href="https://comuprumo.com/" target="_blank" rel="sponsored noopener" class="sponsor-logo logo-symbol">
+              <img src="assets/img/sponsors/prumo.svg" width="781" height="220" loading="lazy" alt="Prumo">
             </a>
           </div>
         </div>
