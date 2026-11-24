@@ -1114,6 +1114,90 @@ window.dataLayer = window.dataLayer || [];
     font-weight: 500;
   }
 
+  /* ── CARD "PALESTRANTE EM DESTAQUE" ──
+     Mesmo card, mesmo tamanho de foto e de texto. O modificador só acrescenta
+     o contorno, o selo sobre a foto e, quando há patrocinador, o rodapé
+     "Apresentado por". As cores vêm do briefing do destaque e ficam presas
+     aqui — não são tokens do site.
+     - outline (e não border): não mexe nas dimensões. O offset de -1px põe o
+       contorno exatamente sobre a borda de 1px, com o mesmo raio de 16px.
+     - align-self: start: o card com rodapé fica mais alto e não puxa os
+       vizinhos de fileira junto. Fica no modificador, e não na grade, porque
+       align-items: start na .track-speakers desigualaria a altura de todos os
+       cards comuns entre si. Por isso os destaques vêm sempre primeiro. */
+  .track-card--featured {
+    --featured-accent: #00C4CC;
+    --featured-ink: #1E1435;
+    --featured-rule: #3F3366;
+    --featured-label: #C9C1DE;
+    outline: 1px solid var(--featured-accent);
+    outline-offset: -1px;
+    align-self: start;
+  }
+
+  /* a foto vira container: o selo decide entre uma e duas linhas pela
+     largura da foto, não da tela (a grade é auto-fill) */
+  .track-card--featured .track-card-photo {
+    position: relative;
+    container-type: inline-size;
+  }
+
+  /* selo em cima da foto: absoluto, não ocupa altura no card */
+  .track-card-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 1;
+    max-width: calc(100% - 16px);
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: var(--featured-accent);
+    color: var(--featured-ink);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  /* Em uma linha o selo mede 170px e, com o respiro de 8px, pede uma foto
+     de 186px. Abaixo disso (desktop de 5 colunas, celular) ele vira um bloco
+     compacto de duas linhas, "PALESTRANTE / EM DESTAQUE" — o &nbsp; do HTML
+     segura "em Destaque" junto. */
+  @container (width < 186px) {
+    .track-card-badge { width: min-content; }
+  }
+
+  /* rótulo sempre em cima do logo: lado a lado, logos de larguras diferentes
+     quebravam em alturas diferentes e os rodapés da fileira desalinhavam */
+  .track-card-sponsor {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 0 16px;
+    padding: 12px 0 16px;
+    border-top: 1px solid var(--featured-rule);
+  }
+
+  .track-card-sponsor-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--featured-label);
+    line-height: 1.3;
+  }
+
+  /* width/height do HTML já são o tamanho de exibição (altura até 24px):
+     a caixa fica reservada antes de o logo lazy carregar, sem salto */
+  .track-card-sponsor img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    max-height: 24px;
+  }
+
   /* silhueta desenhada em CSS puro: zero requisição, zero KB */
   .soon-avatar {
     width: 46%;
@@ -1457,6 +1541,8 @@ window.dataLayer = window.dataLayer || [];
     .track-card-track { font-size: 9px; letter-spacing: 0.06em; }
     .track-card-name { font-size: 14px; }
     .track-card-role { font-size: 11.5px; }
+    /* rodapé do destaque acompanha o respiro lateral de 12px do card */
+    .track-card-sponsor { margin: 0 12px; padding: 10px 0 14px; }
 
     /* No celular os chips passam para 2 colunas (2+2+1): em mais colunas eles
        ficariam com ~80px e todo nome de trilha quebraria em três linhas. */
@@ -3234,6 +3320,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ║                                                                  ║
   ║  COORDENAÇÃO fica nas abas, mais abaixo (.track-panel): cada     ║
   ║  trilha tem sua descrição e seus cards .coord-mini.              ║
+  ╠══════════════════════════════════════════════════════════════════╣
+  ║  PALESTRANTE EM DESTAQUE                                         ║
+  ║  Mesmo card, com dois campos opcionais:                          ║
+  ║                                                                  ║
+  ║  destaque (padrão: sem) — some .track-card--featured no          ║
+  ║  <article> e o selo dentro da div da foto, depois da <img>:      ║
+  ║    <span class="track-card-badge">Palestrante em&nbsp;Destaque   ║
+  ║    </span>                                                       ║
+  ║  Card em destaque vai para o COMEÇO da grade, na ordem da lista  ║
+  ║  de destaques.                                                   ║
+  ║                                                                  ║
+  ║  apresentadoPor (só com destaque) — rodapé no fim do <article>:  ║
+  ║    <div class="track-card-sponsor">                              ║
+  ║      <span class="track-card-sponsor-label">Apresentado por      ║
+  ║      </span>                                                     ║
+  ║      <img src="assets/img/sponsors/logo.svg" width="W"           ║
+  ║           height="H" alt="Logo Patrocinador" loading="lazy">     ║
+  ║    </div>                                                        ║
+  ║  width/height = tamanho de exibição, com altura de até 24px.     ║
+  ║  Logo BRANCO ou claro: o fundo do card é escuro.                 ║
+  ║  Sem patrocinador? Não ponha o rodapé.                           ║
   ╚══════════════════════════════════════════════════════════════════╝
 -->
 <section class="tracks-section" id="trilhas">
@@ -3245,6 +3352,86 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
 
     <div class="track-speakers" role="list" aria-label="Palestrantes confirmados, por trilha">
+
+      <!-- Palestrantes em destaque: sempre no começo da grade, nesta ordem.
+           Como marcar ou desmarcar, no comentário "PALESTRANTE EM DESTAQUE"
+           acima da seção. -->
+      <article class="track-card track-card--featured" role="listitem">
+        <span class="track-card-company">Amplitude</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-blaise-pangalos.webp" width="345" height="345" alt="Blaise Pangalos, VP de Tecnologia na Amplitude" loading="lazy">
+          <span class="track-card-badge">Palestrante em&nbsp;Destaque</span>
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Product Management</span>
+          <div class="track-card-name">Blaise Pangalos</div>
+          <span class="track-card-role">VP de Tecnologia</span>
+        </div>
+        <div class="track-card-sponsor">
+          <span class="track-card-sponsor-label">Apresentado por</span>
+          <img src="assets/img/sponsors/minders.svg" width="70" height="24" alt="Logo Minders" loading="lazy">
+        </div>
+      </article>
+
+      <article class="track-card track-card--featured" role="listitem">
+        <span class="track-card-company">GB Advisory</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-gabrielle-bufrem.webp" width="400" height="400" alt="Gabrielle Bufrem, Executive Coach to Product Leaders na GB Advisory" loading="lazy">
+          <span class="track-card-badge">Palestrante em&nbsp;Destaque</span>
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Liderança &amp; Negócios</span>
+          <div class="track-card-name">Gabrielle Bufrem</div>
+          <span class="track-card-role">Executive Coach to Product Leaders</span>
+        </div>
+        <div class="track-card-sponsor">
+          <span class="track-card-sponsor-label">Apresentado por</span>
+          <img src="assets/img/brand/logo-pm3.svg" width="67" height="21" alt="Logo PM3" loading="lazy">
+        </div>
+      </article>
+
+      <article class="track-card track-card--featured" role="listitem">
+        <span class="track-card-company">AWS</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-felipe-barreiros.webp" width="400" height="400" alt="Felipe Barreiros, Sr. Product Engineer na AWS" loading="lazy">
+          <span class="track-card-badge">Palestrante em&nbsp;Destaque</span>
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Product Management</span>
+          <div class="track-card-name">Felipe Barreiros</div>
+          <span class="track-card-role">Sr. Product Engineer</span>
+        </div>
+        <div class="track-card-sponsor">
+          <span class="track-card-sponsor-label">Apresentado por</span>
+          <img src="assets/img/brand/logo-pm3.svg" width="67" height="21" alt="Logo PM3" loading="lazy">
+        </div>
+      </article>
+
+      <article class="track-card track-card--featured" role="listitem">
+        <span class="track-card-company">Grupo Boticário</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-stephanie-fischer.webp" width="400" height="400" alt="Stephanie Fischer de S. Campos, Head de Produto e Engenharia no Grupo Boticário" loading="lazy">
+          <span class="track-card-badge">Palestrante em&nbsp;Destaque</span>
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Liderança &amp; Negócios</span>
+          <div class="track-card-name">Stephanie Fischer de S. Campos</div>
+          <span class="track-card-role">Head de Produto e Engenharia (Ativação e Gen AI)</span>
+        </div>
+      </article>
+
+      <article class="track-card track-card--featured" role="listitem">
+        <span class="track-card-company">Mercado Livre</span>
+        <div class="track-card-photo">
+          <img src="assets/img/speakers/sp-ana-mantovani.webp" width="400" height="400" alt="Ana Mantovani, Director of Software e Product Development no Mercado Livre" loading="lazy">
+          <span class="track-card-badge">Palestrante em&nbsp;Destaque</span>
+        </div>
+        <div class="track-card-info">
+          <span class="track-card-track">Liderança &amp; Negócios</span>
+          <div class="track-card-name">Ana Mantovani</div>
+          <span class="track-card-role">Director of Software &amp; Product Development</span>
+        </div>
+      </article>
 
       <article class="track-card" role="listitem">
         <span class="track-card-company">ClickBus</span>
@@ -3292,30 +3479,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <span class="track-card-track">Marketing &amp; Design</span>
           <div class="track-card-name">Beatriz Costa</div>
           <span class="track-card-role">Product Marketing Director</span>
-        </div>
-      </article>
-
-      <article class="track-card" role="listitem">
-        <span class="track-card-company">Mercado Livre</span>
-        <div class="track-card-photo">
-          <img src="assets/img/speakers/sp-ana-mantovani.webp" width="400" height="400" alt="Ana Mantovani, Director of Software e Product Development no Mercado Livre" loading="lazy">
-        </div>
-        <div class="track-card-info">
-          <span class="track-card-track">Liderança &amp; Negócios</span>
-          <div class="track-card-name">Ana Mantovani</div>
-          <span class="track-card-role">Director of Software &amp; Product Development</span>
-        </div>
-      </article>
-
-      <article class="track-card" role="listitem">
-        <span class="track-card-company">Grupo Boticário</span>
-        <div class="track-card-photo">
-          <img src="assets/img/speakers/sp-stephanie-fischer.webp" width="400" height="400" alt="Stephanie Fischer de S. Campos, Head de Produto e Engenharia no Grupo Boticário" loading="lazy">
-        </div>
-        <div class="track-card-info">
-          <span class="track-card-track">Liderança &amp; Negócios</span>
-          <div class="track-card-name">Stephanie Fischer de S. Campos</div>
-          <span class="track-card-role">Head de Produto e Engenharia (Ativação e Gen AI)</span>
         </div>
       </article>
 
@@ -3521,18 +3684,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <span class="track-card-track">Product Management</span>
           <div class="track-card-name">Bruno Amaral</div>
           <span class="track-card-role">AI Product Manager</span>
-        </div>
-      </article>
-
-      <article class="track-card" role="listitem">
-        <span class="track-card-company">AWS</span>
-        <div class="track-card-photo">
-          <img src="assets/img/speakers/sp-felipe-barreiros.webp" width="400" height="400" alt="Felipe Barreiros, Sr. Product Engineer na AWS" loading="lazy">
-        </div>
-        <div class="track-card-info">
-          <span class="track-card-track">Product Management</span>
-          <div class="track-card-name">Felipe Barreiros</div>
-          <span class="track-card-role">Sr. Product Engineer</span>
         </div>
       </article>
 
@@ -3821,18 +3972,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <span class="track-card-track">Product Management</span>
           <div class="track-card-name">Vivian Yushiura</div>
           <span class="track-card-role">Head de Produtos</span>
-        </div>
-      </article>
-
-      <article class="track-card" role="listitem">
-        <span class="track-card-company">GB Advisory</span>
-        <div class="track-card-photo">
-          <img src="assets/img/speakers/sp-gabrielle-bufrem.webp" width="400" height="400" alt="Gabrielle Bufrem, Executive Coach to Product Leaders na GB Advisory" loading="lazy">
-        </div>
-        <div class="track-card-info">
-          <span class="track-card-track">Liderança &amp; Negócios</span>
-          <div class="track-card-name">Gabrielle Bufrem</div>
-          <span class="track-card-role">Executive Coach to Product Leaders</span>
         </div>
       </article>
 
