@@ -9,6 +9,8 @@
  *     oferta correspondente no JSON-LD de Event — quando a entrada do
  *     calendário traz o preço (campo `passaporte`). Assim a virada de
  *     lote acontece sozinha na data, sem depender de deploy.
+ *  3. A partir de PASSAPORTE_ESGOTADO_EM, mostra o Passaporte como
+ *     esgotado no card e no JSON-LD, pela mesma lógica de data.
  *
  * Uso: o destino é qualquer elemento com o atributo data-pcamp-countdown,
  * que já exista no HTML com `hidden`. O script preenche e revela. Havendo
@@ -65,9 +67,8 @@
   // de 25/11 a venda segue como "Últimos ingressos disponíveis", sem data de
   // fim definida — por isso não entrou aqui como lote (o countdown e o
   // priceValidUntil precisariam de uma data). Sem lote ativo o script não
-  // mexe em nada e o card fica como está no HTML: selo, preço e JSON-LD
-  // são manuais desde então. Ao encerrar as vendas, um deploy troca a seção
-  // de ingressos: preço, CTA, availability do JSON-LD e llms.txt.
+  // mexe no lote do card: selo, preço e JSON-LD são manuais desde então.
+  // O fim das vendas é PASSAPORTE_ESGOTADO_EM, logo abaixo.
   // ---------------------------------------------------------------
   var LOTES = [
     { id: "pre-venda",   label: "Pré-venda",   start: "2025-12-10T00:00:00-03:00", end: "2025-12-30T23:59:59-03:00" },
@@ -83,6 +84,13 @@
   // Quantos dias antes do fim do lote o widget passa a aparecer.
   var VISIBLE_WINDOW_DAYS = 7;
   var LABEL_TEMPLATE = "{lote} termina em:";
+
+  // A partir desta data o card do Passaporte vira ESGOTADO, no mesmo formato
+  // do VIP: selo neutro, sem bloco de preço e botão "Esgotado" sem link. A
+  // oferta do JSON-LD passa a SoldOut. Como a virada de lote, vale para o
+  // visitante sem deploy, mas o HTML bruto e o llms.txt seguem anunciando
+  // venda até o deploy de acompanhamento — e esse é o que o SEO enxerga.
+  var PASSAPORTE_ESGOTADO_EM = "2026-12-02T00:00:00-03:00";
   // ---------------------------------------------------------------
 
   // Seletor por atributo, não por id: o widget pode aparecer em mais de um
@@ -123,15 +131,54 @@
     if (badge) badge.textContent = lote.label.toUpperCase();
     if (price) price.textContent = formatBRL(lote.passaporte);
 
+    editPassaporteOffer(function (offer) {
+      offer.name = "Ingresso " + lote.label;
+      offer.price = String(lote.passaporte);
+      offer.priceValidUntil = dateOnly(lote.end);
+    });
+  }
+
+  // Passaporte esgotado: o card ganha o formato do VIP esgotado, que é o
+  // layout aprovado para esse estado (ver o card VIP no index.html).
+  function applyPassaporteEsgotado() {
+    var card = document.querySelector("[data-pcamp-passaporte]");
+    if (card) {
+      var badge = card.querySelector("[data-pcamp-lote-badge]");
+      var priceBox = card.querySelector(".ticket-price");
+      var name = card.querySelector(".ticket-name");
+      var cta = card.querySelector("[data-pcamp-passaporte-cta]");
+
+      if (badge) {
+        badge.textContent = "ESGOTADO";
+        badge.classList.add("lote-badge--esgotado");
+      }
+      if (priceBox) {
+        priceBox.remove();
+        if (name) name.classList.add("ticket-name--sem-preco");
+      }
+      if (cta) {
+        var off = document.createElement("span");
+        off.className = "btn-primary btn-block btn-esgotado";
+        off.textContent = "Esgotado";
+        cta.replaceWith(off);
+      }
+    }
+
+    editPassaporteOffer(function (offer) {
+      offer.availability = "https://schema.org/SoldOut";
+    });
+  }
+
+  // offers[0] do JSON-LD de Event é sempre o Passaporte (o VIP é offers[1]
+  // e fica fora deste script).
+  function editPassaporteOffer(edit) {
     var ld = document.getElementById("pcamp-event-jsonld");
     if (!ld) return;
     try {
       var data = JSON.parse(ld.textContent);
       var offer = data.offers && data.offers[0];
       if (!offer) return;
-      offer.name = "Ingresso " + lote.label;
-      offer.price = String(lote.passaporte);
-      offer.priceValidUntil = dateOnly(lote.end);
+      edit(offer);
       ld.textContent = JSON.stringify(data, null, 2);
     } catch (e) {
       // JSON-LD inválido no HTML: não é deste script consertar. O card já
@@ -167,13 +214,18 @@
   }
 
   function init() {
-    var lote = findActiveLote(new Date());
+    var now = new Date();
+    var lote = findActiveLote(now);
+    var esgotado = now >= new Date(PASSAPORTE_ESGOTADO_EM);
     applyTopbar(lote);
+    // Como o preço, o esgotado é aplicado uma vez, no carregamento: quem
+    // estiver com a página aberta na virada só vê a mudança após reload.
+    if (esgotado) applyPassaporteEsgotado();
     if (!lote) return;
 
     // O preço vale em qualquer página com a marcação, mesmo fora da janela
     // do countdown — por isso vem antes dos guards do relógio.
-    applyLoteToTickets(lote);
+    if (!esgotado) applyLoteToTickets(lote);
 
     var containers = document.querySelectorAll(CONTAINER_SELECTOR);
     if (!containers.length) return;

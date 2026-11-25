@@ -4403,13 +4403,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="tickets-grid">
 
         <!-- PASSAPORTE -->
-        <div class="ticket-card featured featured--cyan">
+        <div class="ticket-card featured featured--cyan" data-pcamp-passaporte>
           <div class="ticket-badge">Passaporte</div>
           <!-- Lote e preço do Passaporte: o HTML traz o lote vigente no deploy
                como base estática; assets/js/pcamp-countdown-lotes.js troca
                badge, preço e JSON-LD sozinho quando um lote posterior do
-               calendário estiver ativo. Desde 25/11 não há lote no calendário
-               e o script não mexe aqui: o selo abaixo é o texto final. -->
+               calendário estiver ativo. Desde 25/11 não há lote no calendário.
+               Em 02/12 (PASSAPORTE_ESGOTADO_EM) o script deixa este card no
+               formato do VIP esgotado: selo, sem preço e botão desativado. -->
           <span class="lote-badge" data-pcamp-lote-badge>ÚLTIMOS INGRESSOS DISPONÍVEIS</span>
           <div class="ticket-name">Passaporte</div>
           <div class="ticket-price">
@@ -4423,7 +4424,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <li>Certificado de participação</li>
             <li>Gravações das palestras</li>
           </ul>
-          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-primary btn-cyan btn-block">
+          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-primary btn-cyan btn-block" data-pcamp-passaporte-cta>
             Garantir ingresso
           </a>
         </div>
