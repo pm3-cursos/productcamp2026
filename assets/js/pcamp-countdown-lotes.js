@@ -61,13 +61,13 @@
   // O card não tem mais preço riscado ("De R$ X por"): saiu junto com o
   // último lote, e o Last Minute já é o preço cheio.
   //
-  // O calendário TERMINA em 24/11/2026 de propósito: as vendas encerram
-  // nessa data e não há ingresso à venda entre 25/11 e o evento (08/12).
-  // Não estenda o Last Minute para "cobrir o buraco" — ele não é um buraco.
-  // Sem lote ativo o script não mexe em nada e o card fica como está no
-  // HTML, ainda anunciando preço e com o CTA de compra ativo. Em 25/11 é
-  // preciso um deploy manual trocando a seção de ingressos para vendas
-  // encerradas: preço, CTA, availability do JSON-LD e llms.txt.
+  // O calendário TERMINA em 24/11/2026, com o fim do Last Minute. A partir
+  // de 25/11 a venda segue como "Últimos ingressos disponíveis", sem data de
+  // fim definida — por isso não entrou aqui como lote (o countdown e o
+  // priceValidUntil precisariam de uma data). Sem lote ativo o script não
+  // mexe em nada e o card fica como está no HTML: selo, preço e JSON-LD
+  // são manuais desde então. Ao encerrar as vendas, um deploy troca a seção
+  // de ingressos: preço, CTA, availability do JSON-LD e llms.txt.
   // ---------------------------------------------------------------
   var LOTES = [
     { id: "pre-venda",   label: "Pré-venda",   start: "2025-12-10T00:00:00-03:00", end: "2025-12-30T23:59:59-03:00" },

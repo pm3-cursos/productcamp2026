@@ -95,10 +95,9 @@ window.dataLayer = window.dataLayer || [];
   "offers": [
     {
       "@type": "Offer",
-      "name": "Ingresso Last Minute",
+      "name": "Ingresso Passaporte",
       "price": "1649",
       "priceCurrency": "BRL",
-      "priceValidUntil": "2026-11-24",
       "availability": "https://schema.org/InStock",
       "url": "https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593"
     },
@@ -2929,6 +2928,11 @@ window.dataLayer = window.dataLayer || [];
     font-size: 11px; font-weight: 600; padding: 3px 8px;
     border-radius: 100px; letter-spacing: 0.06em; margin-bottom: 8px;
   }
+  /* "ÚLTIMOS INGRESSOS DISPONÍVEIS" passa ~5px da largura útil do card a
+     320px e a pílula quebraria em duas linhas; o espaçamento menor resolve. */
+  @media (max-width: 359px) {
+    .lote-badge { letter-spacing: 0.02em; }
+  }
   /* Selo de esgotado: neutro, para não ler como lote ativo (o ciano é do lote vigente) */
   .lote-badge--esgotado {
     background: transparent; color: var(--white-70);
@@ -4404,8 +4408,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <!-- Lote e preço do Passaporte: o HTML traz o lote vigente no deploy
                como base estática; assets/js/pcamp-countdown-lotes.js troca
                badge, preço e JSON-LD sozinho quando um lote posterior do
-               calendário estiver ativo. -->
-          <span class="lote-badge" data-pcamp-lote-badge>LAST MINUTE</span>
+               calendário estiver ativo. Desde 25/11 não há lote no calendário
+               e o script não mexe aqui: o selo abaixo é o texto final. -->
+          <span class="lote-badge" data-pcamp-lote-badge>ÚLTIMOS INGRESSOS DISPONÍVEIS</span>
           <div class="ticket-name">Passaporte</div>
           <div class="ticket-price">
             <strong data-pcamp-preco>R$ 1.649</strong>
