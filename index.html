@@ -169,72 +169,17 @@ window.dataLayer = window.dataLayer || [];
     padding: 0 24px;
   }
 
-  /* ── FAIXA DE URGÊNCIA (acima do nav) ──
-     Fixa no topo, com o nav fixo logo abaixo: os dois rolam juntos.
-     Altura fixa por breakpoint (e não automática) porque o nav, o hero, o
-     menu mobile e as âncoras precisam saber o quanto descontar. As variáveis
-     ficam aqui, e não no bloco de tokens do :root, porque são de layout desta
-     página — o bloco de tokens é copiado valor a valor para as outras.
-     Fundo --pink com texto branco: 4,7:1. Sem hover em --pink-light, que cai
-     para 3,8:1 — o hover só reforça o sublinhado do CTA. */
-  :root {
-    --topbar-h: 44px;
-    --header-h: calc(64px + var(--topbar-h));
-  }
-
-  /* A 13px o texto cabe em uma linha até ~365px de largura; abaixo disso
-     quebra em duas e a faixa cresce para não apertar. */
-  @media (max-width: 370px) {
-    :root { --topbar-h: 56px; }
-  }
-
-  .topbar {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 101;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: var(--topbar-h);
-    padding: 0 16px;
-    background: var(--pink);
-    color: var(--white);
-    font-size: 14px;
-    line-height: 1.35;
-    text-align: center;
-  }
-
-  /* Fora do lote em que o texto vale, o script de lotes esconde a faixa e
-     marca o <html> com .sem-topbar (vence o @media acima pela especificidade). */
-  .topbar[hidden] { display: none; }
-  :root.sem-topbar { --topbar-h: 0px; }
-
-  .topbar strong { font-weight: 600; }
-
-  .topbar-cta {
-    font-weight: 600;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    white-space: nowrap;
-  }
-
-  .topbar:hover .topbar-cta { text-decoration-thickness: 2px; }
-
-  .topbar:focus-visible {
-    outline: 2px solid var(--white);
-    outline-offset: -4px;
-  }
-
-  @media (max-width: 560px) {
-    .topbar { font-size: 13px; }
-  }
+  /* Altura do nav fixo: o hero e as âncoras descontam esse valor. Fica aqui,
+     e não no bloco de tokens do :root, porque é layout desta página — o
+     bloco de tokens é copiado valor a valor para as outras. */
+  :root { --header-h: 64px; }
 
   #keynote, #agenda, #ingressos26 { scroll-margin-top: var(--header-h); }
 
   /* ── NAV ── */
   nav {
     position: fixed;
-    top: var(--topbar-h); left: 0; right: 0;
+    top: 0; left: 0; right: 0;
     z-index: 100;
     background: rgba(43,30,57,0.0);
     backdrop-filter: blur(0px);
@@ -2927,6 +2872,7 @@ window.dataLayer = window.dataLayer || [];
     display: inline-block; background: var(--cyan); color: #111;
     font-size: 11px; font-weight: 600; padding: 3px 8px;
     border-radius: 100px; letter-spacing: 0.06em; margin-bottom: 8px;
+    text-transform: uppercase;
   }
   /* "ÚLTIMOS INGRESSOS DISPONÍVEIS" passa ~5px da largura útil do card a
      320px e a pílula quebraria em duas linhas; o espaçamento menor resolve. */
@@ -2965,13 +2911,6 @@ window.dataLayer = window.dataLayer || [];
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
 
-<!-- FAIXA DE URGÊNCIA — data-pcamp-topbar lista os lotes em que o texto vale;
-     fora deles, assets/js/pcamp-countdown-lotes.js esconde a faixa sozinho.
-     Depois de 24/11 não há lote ativo: remover no deploy de vendas encerradas. -->
-<a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=topbar&utm_content=sympla" target="_blank" class="topbar" data-pcamp-topbar="last-minute">
-  <span><strong>VIP esgotado.</strong> Passaporte Last Minute até 24/11. <span class="topbar-cta"><span aria-hidden="true">→</span> Garantir o meu</span></span>
-</a>
-
 <!-- NAV -->
 <nav>
   <div class="nav-inner">
@@ -2985,7 +2924,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <li><a href="#agenda">Agenda</a></li>
       <li><a href="https://share.hsforms.com/2LipTQvz1Ryy8_JWxtYAgTgcy53x" target="_blank">Patrocine</a></li>
       <li><a href="/pocket">Pocket</a></li>
-      <li><a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="nav-cta">Garantir ingresso</a></li>
+      <li><a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="nav-cta" data-pcamp-compra-cta>Garantir ingresso</a></li>
     </ul>
 
     <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Menu">
@@ -3015,8 +2954,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </p>
       <span class="hero-rule"></span>
       <div class="hero-actions">
-        <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="btn-primary btn-nowrap">
-          <span aria-hidden="true">🔥</span> Garantir ingresso
+        <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="btn-primary btn-nowrap" data-pcamp-compra-cta>
+          <span data-pcamp-compra-label><span aria-hidden="true">🔥</span> Garantir ingresso</span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -4411,7 +4350,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                calendário estiver ativo. Desde 25/11 não há lote no calendário.
                Em 02/12 (PASSAPORTE_ESGOTADO_EM) o script deixa este card no
                formato do VIP esgotado: selo, sem preço e botão desativado. -->
-          <span class="lote-badge" data-pcamp-lote-badge>ÚLTIMOS INGRESSOS DISPONÍVEIS</span>
+          <span class="lote-badge" data-pcamp-lote-badge>Últimos ingressos disponíveis</span>
           <div class="ticket-name">Passaporte</div>
           <div class="ticket-price">
             <strong data-pcamp-preco>R$ 1.649</strong>
@@ -4434,7 +4373,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
              muda a pedido explícito. -->
         <div class="ticket-card featured">
           <div class="ticket-badge ticket-badge--vip">VIP</div>
-          <span class="lote-badge lote-badge--esgotado">ESGOTADO</span>
+          <span class="lote-badge lote-badge--esgotado">Esgotado</span>
           <div class="ticket-name ticket-name--sem-preco">VIP</div>
           <ul class="ticket-features">
             <li>Todos os benefícios do Passaporte</li>
@@ -4911,7 +4850,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           </svg>
         </summary>
         <div class="faq-answer">
-          <p>Com exceção do Lote Early Bird, que já tem um valor promocional com o melhor preço do ano, o Product Camp oferece condições especiais para pacotes de ingressos a partir de 5 ingressos, com descontos de 10% a 20%.</p>
+          <p>Sim. O Product Camp oferece condições especiais para pacotes de ingressos a partir de 5 ingressos, com descontos de 10% a 20%.</p>
           <p>Você pode solicitar um pacote a partir <a href="/para-empresas/">deste formulário</a>.</p>
         </div>
       </details>

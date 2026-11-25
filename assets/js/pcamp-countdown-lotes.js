@@ -10,7 +10,8 @@
  *     calendário traz o preço (campo `passaporte`). Assim a virada de
  *     lote acontece sozinha na data, sem depender de deploy.
  *  3. A partir de PASSAPORTE_ESGOTADO_EM, mostra o Passaporte como
- *     esgotado no card e no JSON-LD, pela mesma lógica de data.
+ *     esgotado no card e no JSON-LD, pela mesma lógica de data, e leva os
+ *     CTAs de compra do menu e do hero para a seção de ingressos.
  *
  * Uso: o destino é qualquer elemento com o atributo data-pcamp-countdown,
  * que já exista no HTML com `hidden`. O script preenche e revela. Havendo
@@ -128,7 +129,8 @@
     var badge = document.querySelector("[data-pcamp-lote-badge]");
     var price = document.querySelector("[data-pcamp-preco]");
 
-    if (badge) badge.textContent = lote.label.toUpperCase();
+    // Caixa alta vem do CSS (.lote-badge): o texto fica legível para leitor de tela.
+    if (badge) badge.textContent = lote.label;
     if (price) price.textContent = formatBRL(lote.passaporte);
 
     editPassaporteOffer(function (offer) {
@@ -149,7 +151,7 @@
       var cta = card.querySelector("[data-pcamp-passaporte-cta]");
 
       if (badge) {
-        badge.textContent = "ESGOTADO";
+        badge.textContent = "Esgotado";
         badge.classList.add("lote-badge--esgotado");
       }
       if (priceBox) {
@@ -167,6 +169,18 @@
     editPassaporteOffer(function (offer) {
       offer.availability = "https://schema.org/SoldOut";
     });
+
+    // Com Passaporte e VIP esgotados, "Garantir ingresso" no menu e no hero
+    // levaria a um Sympla sem nada à venda. Os dois passam a abrir a seção
+    // de ingressos, que mostra os cards esgotados.
+    var ctas = document.querySelectorAll("[data-pcamp-compra-cta]");
+    for (var i = 0; i < ctas.length; i++) {
+      var link = ctas[i];
+      link.href = "#ingressos26";
+      link.removeAttribute("target");
+      var label = link.querySelector("[data-pcamp-compra-label]") || link;
+      label.textContent = "Ver ingressos";
+    }
   }
 
   // offers[0] do JSON-LD de Event é sempre o Passaporte (o VIP é offers[1]
@@ -184,19 +198,6 @@
       // JSON-LD inválido no HTML: não é deste script consertar. O card já
       // foi atualizado; o dado estruturado fica como está.
     }
-  }
-
-  // A faixa do topo da home (data-pcamp-topbar) lista os ids de lote em que
-  // o texto dela vale. Fora deles — ou sem lote ativo, depois de 24/11 — o
-  // script a esconde e zera --topbar-h, para o nav e o hero subirem juntos.
-  // O texto em si continua manual: o deploy da virada troca ou remove a faixa.
-  function applyTopbar(lote) {
-    var topbar = document.querySelector("[data-pcamp-topbar]");
-    if (!topbar) return;
-    var ids = topbar.getAttribute("data-pcamp-topbar").split(" ");
-    if (lote && ids.indexOf(lote.id) !== -1) return;
-    topbar.hidden = true;
-    document.documentElement.classList.add("sem-topbar");
   }
 
   function buildMarkup(container, label) {
@@ -217,7 +218,6 @@
     var now = new Date();
     var lote = findActiveLote(now);
     var esgotado = now >= new Date(PASSAPORTE_ESGOTADO_EM);
-    applyTopbar(lote);
     // Como o preço, o esgotado é aplicado uma vez, no carregamento: quem
     // estiver com a página aberta na virada só vê a mudança após reload.
     if (esgotado) applyPassaporteEsgotado();
