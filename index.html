@@ -1117,22 +1117,21 @@ window.dataLayer = window.dataLayer || [];
   /* ── CARD "PALESTRANTE EM DESTAQUE" ──
      Mesmo card, mesmo tamanho de foto e de texto. O modificador só acrescenta
      o contorno, o selo sobre a foto e, quando há patrocinador, o rodapé
-     "Apresentado por". As cores vêm do briefing do destaque e ficam presas
-     aqui — não são tokens do site.
+     "Apresentado por". O destaque usa o --cyan do site; as outras três
+     cores vêm do briefing e ficam presas aqui — não são tokens do site.
      - outline (e não border): não mexe nas dimensões. O offset de -1px põe o
        contorno exatamente sobre a borda de 1px, com o mesmo raio de 16px.
-     - align-self: start: o card com rodapé fica mais alto e não puxa os
-       vizinhos de fileira junto. Fica no modificador, e não na grade, porque
-       align-items: start na .track-speakers desigualaria a altura de todos os
-       cards comuns entre si. Por isso os destaques vêm sempre primeiro. */
+     - Altura: o card estica com a fileira, como os comuns, e as bases da
+       fileira ficam alinhadas. O margin-top:auto do .track-card-sponsor
+       encosta o rodapé na base, e os "Apresentado por" da fileira também se
+       alinham. Os destaques vêm sempre primeiro na grade. */
   .track-card--featured {
-    --featured-accent: #00C4CC;
+    --featured-accent: var(--cyan);
     --featured-ink: #1E1435;
     --featured-rule: #3F3366;
     --featured-label: #C9C1DE;
     outline: 1px solid var(--featured-accent);
     outline-offset: -1px;
-    align-self: start;
   }
 
   /* a foto vira container: o selo decide entre uma e duas linhas pela
@@ -1175,7 +1174,7 @@ window.dataLayer = window.dataLayer || [];
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
-    margin: 0 16px;
+    margin: auto 16px 0;
     padding: 12px 0 16px;
     border-top: 1px solid var(--featured-rule);
   }
@@ -1542,7 +1541,7 @@ window.dataLayer = window.dataLayer || [];
     .track-card-name { font-size: 14px; }
     .track-card-role { font-size: 11.5px; }
     /* rodapé do destaque acompanha o respiro lateral de 12px do card */
-    .track-card-sponsor { margin: 0 12px; padding: 10px 0 14px; }
+    .track-card-sponsor { margin: auto 12px 0; padding: 10px 0 14px; }
 
     /* No celular os chips passam para 2 colunas (2+2+1): em mais colunas eles
        ficariam com ~80px e todo nome de trilha quebraria em três linhas. */
@@ -3336,7 +3335,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   ║      <span class="track-card-sponsor-label">Apresentado por      ║
   ║      </span>                                                     ║
   ║      <img src="assets/img/sponsors/logo.svg" width="W"           ║
-  ║           height="H" alt="Logo Patrocinador" loading="lazy">     ║
+  ║           height="H" alt="Patrocinador" loading="lazy">          ║
   ║    </div>                                                        ║
   ║  width/height = tamanho de exibição, com altura de até 24px.     ║
   ║  Logo BRANCO ou claro: o fundo do card é escuro.                 ║
@@ -3369,7 +3368,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <div class="track-card-sponsor">
           <span class="track-card-sponsor-label">Apresentado por</span>
-          <img src="assets/img/sponsors/minders.svg" width="70" height="24" alt="Logo Minders" loading="lazy">
+          <img src="assets/img/sponsors/minders.svg" width="70" height="24" alt="Minders" loading="lazy">
         </div>
       </article>
 
@@ -3386,7 +3385,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <div class="track-card-sponsor">
           <span class="track-card-sponsor-label">Apresentado por</span>
-          <img src="assets/img/brand/logo-pm3.svg" width="67" height="21" alt="Logo PM3" loading="lazy">
+          <img src="assets/img/brand/logo-pm3.svg" width="67" height="21" alt="PM3" loading="lazy">
         </div>
       </article>
 
@@ -3403,7 +3402,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
         <div class="track-card-sponsor">
           <span class="track-card-sponsor-label">Apresentado por</span>
-          <img src="assets/img/brand/logo-pm3.svg" width="67" height="21" alt="Logo PM3" loading="lazy">
+          <img src="assets/img/brand/logo-pm3.svg" width="67" height="21" alt="PM3" loading="lazy">
         </div>
       </article>
 
