@@ -98,7 +98,7 @@ window.dataLayer = window.dataLayer || [];
       "name": "Ingresso Passaporte",
       "price": "1649",
       "priceCurrency": "BRL",
-      "availability": "https://schema.org/InStock",
+      "availability": "https://schema.org/SoldOut",
       "url": "https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593"
     },
     {
@@ -2924,7 +2924,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <li><a href="#agenda">Agenda</a></li>
       <li><a href="https://share.hsforms.com/2LipTQvz1Ryy8_JWxtYAgTgcy53x" target="_blank">Patrocine</a></li>
       <li><a href="/pocket">Pocket</a></li>
-      <li><a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="nav-cta" data-pcamp-compra-cta>Garantir ingresso</a></li>
+      <li><a href="#ingressos26" class="nav-cta" data-pcamp-compra-cta>Ver ingressos</a></li>
     </ul>
 
     <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Menu">
@@ -2954,8 +2954,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </p>
       <span class="hero-rule"></span>
       <div class="hero-actions">
-        <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593?utm_medium=site&utm_source=pcamp&utm_campaign=_eve_pcamp_26_b2c&utm_term=home&utm_content=sympla" target="_blank" class="btn-primary btn-nowrap" data-pcamp-compra-cta>
-          <span data-pcamp-compra-label><span aria-hidden="true">🔥</span> Garantir ingresso</span>
+        <a href="#ingressos26" class="btn-primary btn-nowrap" data-pcamp-compra-cta>
+          <span data-pcamp-compra-label>Ver ingressos</span>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3 8h10M9 4l4 4-4 4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
@@ -4344,17 +4344,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <!-- PASSAPORTE -->
         <div class="ticket-card featured featured--cyan" data-pcamp-passaporte>
           <div class="ticket-badge">Passaporte</div>
-          <!-- Lote e preço do Passaporte: o HTML traz o lote vigente no deploy
-               como base estática; assets/js/pcamp-countdown-lotes.js troca
-               badge, preço e JSON-LD sozinho quando um lote posterior do
-               calendário estiver ativo. Desde 25/11 não há lote no calendário.
-               Em 02/12 (PASSAPORTE_ESGOTADO_EM) o script deixa este card no
-               formato do VIP esgotado: selo, sem preço e botão desativado. -->
-          <span class="lote-badge" data-pcamp-lote-badge>Últimos ingressos disponíveis</span>
-          <div class="ticket-name">Passaporte</div>
-          <div class="ticket-price">
-            <strong data-pcamp-preco>R$ 1.649</strong>
-          </div>
+          <!-- PASSAPORTE — ESGOTADO desde 02/12, no mesmo formato do VIP.
+               Fixo no HTML para o crawler sem JS; o pcamp-countdown-lotes.js
+               chega ao mesmo estado e não muda nada aqui. -->
+          <span class="lote-badge lote-badge--esgotado" data-pcamp-lote-badge>Esgotado</span>
+          <div class="ticket-name ticket-name--sem-preco">Passaporte</div>
           <ul class="ticket-features">
             <li>Acesso aos 2 dias de evento</li>
             <li>6 palcos de conteúdo</li>
@@ -4363,9 +4357,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <li>Certificado de participação</li>
             <li>Gravações das palestras</li>
           </ul>
-          <a href="https://www.sympla.com.br/evento/product-camp-2026-sao-paulo/3220593" target="_blank" class="btn-primary btn-cyan btn-block" data-pcamp-passaporte-cta>
-            Garantir ingresso
-          </a>
+          <span class="btn-primary btn-block btn-esgotado">
+            Esgotado
+          </span>
         </div>
 
         <!-- VIP — ESGOTADO. Não alterar nas viradas de lote: este card (e o
